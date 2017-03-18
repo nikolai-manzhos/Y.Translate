@@ -1,0 +1,62 @@
+
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.0'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+plugins {
+    id "me.tatarka.retrolambda" version "3.6.0"
+}
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+
+ext {
+    //generalDependencies
+    appCompatVersion = '25.2.0'
+    designVersion = '25.2.0'
+    cardViewVersion = '25.2.0'
+    supportVersion = '25.2.0'
+    recyclerViewVersion = '25.2.0'
+    daggerVersion = '2.9'
+    retrofitVersion = '2.2.0'
+    butterknifeVersion = '8.5.1'
+    icepickVersion = '3.2.0'
+    glideVersion = '3.7.0'
+    recyclerViewAnimatorsVersion = '2.2.5'
+    iconifyVersion = '2.2.2'
+
+    //RXJava
+    rxandroidVersion = '2.0.1'
+    rxjavaVersion = '2.0.7'
+
+    //UnitTest
+    junitVersion = '4.12'
+    mockitoVersion = '1.10.19'
+    powerMockitoVersion = '1.7.0RC2'
+
+    //InstrumentationTest
+    espressoVersion = '2.2.2'
+    testingSupportLibVersion = '0.1'
+    supportAnnotationsVersion = '25.1.1'
+
+    //debug
+    leakcanaryVersion = '1.4'
+}

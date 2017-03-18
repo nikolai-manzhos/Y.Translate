@@ -1,0 +1,93 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+
+    defaultConfig {
+        applicationId "com.defaultapps.translator"
+        minSdkVersion 21
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        jackOptions {
+            enabled true
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+configurations.all {
+    resolutionStrategy {
+        force 'com.android.support:support-annotations:23.1.1'
+    }
+}
+
+repositories {
+    maven {url "https://clojars.org/repo/"}
+}
+
+dependencies {
+
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile "com.android.support:appcompat-v7:$rootProject.appCompatVersion"
+    compile "com.android.support:cardview-v7:$rootProject.cardViewVersion"
+    compile "com.android.support:design:$rootProject.designVersion"
+    compile "junit:junit:$rootProject.junitVersion"
+    compile "com.google.dagger:dagger:$rootProject.daggerVersion"
+    compile "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"
+    compile "com.squareup.retrofit2:converter-gson:$rootProject.retrofitVersion"
+    compile "com.squareup.retrofit2:adapter-rxjava2:$rootProject.retrofitVersion"
+    compile "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
+    compile "frankiesardo:icepick:$rootProject.icepickVersion"
+    provided "frankiesardo:icepick-processor:$rootProject.icepickVersion"
+    compile "com.github.bumptech.glide:glide:$rootProject.glideVersion"
+    compile "com.android.support:support-v4:$rootProject.supportVersion"
+    compile "com.android.support:recyclerview-v7:$rootProject.recyclerViewVersion"
+    annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.butterknifeVersion"
+    annotationProcessor "com.google.dagger:dagger-compiler:$rootProject.daggerVersion"
+    compile "jp.wasabeef:recyclerview-animators:$rootProject.recyclerViewAnimatorsVersion"
+    compile "com.joanzapata.iconify:android-iconify-material:$rootProject.iconifyVersion"
+
+    compile 'com.squareup.okhttp3:logging-interceptor:3.6.0'
+
+    //RXJava
+    compile "io.reactivex.rxjava2:rxandroid:$rootProject.rxandroidVersion"
+    compile "io.reactivex.rxjava2:rxjava:$rootProject.rxjavaVersion"
+
+    //Leakcanary
+    debugCompile "com.squareup.leakcanary:leakcanary-android:$rootProject.leakcanaryVersion"
+    releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$rootProject.leakcanaryVersion"
+    testCompile "com.squareup.leakcanary:leakcanary-android-no-op:$rootProject.leakcanaryVersion"
+
+    //UnitTest
+    testCompile "junit:junit:$rootProject.junitVersion"
+    testCompile "org.mockito:mockito-core:$rootProject.mockitoVersion"
+    testCompile "org.powermock:powermock-module-junit4:$rootProject.powerMockitoVersion"
+    testCompile "org.powermock:powermock-api-mockito2:$rootProject.powerMockitoVersion"
+
+    //InstrumentationTest
+    androidTestCompile ("com.android.support.test.espresso:espresso-core:$rootProject.espressoVersion", {
+        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude module: 'desgin'
+    })
+    androidTestCompile ("com.android.support.test.espresso:espresso-contrib:$rootProject.espressoVersion", {
+        exclude module: 'support-annotations'
+        exclude module: 'support-v4'
+        exclude module: 'appcompat-v7'
+        exclude module: 'recyclerview-v7'
+        exclude module: 'desgin'
+    })
+    androidTestCompile "org.mockito:mockito-core:$rootProject.mockitoVersion"
+    androidTestCompile "com.android.support:design:$rootProject.designVersion"
+}
