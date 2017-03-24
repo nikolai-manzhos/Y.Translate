@@ -8,21 +8,25 @@ import com.defaultapps.translator.data.model.TranslateResponse;
 import com.defaultapps.translator.data.network.NetworkService;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.processors.ReplayProcessor;
 
-
+@Singleton
 public class TranslateViewInteractor {
 
     private final String API_KEY = "trnsl.1.1.20170318T100130Z.eb5aab89080c4223.b30022ef0612fabacc605b1e3989f20e3871f17a";
 
+    private final String TAG = "TranslateViewInteractor";
+    private final boolean DEBUG = true;
+
     private final SchedulerProvider schedulerProvider;
     private final NetworkService networkService;
-    private final LocalService localServicel;
+    private final LocalService localService;
 
-    private TranslateResponse translateResponse = new TranslateResponse();
+    private TranslateResponse memoryCache = new TranslateResponse();
     private ReplayProcessor<TranslateResponse> translateProcessor;
     private Disposable disposable;
 
@@ -34,30 +38,42 @@ public class TranslateViewInteractor {
     ) {
         this.schedulerProvider = schedulerProvider;
         this.networkService = networkService;
-        this.localServicel = localService;
+        this.localService = localService;
     }
 
-    public Observable<TranslateResponse> requestTranslation(String text, String languagePair) {
+    public Observable<TranslateResponse> requestTranslation(boolean forceUpdate) {
+        if (disposable != null && forceUpdate) {
+            disposable.dispose();
+            memoryCache = new TranslateResponse();
+        }
         if (disposable == null || disposable.isDisposed()) {
             translateProcessor = ReplayProcessor.create();
 
-            disposable = Observable.concat(memory(),network(text, languagePair))
+            disposable = Observable.concat( memory(), network(localService.getCurrentText(), localService.getCurrentLanguage()))
                     .filter(response -> response.getCode() != null).first(new TranslateResponse())
                     .subscribe(translateResponse -> translateProcessor.onNext(translateResponse));
         }
         return translateProcessor.toObservable();
     }
 
-    private Observable<TranslateResponse> network(String text, String language) {
+    public void setCurrentText(String text) {
+        localService.setCurrentText(text);
+    }
+
+    public void setCurrentLanguage(String languagePair) {
+        localService.setCurrentLanguage(languagePair);
+    }
+
+    public Observable<TranslateResponse> network(String text, String language) {
         return networkService.getNetworkCall().getTranslation(API_KEY, text, language)
-                .map(response -> translateResponse = response)
+                .map(response -> memoryCache = response)
                 .onErrorReturn(throwable -> {
-                    Log.d("Wew", throwable.toString());
+                    if (DEBUG) Log.d(TAG, throwable.toString());
                     return new TranslateResponse();})
                 .compose(schedulerProvider.applyIoSchedulers());
     }
 
     private Observable<TranslateResponse> memory() {
-        return Observable.just(translateResponse);
+        return Observable.just(memoryCache);
     }
 }

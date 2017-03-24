@@ -3,6 +3,8 @@ package com.defaultapps.translator.data.local.sp;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.defaultapps.translator.di.ApplicationContext;
+
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -16,7 +18,7 @@ public class SharedPreferencesHelper {
     private final String SHARED_PREFERENCES_NAME = "com.defaultapps.blueprint.SP";
 
     @Inject
-    public SharedPreferencesHelper(Context context) {
+    public SharedPreferencesHelper(@ApplicationContext Context context) {
         this.sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
     }
 
@@ -30,7 +32,7 @@ public class SharedPreferencesHelper {
     }
 
     public String getString(String key) {
-        return sharedPreferences.getString(key, null);
+        return sharedPreferences.getString(key, "");
     }
 
     public void putString(String key, String value) {

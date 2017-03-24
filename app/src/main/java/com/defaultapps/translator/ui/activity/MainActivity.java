@@ -14,8 +14,6 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        FrameLayout frameLayout = (FrameLayout) findViewById(R.id.contentFrame);
-        frameLayout.setOnClickListener(view -> Toast.makeText(this, "Lambdas!", Toast.LENGTH_SHORT).show());
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.contentFrame, new TranslateViewImpl())

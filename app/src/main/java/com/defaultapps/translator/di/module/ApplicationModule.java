@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Context;
 
 import com.defaultapps.translator.data.SchedulerProvider;
-import com.defaultapps.translator.data.local.LocalService;
 import com.defaultapps.translator.di.ApplicationContext;
 
 import javax.inject.Singleton;

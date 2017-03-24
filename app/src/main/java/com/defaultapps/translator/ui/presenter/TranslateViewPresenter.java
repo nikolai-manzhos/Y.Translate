@@ -4,6 +4,7 @@ import com.defaultapps.translator.ui.base.MvpPresenter;
 import com.defaultapps.translator.ui.fragment.TranslateView;
 
 public interface TranslateViewPresenter extends MvpPresenter<TranslateView> {
-    void setLanguage(String from, String to);
-    void requestTranslation(String text);
+    void setCurrentText(String text);
+    void setCurrentLanguage(String languagePair);
+    void requestTranslation(boolean forceUpdate);
 }

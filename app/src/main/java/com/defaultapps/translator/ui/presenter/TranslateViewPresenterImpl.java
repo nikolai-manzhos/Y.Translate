@@ -25,19 +25,42 @@ public class TranslateViewPresenterImpl extends BasePresenter<TranslateView> imp
     }
 
     @Override
-    public void setLanguage(String from, String to) {
-
+    public void setCurrentText(String text) {
+        translateViewInteractor.setCurrentText(text);
     }
 
     @Override
-    public void requestTranslation(String text) {
+    public void setCurrentLanguage(String languagePair) {
+        translateViewInteractor.setCurrentLanguage(languagePair);
+    }
+
+    @Override
+    public void requestTranslation(boolean forceUpdate) {
+        if (getView() != null) {
+            getView().showLoading();
+        }
         getCompositeDisposable().add(
-                translateViewInteractor.requestTranslation(text, "en-ru")
+                translateViewInteractor.requestTranslation(forceUpdate)
                 .subscribe(
                         translateResponse ->
-                                Log.d("RESPONSE", translateResponse.getText().toString()),
+                        {Log.d("RESPONSE", translateResponse.getText().toString());
+                            if (getView() != null) {
+                                getView().hideLoading();
+                                getView().hideError();
+                                getView().showResult(translateResponse.getText().toString());
+                            }
+                        },
                         err ->
-                                Log.d("ERROR", err.toString())
+                        {   if (getView() != null) {
+                                getView().hideLoading();
+                                getView().hideResult();
+                                getView().showError();
+                            }
+                        },
+                        () -> {
+                            if (getView() != null)
+                                getView().hideLoading();
+                        }
                 )
         );
     }

@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 25
@@ -6,14 +8,11 @@ android {
 
     defaultConfig {
         applicationId "com.defaultapps.translator"
-        minSdkVersion 21
+        minSdkVersion 17
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        jackOptions {
-            enabled true
-        }
     }
     buildTypes {
         release {
@@ -58,12 +57,13 @@ dependencies {
     annotationProcessor "com.google.dagger:dagger-compiler:$rootProject.daggerVersion"
     compile "jp.wasabeef:recyclerview-animators:$rootProject.recyclerViewAnimatorsVersion"
     compile "com.joanzapata.iconify:android-iconify-material:$rootProject.iconifyVersion"
-
-    compile 'com.squareup.okhttp3:logging-interceptor:3.6.0'
+    compile "com.squareup.okhttp3:logging-interceptor:$rootProject.okhttpVersion"
 
     //RXJava
     compile "io.reactivex.rxjava2:rxandroid:$rootProject.rxandroidVersion"
     compile "io.reactivex.rxjava2:rxjava:$rootProject.rxjavaVersion"
+    compile "com.jakewharton.rxbinding2:rxbinding:$rootProject.rxBindings"
+
 
     //Leakcanary
     debugCompile "com.squareup.leakcanary:leakcanary-android:$rootProject.leakcanaryVersion"
