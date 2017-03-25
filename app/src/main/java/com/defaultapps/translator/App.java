@@ -5,6 +5,8 @@ import android.app.Application;
 import com.defaultapps.translator.di.component.ApplicationComponent;
 import com.defaultapps.translator.di.component.DaggerApplicationComponent;
 import com.defaultapps.translator.di.module.ApplicationModule;
+import com.joanzapata.iconify.Iconify;
+import com.joanzapata.iconify.fonts.MaterialModule;
 import com.squareup.leakcanary.LeakCanary;
 
 public class App extends Application {
@@ -14,10 +16,9 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            return;
-        }
-        LeakCanary.install(this);
+        initLeakCanary();
+        initIconify();
+
         applicationComponent = DaggerApplicationComponent.builder()
                 .applicationModule(new ApplicationModule(this))
                 .build();
@@ -34,5 +35,10 @@ public class App extends Application {
             return;
         }
         LeakCanary.install(this);
+    }
+
+    private void initIconify() {
+        Iconify
+                .with(new MaterialModule());
     }
 }

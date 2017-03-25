@@ -96,7 +96,7 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
                     }
                 });
         RxTextView.afterTextChangeEvents(editText)
-                .debounce(300, TimeUnit.MILLISECONDS)
+                .debounce(400, TimeUnit.MILLISECONDS)
                 .subscribe(text -> {
                     if (editTextStatus) {
                         publishProcessor.onNext(text.editable().toString());
