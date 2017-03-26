@@ -37,6 +37,8 @@ public class TranslateViewPresenterImpl extends BasePresenter<TranslateView> imp
     @Override
     public void requestTranslation(boolean forceUpdate) {
         if (getView() != null) {
+            getView().hideResult();
+            getView().hideError();
             getView().showLoading();
         }
         getCompositeDisposable().add(

@@ -10,7 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:background="@drawable/rounded_border_edittext"
-        android:inputType="textPersonName"
+        android:inputType="textMultiLine"
+        android:scrollbars="vertical"
         android:gravity="top"
         android:padding="10dp"/>
 
@@ -27,8 +28,5 @@
         <include layout="@layout/view_progress" />
 
         <include layout="@layout/view_error" />
-
     </FrameLayout>
-
-
 </LinearLayout>

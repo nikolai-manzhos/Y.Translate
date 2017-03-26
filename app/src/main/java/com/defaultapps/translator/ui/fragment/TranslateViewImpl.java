@@ -24,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.processors.PublishProcessor;
 
@@ -116,6 +117,11 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
     public void onDetach() {
         super.onDetach();
         activity = null;
+    }
+
+    @OnClick(R.id.errorButton)
+    void onClick() {
+        translateViewPresenter.requestTranslation(true);
     }
 
     @Override
