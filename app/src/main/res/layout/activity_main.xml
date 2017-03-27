@@ -19,8 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:layout_alignParentBottom="true"
-        android:background="@color/whiteBackground"
-        app:itemBackground="@color/colorPrimary"
+        android:background="@color/colorPrimary"
         app:itemIconTint="@drawable/bottom_nav_item_state"
         app:itemTextColor="@drawable/bottom_nav_item_state"
         app:menu="@menu/bottom_navigation_bar"/>

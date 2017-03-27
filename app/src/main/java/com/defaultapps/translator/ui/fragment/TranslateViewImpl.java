@@ -36,8 +36,6 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
 
     private MainActivity activity;
 
-    private PublishProcessor<String> publishProcessor;
-
     @BindView(R.id.editText)
     EditText editText;
 
@@ -65,11 +63,6 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
         }
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -82,25 +75,24 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
         super.onViewCreated(view, savedInstanceState);
         translateViewPresenter.onAttach(this);
         translateViewPresenter.requestTranslation(false);
+        if (savedInstanceState == null) {
+             if (!translateViewPresenter.getCurrentText().equals("")) {
+                 editText.setText(translateViewPresenter.getCurrentText());
+             }
+        }
 
-        publishProcessor = PublishProcessor.create();
-        publishProcessor.onBackpressureLatest()
+        RxTextView.textChangeEvents(editText)
+                .debounce(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(requestedString -> {
-                    Log.d(TAG, "EditText changed");
-                    translateViewPresenter.setCurrentLanguage("en-ru");
-                    translateViewPresenter.setCurrentText(requestedString);
-                    if (requestedString.length() != 0) {
-                        translateViewPresenter.requestTranslation(true);
-                    } else {
-                        hideResult();
-                    }
-                });
-        RxTextView.afterTextChangeEvents(editText)
-                .debounce(400, TimeUnit.MILLISECONDS)
                 .subscribe(text -> {
                     if (editTextStatus) {
-                        publishProcessor.onNext(text.editable().toString());
+                        translateViewPresenter.setCurrentLanguage("en-ru");
+                        translateViewPresenter.setCurrentText(text.text().toString());
+                        if (text.text().length() != 0) {
+                            translateViewPresenter.requestTranslation(true);
+                        } else {
+                            hideResult();
+                        }
                     } else {
                         editTextStatus = true;
                     }

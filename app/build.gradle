@@ -34,7 +34,9 @@ configurations.all {
 
 repositories {
     maven {url "https://clojars.org/repo/"}
-}
+    maven {
+        url 'https://github.com/uPhyca/stetho-realm/raw/master/maven-repo'
+    }}
 
 dependencies {
 
@@ -59,11 +61,14 @@ dependencies {
     compile "com.joanzapata.iconify:android-iconify-material:$rootProject.iconifyVersion"
     compile "com.squareup.okhttp3:logging-interceptor:$rootProject.okhttpVersion"
 
+    //RealmDB Viewer
+    debugCompile "com.facebook.stetho:stetho:$rootProject.stethoVersion"
+    debugCompile "com.uphyca:stetho_realm:$rootProject.stethoRealmVersion"
+
     //RXJava
     compile "io.reactivex.rxjava2:rxandroid:$rootProject.rxandroidVersion"
     compile "io.reactivex.rxjava2:rxjava:$rootProject.rxjavaVersion"
     compile "com.jakewharton.rxbinding2:rxbinding:$rootProject.rxBindings"
-
 
     //Leakcanary
     debugCompile "com.squareup.leakcanary:leakcanary-android:$rootProject.leakcanaryVersion"

@@ -7,7 +7,8 @@ import com.defaultapps.translator.di.component.DaggerApplicationComponent;
 import com.defaultapps.translator.di.module.ApplicationModule;
 import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.MaterialModule;
-import com.squareup.leakcanary.LeakCanary;
+
+import io.realm.Realm;
 
 public class App extends Application {
 
@@ -16,8 +17,8 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        initLeakCanary();
         initIconify();
+        Realm.init(this);
 
         applicationComponent = DaggerApplicationComponent.builder()
                 .applicationModule(new ApplicationModule(this))
@@ -28,13 +29,6 @@ public class App extends Application {
 
     public ApplicationComponent getComponent() {
         return applicationComponent;
-    }
-
-    private void initLeakCanary() {
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            return;
-        }
-        LeakCanary.install(this);
     }
 
     private void initIconify() {

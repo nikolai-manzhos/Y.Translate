@@ -13,6 +13,7 @@ import javax.inject.Singleton;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.processors.ReplayProcessor;
+import io.reactivex.schedulers.Schedulers;
 
 @Singleton
 public class TranslateViewInteractor {
@@ -34,8 +35,8 @@ public class TranslateViewInteractor {
     public TranslateViewInteractor(
             SchedulerProvider schedulerProvider,
             NetworkService networkService,
-            LocalService localService
-    ) {
+            LocalService localService)
+    {
         this.schedulerProvider = schedulerProvider;
         this.networkService = networkService;
         this.localService = localService;
@@ -49,11 +50,15 @@ public class TranslateViewInteractor {
         if (disposable == null || disposable.isDisposed()) {
             translateProcessor = ReplayProcessor.create();
 
-            disposable = Observable.concat( memory(), network(localService.getCurrentText(), localService.getCurrentLanguage()))
+            disposable = Observable.concat(memory(), network(localService.getCurrentText(), localService.getCurrentLanguage()))
                     .filter(response -> response.getCode() != null).first(new TranslateResponse())
                     .subscribe(translateResponse -> translateProcessor.onNext(translateResponse));
         }
         return translateProcessor.toObservable();
+    }
+
+    public String provideCurrentText() {
+        return localService.getCurrentText();
     }
 
     public void setCurrentText(String text) {
@@ -67,6 +72,7 @@ public class TranslateViewInteractor {
     public Observable<TranslateResponse> network(String text, String language) {
         return networkService.getNetworkCall().getTranslation(API_KEY, text, language)
                 .map(response -> memoryCache = response)
+                .doOnNext(translateResponse -> Observable.just(localService.writeToRealm(translateResponse)).subscribeOn(Schedulers.io()).subscribe())
                 .onErrorReturn(throwable -> {
                     if (DEBUG) Log.d(TAG, throwable.toString());
                     return new TranslateResponse();})

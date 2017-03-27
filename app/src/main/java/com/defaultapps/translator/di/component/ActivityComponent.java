@@ -6,9 +6,7 @@ import com.defaultapps.translator.ui.fragment.TranslateViewImpl;
 
 import dagger.Component;
 
-/**
- * Created on 3/18/2017.
- */
+
 @PerActivity
 @Component(dependencies = ApplicationComponent.class, modules = ActivityModule.class)
 public interface ActivityComponent {

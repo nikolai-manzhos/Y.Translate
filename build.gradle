@@ -59,4 +59,6 @@ ext {
 
     //debug
     leakcanaryVersion = '1.5'
+    stethoVersion = '1.4.1'
+    stethoRealmVersion = '2.0.0'
 }

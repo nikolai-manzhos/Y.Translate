@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 
 @Singleton
 public class LocalService {
@@ -25,9 +26,10 @@ public class LocalService {
         String currentText = sharedPreferencesManager.getCurrentText();
         realm.executeTransaction(transactionRealm -> {
             RealmTranslate realmTranslate = findInRealm(realm, currentText);
-            if (realmTranslate == null) {
-                realmTranslate = transactionRealm.createObject(RealmTranslate.class, currentText);
+            if (realmTranslate != null) {
+                deleteFromRealm(realm, currentText);
             }
+            realmTranslate = transactionRealm.createObject(RealmTranslate.class, currentText);
             realmTranslate.setFavorite(false);
             realmTranslate.setLanguageSet(translateResponse.getLang());
         });
@@ -53,5 +55,10 @@ public class LocalService {
 
     private RealmTranslate findInRealm(Realm realm, String text) {
         return realm.where(RealmTranslate.class).equalTo("text", text).findFirst();
+    }
+
+    private void deleteFromRealm(Realm realm, String text) {
+        RealmResults<RealmTranslate> row = realm.where(RealmTranslate.class).equalTo("text", text).findAll();
+        row.deleteAllFromRealm();
     }
 }

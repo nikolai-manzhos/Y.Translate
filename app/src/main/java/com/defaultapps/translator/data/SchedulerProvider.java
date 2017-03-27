@@ -5,7 +5,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 
-
 public interface SchedulerProvider {
     <T> ObservableTransformer<T, T> applyIoSchedulers();
 

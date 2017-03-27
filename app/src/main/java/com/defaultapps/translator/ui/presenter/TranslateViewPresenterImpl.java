@@ -25,6 +25,11 @@ public class TranslateViewPresenterImpl extends BasePresenter<TranslateView> imp
     }
 
     @Override
+    public String getCurrentText() {
+        return translateViewInteractor.provideCurrentText();
+    }
+
+    @Override
     public void setCurrentText(String text) {
         translateViewInteractor.setCurrentText(text);
     }
@@ -44,16 +49,16 @@ public class TranslateViewPresenterImpl extends BasePresenter<TranslateView> imp
         getCompositeDisposable().add(
                 translateViewInteractor.requestTranslation(forceUpdate)
                 .subscribe(
-                        translateResponse ->
-                        {Log.d("RESPONSE", translateResponse.getText().toString());
+                        translateResponse -> {
+                            Log.d("RESPONSE", translateResponse.getText().toString());
                             if (getView() != null) {
                                 getView().hideLoading();
                                 getView().hideError();
                                 getView().showResult(translateResponse.getText().toString());
                             }
                         },
-                        err ->
-                        {   if (getView() != null) {
+                        err -> {
+                            if (getView() != null) {
                                 getView().hideLoading();
                                 getView().hideResult();
                                 getView().showError();
