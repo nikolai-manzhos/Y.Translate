@@ -1,32 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
-
-    <EditText
-        android:id="@+id/editText"
-        android:hint="Type text"
+    android:fitsSystemWindows="true">
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="@drawable/rounded_border_edittext"
-        android:inputType="textMultiLine"
-        android:scrollbars="vertical"
-        android:gravity="top"
-        android:padding="10dp"/>
-
-    <FrameLayout
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:elevation="2dp">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <com.joanzapata.iconify.widget.IconTextView
+                    android:text="{md-swap-horiz 24dp}"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true" />
+            </RelativeLayout>
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <TextView
-            android:id="@+id/translation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"/>
+        <EditText
+            android:id="@+id/editText"
+            android:hint="Type text"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="@drawable/rounded_border_edittext"
+            android:inputType="textMultiLine"
+            android:scrollbars="vertical"
+            android:gravity="top"
+            android:padding="10dp"/>
 
-        <include layout="@layout/view_progress" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <include layout="@layout/view_error" />
-    </FrameLayout>
-</LinearLayout>
+            <TextView
+                android:id="@+id/translation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+
+            <include layout="@layout/view_progress" />
+
+            <include layout="@layout/view_error" />
+        </FrameLayout>
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

@@ -1,7 +1,5 @@
 package com.defaultapps.translator.ui.base;
 
-import javax.inject.Inject;
-
 import io.reactivex.disposables.CompositeDisposable;
 
 public class BasePresenter<V extends MvpView> implements MvpPresenter<V> {
@@ -9,7 +7,6 @@ public class BasePresenter<V extends MvpView> implements MvpPresenter<V> {
     private V view;
     private CompositeDisposable compositeDisposable;
 
-    @Inject
     public BasePresenter(CompositeDisposable compositeDisposable) {
         this.compositeDisposable = compositeDisposable;
     }
@@ -30,6 +27,6 @@ public class BasePresenter<V extends MvpView> implements MvpPresenter<V> {
     }
 
     protected CompositeDisposable getCompositeDisposable() {
-        return compositeDisposable;
+        return this.compositeDisposable;
     }
 }

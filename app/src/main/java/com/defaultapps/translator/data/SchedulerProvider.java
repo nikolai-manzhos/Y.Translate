@@ -10,7 +10,7 @@ public interface SchedulerProvider {
 
     SchedulerProvider DEFAULT = new SchedulerProvider() {
         @Override public <T> ObservableTransformer<T, T> applyIoSchedulers() {
-            return observable -> observable.subscribeOn(Schedulers.io())
+            return observable -> observable.subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread());
         }
     };

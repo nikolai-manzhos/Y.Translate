@@ -18,6 +18,7 @@ import com.defaultapps.translator.ui.base.BaseActivity;
 import com.defaultapps.translator.ui.base.BaseFragment;
 import com.defaultapps.translator.ui.presenter.TranslateViewPresenterImpl;
 import com.jakewharton.rxbinding2.widget.RxTextView;
+import com.jakewharton.rxbinding2.widget.TextViewTextChangeEvent;
 
 import java.util.concurrent.TimeUnit;
 
@@ -25,8 +26,13 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.processors.PublishProcessor;
+import io.reactivex.schedulers.Schedulers;
 
 
 public class TranslateViewImpl extends BaseFragment implements TranslateView {
@@ -35,6 +41,7 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
     private boolean editTextStatus = false;
 
     private MainActivity activity;
+    private Observable<TextViewTextChangeEvent> textChangeObservable;
 
     @BindView(R.id.editText)
     EditText editText;
@@ -66,43 +73,42 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        activity.getActivityComponent().inject(this);
         return inflater.inflate(R.layout.fragment_translate, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ((MainActivity) getActivity()).getActivityComponent().inject(this);
         translateViewPresenter.onAttach(this);
-        translateViewPresenter.requestTranslation(false);
-        if (savedInstanceState == null) {
-             if (!translateViewPresenter.getCurrentText().equals("")) {
-                 editText.setText(translateViewPresenter.getCurrentText());
-             }
+        if (!translateViewPresenter.getCurrentText().equals("")) {
+            editText.setText(translateViewPresenter.getCurrentText());
+            translateViewPresenter.requestTranslation(false);
         }
 
-        RxTextView.textChangeEvents(editText)
+        textChangeObservable = RxTextView.textChangeEvents(editText)
                 .debounce(1000, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(text -> {
-                    if (editTextStatus) {
-                        translateViewPresenter.setCurrentLanguage("en-ru");
-                        translateViewPresenter.setCurrentText(text.text().toString());
-                        if (text.text().length() != 0) {
-                            translateViewPresenter.requestTranslation(true);
-                        } else {
-                            hideResult();
-                        }
-                    } else {
-                        editTextStatus = true;
-                    }
-                });
+                .observeOn(AndroidSchedulers.mainThread());
+        textChangeObservable.subscribe(text -> {
+            if (editTextStatus) {
+                translateViewPresenter.setCurrentText(text.text().toString());
+                translateViewPresenter.setCurrentLanguage("en-ru");
+                if (text.text().length() != 0) {
+                    translateViewPresenter.requestTranslation(true);
+                } else {
+                    hideResult();
+                }
+            } else {
+                editTextStatus = true;
+            }
+        });
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         translateViewPresenter.onDetach();
+        textChangeObservable.unsubscribeOn(AndroidSchedulers.mainThread());
     }
 
     @Override

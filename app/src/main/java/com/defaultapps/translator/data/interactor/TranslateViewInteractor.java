@@ -10,10 +10,15 @@ import com.defaultapps.translator.data.network.NetworkService;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import io.reactivex.BackpressureStrategy;
 import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.internal.observers.SubscriberCompletableObserver;
+import io.reactivex.processors.PublishProcessor;
 import io.reactivex.processors.ReplayProcessor;
 import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.ReplaySubject;
 
 @Singleton
 public class TranslateViewInteractor {
@@ -37,6 +42,7 @@ public class TranslateViewInteractor {
             NetworkService networkService,
             LocalService localService)
     {
+        Log.d(TAG, "CONSTRUCTOR");
         this.schedulerProvider = schedulerProvider;
         this.networkService = networkService;
         this.localService = localService;
@@ -46,13 +52,15 @@ public class TranslateViewInteractor {
         if (disposable != null && forceUpdate) {
             disposable.dispose();
             memoryCache = new TranslateResponse();
+            Log.d(TAG, "FORCE AND !DISPOSABLE");
         }
         if (disposable == null || disposable.isDisposed()) {
+            Log.d(TAG, "DISPOSED");
             translateProcessor = ReplayProcessor.create();
 
             disposable = Observable.concat(memory(), network(localService.getCurrentText(), localService.getCurrentLanguage()))
                     .filter(response -> response.getCode() != null).first(new TranslateResponse())
-                    .subscribe(translateResponse -> translateProcessor.onNext(translateResponse));
+                    .subscribe(translateProcessor::onNext);
         }
         return translateProcessor.toObservable();
     }
@@ -72,7 +80,8 @@ public class TranslateViewInteractor {
     public Observable<TranslateResponse> network(String text, String language) {
         return networkService.getNetworkCall().getTranslation(API_KEY, text, language)
                 .map(response -> memoryCache = response)
-                .doOnNext(translateResponse -> Observable.just(localService.writeToRealm(translateResponse)).subscribeOn(Schedulers.io()).subscribe())
+                .doOnNext(translateResponse -> Observable.just(localService.writeToRealm(translateResponse)).subscribeOn(AndroidSchedulers.mainThread()))
+                .doOnComplete(() -> Log.d(TAG, "NETWORK DONE"))
                 .onErrorReturn(throwable -> {
                     if (DEBUG) Log.d(TAG, throwable.toString());
                     return new TranslateResponse();})

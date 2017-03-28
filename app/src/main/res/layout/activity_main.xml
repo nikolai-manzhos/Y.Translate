@@ -24,5 +24,4 @@
         app:itemTextColor="@drawable/bottom_nav_item_state"
         app:menu="@menu/bottom_navigation_bar"/>
 
-
 </RelativeLayout>

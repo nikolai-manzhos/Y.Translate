@@ -6,14 +6,20 @@ import com.defaultapps.translator.data.interactor.TranslateViewInteractor;
 import com.defaultapps.translator.di.scope.PerActivity;
 import com.defaultapps.translator.ui.base.BasePresenter;
 import com.defaultapps.translator.ui.fragment.TranslateView;
+import com.defaultapps.translator.ui.fragment.TranslateViewImpl;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
 
 @PerActivity
-public class TranslateViewPresenterImpl extends BasePresenter<TranslateView> implements TranslateViewPresenter {
+public class TranslateViewPresenterImpl extends BasePresenter<TranslateViewImpl> implements TranslateViewPresenter {
 
     private TranslateViewInteractor translateViewInteractor;
 

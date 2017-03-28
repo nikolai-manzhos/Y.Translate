@@ -34,7 +34,6 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        initBottomNavigationBar();
         bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
             selectFragment(menuItem);
             return true;
@@ -54,24 +53,8 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private void initBottomNavigationBar() {
-        Menu menu = bottomNavigationView.getMenu();
-        menu.findItem(R.id.navTranslate).setIcon(
-                new IconDrawable(this, MaterialIcons.md_translate)
-                .colorRes(R.color.whitePrimary)
-        );
-        menu.findItem(R.id.navHistory).setIcon(
-                new IconDrawable(this, MaterialIcons.md_history)
-                .colorRes(R.color.whitePrimary)
-        );
-        menu.findItem(R.id.navFavorites).setIcon(
-                new IconDrawable(this, MaterialIcons.md_favorite)
-                .colorRes(R.color.whitePrimary)
-        );
-    }
-
     private void selectFragment(final MenuItem menuItem) {
-        Fragment fragment;
+        Fragment fragment = null;
         switch (menuItem.getItemId()) {
             case R.id.navTranslate:
                 fragment = new TranslateViewImpl();
@@ -83,7 +66,6 @@ public class MainActivity extends BaseActivity {
                 fragment = new FavoritesViewImpl();
                 break;
             default:
-                fragment = new TranslateViewImpl();
                 break;
         }
         selectedItem = menuItem.getItemId();
@@ -93,8 +75,10 @@ public class MainActivity extends BaseActivity {
             menuItem.setChecked(item.getItemId() == menuItem.getItemId());
         }
 
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.contentFrame, fragment, fragment.getTag());
-        ft.commit();
+        if (fragment != null) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.add(R.id.contentFrame, fragment);
+            ft.commit();
+        }
     }
 }

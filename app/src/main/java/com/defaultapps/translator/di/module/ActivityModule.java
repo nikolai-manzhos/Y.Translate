@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.defaultapps.translator.di.ActivityContext;
+import com.defaultapps.translator.di.scope.PerActivity;
 
 import dagger.Module;
 import dagger.Provides;
@@ -25,6 +26,7 @@ public class ActivityModule {
         return activity;
     }
 
+    @PerActivity
     @Provides
     CompositeDisposable provideCompositeDisposable() {
         return new CompositeDisposable();
