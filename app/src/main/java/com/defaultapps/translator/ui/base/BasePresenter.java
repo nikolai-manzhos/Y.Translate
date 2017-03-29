@@ -1,7 +1,10 @@
 package com.defaultapps.translator.ui.base;
 
+import com.defaultapps.translator.di.scope.PerActivity;
+
 import io.reactivex.disposables.CompositeDisposable;
 
+@PerActivity
 public class BasePresenter<V extends MvpView> implements MvpPresenter<V> {
 
     private V view;
@@ -18,7 +21,7 @@ public class BasePresenter<V extends MvpView> implements MvpPresenter<V> {
 
     @Override
     public void onDetach() {
-        compositeDisposable.dispose();
+        compositeDisposable.clear();
         this.view = null;
     }
 

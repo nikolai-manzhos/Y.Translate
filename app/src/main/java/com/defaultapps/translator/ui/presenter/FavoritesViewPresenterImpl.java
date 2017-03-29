@@ -15,6 +15,5 @@ public class FavoritesViewPresenterImpl extends BasePresenter<FavoritesView> imp
     @Inject
     public FavoritesViewPresenterImpl(CompositeDisposable compositeDisposable) {
         super(compositeDisposable);
-
     }
 }

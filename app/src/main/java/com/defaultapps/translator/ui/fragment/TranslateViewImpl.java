@@ -84,6 +84,7 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
         if (!translateViewPresenter.getCurrentText().equals("")) {
             editText.setText(translateViewPresenter.getCurrentText());
             translateViewPresenter.requestTranslation(false);
+            editTextStatus = false;
         }
 
         textChangeObservable = RxTextView.textChangeEvents(editText)
@@ -95,7 +96,7 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
                 translateViewPresenter.setCurrentLanguage("en-ru");
                 if (text.text().length() != 0) {
                     translateViewPresenter.requestTranslation(true);
-                } else {
+                } else if (getView() != null){
                     hideResult();
                 }
             } else {

@@ -4,17 +4,23 @@ import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.defaultapps.translator.R;
+import com.defaultapps.translator.ui.adapter.MainTabAdapter;
 import com.defaultapps.translator.ui.base.BaseActivity;
+import com.defaultapps.translator.ui.custom.NonSwipeableViewPager;
 import com.defaultapps.translator.ui.fragment.FavoritesViewImpl;
 import com.defaultapps.translator.ui.fragment.HistoryViewImpl;
 import com.defaultapps.translator.ui.fragment.TranslateViewImpl;
 import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.fonts.MaterialIcons;
 
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,6 +31,13 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.bottomNavigation)
     BottomNavigationView bottomNavigationView;
 
+    @BindView(R.id.mainViewPager)
+    NonSwipeableViewPager viewPager;
+
+    MainTabAdapter mainTabAdapter;
+    MenuItem prevMenuItem;
+
+
     @State
     int selectedItem;
 
@@ -34,12 +47,16 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        mainTabAdapter = new MainTabAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(mainTabAdapter);
+        viewPager.setPagingEnabled(false);
         bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
-            selectFragment(menuItem);
+            Log.d("MainActiity", String.valueOf(menuItem.getItemId()));
+            selectItem(menuItem);
             return true;
         });
         if (savedInstanceState == null) {
-            selectFragment(bottomNavigationView.getMenu().getItem(0));
+            selectItem(bottomNavigationView.getMenu().getItem(0));
         }
     }
 
@@ -47,25 +64,22 @@ public class MainActivity extends BaseActivity {
     public void onBackPressed() {
         MenuItem menuItem = bottomNavigationView.getMenu().getItem(0);
         if (menuItem.getItemId() != selectedItem) {
-            selectFragment(menuItem);
+            selectItem(menuItem);
         } else {
             super.onBackPressed();
         }
     }
 
-    private void selectFragment(final MenuItem menuItem) {
-        Fragment fragment = null;
+    private void selectItem(final MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.navTranslate:
-                fragment = new TranslateViewImpl();
+                viewPager.setCurrentItem(0);
                 break;
             case R.id.navHistory:
-                fragment = new HistoryViewImpl();
+                viewPager.setCurrentItem(1);
                 break;
             case R.id.navFavorites:
-                fragment = new FavoritesViewImpl();
-                break;
-            default:
+                viewPager.setCurrentItem(2);
                 break;
         }
         selectedItem = menuItem.getItemId();
@@ -73,12 +87,6 @@ public class MainActivity extends BaseActivity {
         for (int i = 0; i< bottomNavigationView.getMenu().size(); i++) {
             MenuItem item = bottomNavigationView.getMenu().getItem(i);
             menuItem.setChecked(item.getItemId() == menuItem.getItemId());
-        }
-
-        if (fragment != null) {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.add(R.id.contentFrame, fragment);
-            ft.commit();
         }
     }
 }
