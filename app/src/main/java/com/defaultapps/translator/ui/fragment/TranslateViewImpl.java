@@ -1,6 +1,7 @@
 package com.defaultapps.translator.ui.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -9,16 +10,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.defaultapps.translator.R;
+import com.defaultapps.translator.ui.activity.LanguageActivity;
 import com.defaultapps.translator.ui.activity.MainActivity;
 import com.defaultapps.translator.ui.base.BaseActivity;
 import com.defaultapps.translator.ui.base.BaseFragment;
 import com.defaultapps.translator.ui.presenter.TranslateViewPresenterImpl;
+import com.defaultapps.translator.utils.Global;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.jakewharton.rxbinding2.widget.TextViewTextChangeEvent;
+import com.joanzapata.iconify.IconDrawable;
+import com.joanzapata.iconify.fonts.MaterialIcons;
 
 import java.util.concurrent.TimeUnit;
 
@@ -58,6 +64,9 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
     @BindView(R.id.translation)
     TextView translatedText;
 
+    @BindView(R.id.swipeLanguages)
+    ImageButton swipeLanguagesButton;
+
     @Inject
     TranslateViewPresenterImpl translateViewPresenter;
 
@@ -79,6 +88,7 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initSwipeButton();
         ((MainActivity) getActivity()).getActivityComponent().inject(this);
         translateViewPresenter.onAttach(this);
         if (!translateViewPresenter.getCurrentText().equals("")) {
@@ -93,11 +103,11 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
         textChangeObservable.subscribe(text -> {
             if (editTextStatus) {
                 translateViewPresenter.setCurrentText(text.text().toString());
-                translateViewPresenter.setCurrentLanguage("en-ru");
                 if (text.text().length() != 0) {
                     translateViewPresenter.requestTranslation(true);
                 } else if (getView() != null){
                     hideResult();
+                    hideError();
                 }
             } else {
                 editTextStatus = true;
@@ -121,6 +131,20 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
     @OnClick(R.id.errorButton)
     void onClick() {
         translateViewPresenter.requestTranslation(true);
+    }
+
+    @OnClick(R.id.sourceLanguage)
+    void onSourceClick() {
+        Intent intent = new Intent(getActivity(), LanguageActivity.class);
+        intent.putExtra(Global.SOURCE_OR_TARGET, "source");
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.targetLanguage)
+    void onTargetClick() {
+        Intent intent = new Intent(getActivity(), LanguageActivity.class);
+        intent.putExtra(Global.SOURCE_OR_TARGET, "target");
+        startActivity(intent);
     }
 
     @Override
@@ -154,5 +178,13 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
     public void showResult(String result) {
         translatedText.setVisibility(View.VISIBLE);
         translatedText.setText(result);
+    }
+
+    private void initSwipeButton() {
+        swipeLanguagesButton.setImageDrawable(new IconDrawable(
+                getContext().getApplicationContext(),
+                MaterialIcons.md_swap_horiz)
+                .colorRes(R.color.whiteSecondary)
+        );
     }
 }

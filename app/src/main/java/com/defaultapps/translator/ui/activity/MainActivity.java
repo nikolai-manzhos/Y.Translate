@@ -35,8 +35,6 @@ public class MainActivity extends BaseActivity {
     NonSwipeableViewPager viewPager;
 
     MainTabAdapter mainTabAdapter;
-    MenuItem prevMenuItem;
-
 
     @State
     int selectedItem;

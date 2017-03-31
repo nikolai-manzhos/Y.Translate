@@ -18,15 +18,32 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-                <com.joanzapata.iconify.widget.IconTextView
-                    android:text="{md-swap-horiz 24dp}"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:id="@+id/textView"
+                <Button
+                    android:id="@+id/sourceLanguage"
+                    android:text="English"
+                    style="@style/ToolbarText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_centerHorizontal="true" />
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="10dp" />
+
+                <ImageButton
+                    android:id="@+id/swipeLanguages"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_centerInParent="true"
+                    android:background="@android:color/transparent" />
+                <Button
+                    android:id="@+id/targetLanguage"
+                    android:text="Russian"
+                    style="@style/ToolbarText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="19dp"
+                    android:layout_alignBaseline="@+id/sourceLanguage"
+                    android:layout_alignBottom="@+id/sourceLanguage"
+                    android:layout_alignParentEnd="true" />
             </RelativeLayout>
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
@@ -41,7 +58,7 @@
             android:id="@+id/editText"
             android:hint="Type text"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="150dp"
             android:background="@drawable/rounded_border_edittext"
             android:inputType="textMultiLine"
             android:scrollbars="vertical"
@@ -54,8 +71,13 @@
 
             <TextView
                 android:id="@+id/translation"
+                android:textSize="24sp"
+                android:textColor="@color/blackPrimary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="10dp"
                 android:visibility="gone"/>
 
             <include layout="@layout/view_progress" />

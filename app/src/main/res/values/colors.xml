@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#795548</color>
+    <color name="colorPrimaryDark">#5D4037</color>
     <color name="colorAccent">#FF4081</color>
     
     <!--White-->
@@ -9,4 +9,9 @@
     <color name="whiteSecondary">#b3ffffff</color>
     <color name="whiteDisabled">#80ffffff</color>
     <color name="whiteBackground">#fafafa</color>
+
+    <!--Black-->
+    <color name="blackPrimary">#de000000</color>
+    <color name="blackSecondary">#8a000000</color>
+    <color name="blackDisabled">#62000000</color>
 </resources>

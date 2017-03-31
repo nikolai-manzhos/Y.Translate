@@ -58,8 +58,8 @@ public class TranslateViewInteractor {
             Log.d(TAG, "DISPOSED");
             translateProcessor = ReplayProcessor.create();
 
-            disposable = Observable.concat(memory(), network(localService.getCurrentText(), localService.getCurrentLanguage()))
-                    .filter(response -> response.getCode() != null).first(new TranslateResponse())
+            disposable = Observable.concat(memory(), network(localService.getCurrentText(), localService.getCurrentLanguagePair()))
+                    .filter(response -> response.getText() != null).first(new TranslateResponse())
                     .subscribe(translateProcessor::onNext);
         }
         return translateProcessor.toObservable();
@@ -73,9 +73,6 @@ public class TranslateViewInteractor {
         localService.setCurrentText(text);
     }
 
-    public void setCurrentLanguage(String languagePair) {
-        localService.setCurrentLanguage(languagePair);
-    }
 
     public Observable<TranslateResponse> network(String text, String language) {
         return networkService.getNetworkCall().getTranslation(API_KEY, text, language)

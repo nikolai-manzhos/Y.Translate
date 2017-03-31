@@ -9,7 +9,8 @@ public class SharedPreferencesManager {
     private SharedPreferencesHelper sharedPreferencesHelper;
 
     private final String CURRENT_TEXT = "current_text";
-    private final String CURRENT_LANGUAGE = "current_language";
+    private final String SOURCE_LANGUAGE = "source_language";
+    private final String TARGET_LANGUAGE = "target_language";
 
     @Inject
     public SharedPreferencesManager(SharedPreferencesHelper sharedPreferencesHelper) {
@@ -24,11 +25,19 @@ public class SharedPreferencesManager {
         sharedPreferencesHelper.putString(CURRENT_TEXT, text);
     }
 
-    public String getCurrentLanguage() {
-        return sharedPreferencesHelper.getString(CURRENT_LANGUAGE);
+    public String getSourceLanguage() {
+        return sharedPreferencesHelper.getString(SOURCE_LANGUAGE);
     }
 
-    public void setCurrentLanguage(String languagePair) {
-        sharedPreferencesHelper.putString(CURRENT_LANGUAGE, languagePair);
+    public void setSourceLanguage(String sourceLanguage) {
+        sharedPreferencesHelper.putString(SOURCE_LANGUAGE, sourceLanguage);
+    }
+
+    public String getTargetLanguage() {
+        return sharedPreferencesHelper.getString(TARGET_LANGUAGE);
+    }
+
+    public void setTargetLanguage(String targetLanguage) {
+        sharedPreferencesHelper.putString(TARGET_LANGUAGE, targetLanguage);
     }
 }

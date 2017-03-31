@@ -7,6 +7,7 @@ import com.defaultapps.translator.App;
 import com.defaultapps.translator.data.SchedulerProvider;
 import com.defaultapps.translator.data.interactor.TranslateViewInteractor;
 import com.defaultapps.translator.data.local.LocalService;
+import com.defaultapps.translator.data.local.sp.SharedPreferencesManager;
 import com.defaultapps.translator.data.network.NetworkService;
 import com.defaultapps.translator.di.ApplicationContext;
 import com.defaultapps.translator.di.module.ApplicationModule;
@@ -31,4 +32,6 @@ public interface ApplicationComponent {
     NetworkService networkService();
 
     TranslateViewInteractor translateViewInteractor();
+
+    SharedPreferencesManager sharedPreferencesManager(); // TEMPORARY!
 }

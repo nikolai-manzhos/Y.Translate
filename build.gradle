@@ -51,6 +51,7 @@ ext {
     junitVersion = '4.12'
     mockitoVersion = '1.10.19'
     powerMockitoVersion = '1.7.0RC2'
+    robolectricVersion = '3.1.4'
 
     //InstrumentationTest
     espressoVersion = '2.2.2'

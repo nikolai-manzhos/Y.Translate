@@ -32,6 +32,7 @@ public class LocalService {
             realmTranslate = transactionRealm.createObject(RealmTranslate.class, currentText);
             realmTranslate.setFavorite(false);
             realmTranslate.setLanguageSet(translateResponse.getLang());
+            realmTranslate.setTranslatedText(translateResponse.getText().get(0));
         });
         realm.close();
         return currentText;
@@ -45,13 +46,10 @@ public class LocalService {
         return sharedPreferencesManager.getCurrentText();
     }
 
-    public void setCurrentLanguage(String languagePair) {
-        sharedPreferencesManager.setCurrentLanguage(languagePair);
+    public String getCurrentLanguagePair() {
+        return sharedPreferencesManager.getSourceLanguage() + "-" + sharedPreferencesManager.getTargetLanguage();
     }
 
-    public String getCurrentLanguage() {
-        return sharedPreferencesManager.getCurrentLanguage();
-    }
 
     private RealmTranslate findInRealm(Realm realm, String text) {
         return realm.where(RealmTranslate.class).equalTo("text", text).findFirst();
