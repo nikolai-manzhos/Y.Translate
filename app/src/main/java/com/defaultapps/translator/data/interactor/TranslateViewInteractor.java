@@ -5,6 +5,7 @@ import android.util.Log;
 import com.defaultapps.translator.data.SchedulerProvider;
 import com.defaultapps.translator.data.local.LocalService;
 import com.defaultapps.translator.data.model.TranslateResponse;
+import com.defaultapps.translator.data.model.realm.RealmTranslate;
 import com.defaultapps.translator.data.network.NetworkService;
 
 import javax.inject.Inject;
@@ -13,12 +14,15 @@ import javax.inject.Singleton;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.internal.observers.SubscriberCompletableObserver;
 import io.reactivex.processors.PublishProcessor;
 import io.reactivex.processors.ReplayProcessor;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.ReplaySubject;
+import io.realm.Realm;
 
 @Singleton
 public class TranslateViewInteractor {
@@ -32,8 +36,8 @@ public class TranslateViewInteractor {
     private final NetworkService networkService;
     private final LocalService localService;
 
-    private TranslateResponse memoryCache = new TranslateResponse();
-    private ReplayProcessor<TranslateResponse> translateProcessor;
+    private RealmTranslate memoryCache = new RealmTranslate();
+    private ReplayProcessor<RealmTranslate> translateProcessor;
     private Disposable disposable;
 
     @Inject
@@ -42,24 +46,26 @@ public class TranslateViewInteractor {
             NetworkService networkService,
             LocalService localService)
     {
-        Log.d(TAG, "CONSTRUCTOR");
         this.schedulerProvider = schedulerProvider;
         this.networkService = networkService;
         this.localService = localService;
     }
 
-    public Observable<TranslateResponse> requestTranslation(boolean forceUpdate) {
+    public Observable<RealmTranslate> requestTranslation(boolean forceUpdate) {
         if (disposable != null && forceUpdate) {
             disposable.dispose();
-            memoryCache = new TranslateResponse();
-            Log.d(TAG, "FORCE AND !DISPOSABLE");
+
+            memoryCache = new RealmTranslate();
         }
         if (disposable == null || disposable.isDisposed()) {
-            Log.d(TAG, "DISPOSED");
             translateProcessor = ReplayProcessor.create();
 
-            disposable = Observable.concat(memory(), network(localService.getCurrentText(), localService.getCurrentLanguagePair()))
-                    .filter(response -> response.getText() != null).first(new TranslateResponse())
+            disposable = Observable.concat(
+                    memory(),
+                    database(localService.getCurrentText(), localService.getCurrentLanguagePair()),
+                    network(localService.getCurrentText(), localService.getCurrentLanguagePair())
+            )
+                    .filter(response -> response.getText() != null).first(new RealmTranslate())
                     .subscribe(translateProcessor::onNext);
         }
         return translateProcessor.toObservable();
@@ -73,19 +79,28 @@ public class TranslateViewInteractor {
         localService.setCurrentText(text);
     }
 
-
-    public Observable<TranslateResponse> network(String text, String language) {
+    private Observable<RealmTranslate> network(String text, String language) {
         return networkService.getNetworkCall().getTranslation(API_KEY, text, language)
-                .map(response -> memoryCache = response)
-                .doOnNext(translateResponse -> Observable.just(localService.writeToRealm(translateResponse)).subscribeOn(AndroidSchedulers.mainThread()))
                 .doOnComplete(() -> Log.d(TAG, "NETWORK DONE"))
-                .onErrorReturn(throwable -> {
-                    if (DEBUG) Log.d(TAG, throwable.toString());
-                    return new TranslateResponse();})
+                .doOnNext(localService::writeToRealm)
+                .map(translateResponse -> {
+                    memoryCache = localService.responseToRealm(translateResponse);
+                    return memoryCache;
+                })
                 .compose(schedulerProvider.applyIoSchedulers());
     }
 
-    private Observable<TranslateResponse> memory() {
+    private Observable<RealmTranslate> database(String text, String languagePair) {
+        return Observable.just(localService.readFromRealm(text, languagePair))
+                .map(realmTranslate -> {
+                    memoryCache = realmTranslate;
+                    return memoryCache;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(AndroidSchedulers.mainThread());
+    }
+
+    private Observable<RealmTranslate> memory() {
         return Observable.just(memoryCache);
     }
 }

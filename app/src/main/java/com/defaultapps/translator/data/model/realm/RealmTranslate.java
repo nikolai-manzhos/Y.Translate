@@ -1,8 +1,9 @@
 package com.defaultapps.translator.data.model.realm;
 
+import com.defaultapps.translator.data.model.TranslateResponse;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
-
 
 
 public class RealmTranslate extends RealmObject {
@@ -11,6 +12,18 @@ public class RealmTranslate extends RealmObject {
     private String translatedText;
     private boolean favorite;
     private String languageSet;
+
+    public RealmTranslate() {}
+
+    public RealmTranslate(String text,
+                          String translatedText,
+                          boolean favorite,
+                          String languageSet) {
+        this.text = text;
+        this.translatedText = translatedText;
+        this.favorite = favorite;
+        this.languageSet = languageSet;
+    }
 
     public String getText() {
         return text;

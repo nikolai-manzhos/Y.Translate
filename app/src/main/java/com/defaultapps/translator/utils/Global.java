@@ -8,6 +8,4 @@ public class Global {
     private Global() {
         throw new AssertionError("This class should not have instance.");
     }
-
-
 }

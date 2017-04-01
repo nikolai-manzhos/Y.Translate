@@ -7,7 +7,11 @@ import com.defaultapps.translator.data.model.realm.RealmTranslate;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
+import io.realm.RealmObject;
 import io.realm.RealmResults;
 
 @Singleton
@@ -21,7 +25,7 @@ public class LocalService {
     }
 
 
-    public String writeToRealm(TranslateResponse translateResponse) {
+    public void writeToRealm(TranslateResponse translateResponse) {
         Realm realm = Realm.getDefaultInstance();
         String currentText = sharedPreferencesManager.getCurrentText();
         realm.executeTransaction(transactionRealm -> {
@@ -35,7 +39,7 @@ public class LocalService {
             realmTranslate.setTranslatedText(translateResponse.getText().get(0));
         });
         realm.close();
-        return currentText;
+        return;
     }
 
     public void setCurrentText(String text) {
@@ -50,6 +54,24 @@ public class LocalService {
         return sharedPreferencesManager.getSourceLanguage() + "-" + sharedPreferencesManager.getTargetLanguage();
     }
 
+    public RealmTranslate readFromRealm(String text, String languagePair) {
+        Realm realm = Realm.getDefaultInstance();
+        RealmTranslate data = realm.where(RealmTranslate.class).equalTo("text", text).equalTo("languageSet", languagePair).findFirst();
+        if (data != null) {
+            RealmTranslate finalData = realm.copyFromRealm(data);
+            realm.close();
+            return finalData;
+        }
+        realm.close();
+        return new RealmTranslate();
+    }
+
+    public RealmTranslate responseToRealm(TranslateResponse translateResponse) {
+        return new RealmTranslate(sharedPreferencesManager.getCurrentText(),
+                translateResponse.getText().get(0),
+                false,
+                sharedPreferencesManager.getSourceLanguage() + "-" + sharedPreferencesManager.getTargetLanguage());
+    }
 
     private RealmTranslate findInRealm(Realm realm, String text) {
         return realm.where(RealmTranslate.class).equalTo("text", text).findFirst();
