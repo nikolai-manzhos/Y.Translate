@@ -1,7 +1,7 @@
 package com.defaultapps.translator.ui.presenter;
 
 import com.defaultapps.translator.data.interactor.TranslateViewInteractor;
-import com.defaultapps.translator.data.model.TranslateResponse;
+import com.defaultapps.translator.data.model.realm.RealmTranslate;
 import com.defaultapps.translator.ui.fragment.TranslateView;
 
 
@@ -12,8 +12,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
-
-import java.util.Collections;
 
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
@@ -33,7 +31,7 @@ public class TranslateViewPresenterTest {
 
     private TranslateViewPresenterImpl translateViewPresenter;
 
-    private TranslateResponse mockTranslateResponse;
+    private RealmTranslate mockRealmResponse;
 
     @Mock
     private TranslateView translateView;
@@ -49,43 +47,40 @@ public class TranslateViewPresenterTest {
         MockitoAnnotations.initMocks(this);
         translateViewPresenter = new TranslateViewPresenterImpl(translateViewInteractor, compositeDisposable);
         translateViewPresenter.onAttach(translateView);
-        mockTranslateResponse = new TranslateResponse();
-        mockTranslateResponse.setText(Collections.singletonList(TEXT));
+        mockRealmResponse = new RealmTranslate();
+        mockRealmResponse.setTranslatedText(TEXT);
     }
 
     @Test
     public void testSuccessScenario() throws Exception {
         TestScheduler testScheduler = new TestScheduler();
-        Observable<TranslateResponse> result = just(mockTranslateResponse).subscribeOn(testScheduler);
+        Observable<RealmTranslate> result = just(mockRealmResponse).subscribeOn(testScheduler);
         when(translateViewInteractor.requestTranslation(true)).thenReturn(result);
         translateViewPresenter.requestTranslation(true);
 
         testScheduler.triggerActions();
 
-        verify(translateView, times(1)).hideResult();
+        verify(translateView).hideResult();
         verify(translateView, times(2)).hideError(); // First called when requestTranslation(true); from presenter is called, second time after result arrives
-        verify(translateView, times(1)).showLoading();
+        verify(translateView).showLoading();
 
         verify(translateView, times(2)).hideLoading(); // onNext, onComplete
-        verify(translateView, times(1)).showResult(TEXT);
+        verify(translateView).showResult(TEXT);
     }
 
     @Test
     public void testErrorScenario() throws Exception {
-        mockTranslateResponse.setText(null);
+        mockRealmResponse.setTranslatedText(null);
         TestScheduler testScheduler = new TestScheduler();
-        Observable<TranslateResponse> result = just(mockTranslateResponse).subscribeOn(testScheduler);
+        Observable<RealmTranslate> result = just(mockRealmResponse).subscribeOn(testScheduler);
         when(translateViewInteractor.requestTranslation(true)).thenReturn(result);
         translateViewPresenter.requestTranslation(true);
 
-        testScheduler.triggerActions();
-        verify(translateView).hideLoading();
+        verify(translateView).hideResult();
         verify(translateView).hideError();
         verify(translateView).showLoading();
 
-        verify(translateView).showError();
-        verify(translateView).hideResult();
-
-        verify(translateView, never()).showResult(anyString());
+        testScheduler.triggerActions();
+        verify(translateView, never()).showResult(TEXT);
     }
 }
