@@ -1,8 +1,13 @@
 package com.defaultapps.translator.data.local;
 
+import android.util.Log;
+
 import com.defaultapps.translator.data.local.sp.SharedPreferencesManager;
 import com.defaultapps.translator.data.model.TranslateResponse;
 import com.defaultapps.translator.data.model.realm.RealmTranslate;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -12,6 +17,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
 import io.realm.RealmObject;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 @Singleton
@@ -71,6 +77,15 @@ public class LocalService {
                 translateResponse.getText().get(0),
                 false,
                 sharedPreferencesManager.getSourceLanguage() + "-" + sharedPreferencesManager.getTargetLanguage());
+    }
+
+    public List<RealmTranslate> provideWholeDatabase() {
+        Realm realm = Realm.getDefaultInstance();
+        List<RealmTranslate> finalData = new ArrayList<>();
+        RealmResults<RealmTranslate> data = realm.where(RealmTranslate.class).findAll();
+        finalData = realm.copyFromRealm(data);
+        realm.close();
+        return finalData;
     }
 
     private RealmTranslate findInRealm(Realm realm, String text) {

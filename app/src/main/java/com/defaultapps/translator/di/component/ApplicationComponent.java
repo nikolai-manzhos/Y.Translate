@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.defaultapps.translator.App;
 import com.defaultapps.translator.data.SchedulerProvider;
+import com.defaultapps.translator.data.interactor.HistoryViewInteractor;
 import com.defaultapps.translator.data.interactor.TranslateViewInteractor;
 import com.defaultapps.translator.data.local.LocalService;
 import com.defaultapps.translator.data.local.sp.SharedPreferencesManager;
@@ -32,6 +33,8 @@ public interface ApplicationComponent {
     NetworkService networkService();
 
     TranslateViewInteractor translateViewInteractor();
+
+    HistoryViewInteractor historyViewInteractor();
 
     SharedPreferencesManager sharedPreferencesManager(); // TEMPORARY!
 }

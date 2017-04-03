@@ -2,27 +2,20 @@ package com.defaultapps.translator.data.interactor;
 
 import android.util.Log;
 
+import com.defaultapps.translator.BuildConfig;
 import com.defaultapps.translator.data.SchedulerProvider;
 import com.defaultapps.translator.data.local.LocalService;
-import com.defaultapps.translator.data.model.TranslateResponse;
 import com.defaultapps.translator.data.model.realm.RealmTranslate;
 import com.defaultapps.translator.data.network.NetworkService;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import io.reactivex.BackpressureStrategy;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.internal.observers.SubscriberCompletableObserver;
-import io.reactivex.processors.PublishProcessor;
 import io.reactivex.processors.ReplayProcessor;
 import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.ReplaySubject;
-import io.realm.Realm;
 
 @Singleton
 public class TranslateViewInteractor {
@@ -54,7 +47,6 @@ public class TranslateViewInteractor {
     public Observable<RealmTranslate> requestTranslation(boolean forceUpdate) {
         if (disposable != null && forceUpdate) {
             disposable.dispose();
-
             memoryCache = new RealmTranslate();
         }
         if (disposable == null || disposable.isDisposed()) {
@@ -83,10 +75,7 @@ public class TranslateViewInteractor {
         return networkService.getNetworkCall().getTranslation(API_KEY, text, language)
                 .doOnComplete(() -> Log.d(TAG, "NETWORK DONE"))
                 .doOnNext(localService::writeToRealm)
-                .map(translateResponse -> {
-                    memoryCache = localService.responseToRealm(translateResponse);
-                    return memoryCache;
-                })
+                .map(translateResponse -> memoryCache = localService.responseToRealm(translateResponse))
                 .compose(schedulerProvider.applyIoSchedulers());
     }
 

@@ -31,7 +31,9 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
@@ -47,6 +49,7 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
     private boolean editTextStatus = false;
 
     private MainActivity activity;
+    private Unbinder unbinder;
     private Observable<TextViewTextChangeEvent> textChangeObservable;
 
     @BindView(R.id.editText)
@@ -88,6 +91,7 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        unbinder = ButterKnife.bind(this, view);
         initSwipeButton();
         ((MainActivity) getActivity()).getActivityComponent().inject(this);
         translateViewPresenter.onAttach(this);
@@ -118,6 +122,7 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        unbinder.unbind();
         translateViewPresenter.onDetach();
         textChangeObservable.unsubscribeOn(AndroidSchedulers.mainThread());
     }
