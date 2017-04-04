@@ -4,10 +4,13 @@
     android:layout_height="wrap_content"
     android:padding="16dp">
 
-    <ImageButton
+    <ToggleButton
         android:id="@+id/favoriteFlag"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:textOn=""
+        android:textOff=""
+        android:background="@null"
         android:layout_centerVertical="true"/>
 
 
@@ -23,6 +26,7 @@
         <TextView
             android:id="@+id/sourceText"
             android:text="empty"
+            android:maxLines="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"/>
@@ -30,6 +34,7 @@
         <TextView
             android:id="@+id/translatedText"
             android:text="empty"
+            android:maxLines="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 

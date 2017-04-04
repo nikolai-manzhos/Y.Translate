@@ -1,6 +1,7 @@
 package com.defaultapps.translator.ui.activity;
 
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -24,6 +25,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import icepick.Icepick;
 import icepick.State;
 
 public class MainActivity extends BaseActivity {
@@ -42,20 +44,30 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Icepick.restoreInstanceState(this, savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
         mainTabAdapter = new MainTabAdapter(getSupportFragmentManager());
         viewPager.setAdapter(mainTabAdapter);
-        viewPager.setPagingEnabled(false);
+        viewPager.setPagingEnabled(false); //TODO: offScreenPageLimit
         bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
-            Log.d("MainActiity", String.valueOf(menuItem.getItemId()));
             selectItem(menuItem);
             return true;
         });
-        if (savedInstanceState == null) {
-            selectItem(bottomNavigationView.getMenu().getItem(0));
+        MenuItem currentItem;
+        if (savedInstanceState != null) {
+            currentItem = bottomNavigationView.getMenu().findItem(selectedItem);
+        } else {
+            currentItem = bottomNavigationView.getMenu().getItem(0);
         }
+        selectItem(currentItem);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
     }
 
     @Override

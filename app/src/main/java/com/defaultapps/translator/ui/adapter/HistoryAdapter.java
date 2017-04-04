@@ -7,11 +7,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.defaultapps.translator.R;
 import com.defaultapps.translator.data.model.realm.RealmTranslate;
 import com.defaultapps.translator.di.ApplicationContext;
 import com.defaultapps.translator.di.scope.PerActivity;
+import com.jakewharton.rxbinding2.widget.RxCompoundButton;
+import com.joanzapata.iconify.IconDrawable;
+import com.joanzapata.iconify.fonts.MaterialIcons;
 
 import java.util.List;
 
@@ -42,6 +46,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         @BindView(R.id.languageSet)
         TextView languageSet;
 
+        @BindView(R.id.favoriteFlag)
+        ToggleButton toggleButton;
+
         HistoryViewHolder(View v) {
             super(v);
             ButterKnife.bind(this, v);
@@ -54,6 +61,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         holder.sourceText.setText(data.get(adapterPosition).getText());
         holder.translatedText.setText(data.get(adapterPosition).getTranslatedText());
         holder.languageSet.setText(data.get(adapterPosition).getLanguageSet().toUpperCase());
+        setToggleButtonIcon(holder, data.get(adapterPosition).getFavorite());
+        RxCompoundButton.checkedChanges(holder.toggleButton)
+                .doOnNext(toggleButtonStatus -> setToggleButtonIcon(holder, toggleButtonStatus))
+                .subscribe();
     }
 
     @Override
@@ -70,5 +81,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     public void setData(List<RealmTranslate> data) {
         this.data = data;
         notifyDataSetChanged();
+    }
+
+    private void setToggleButtonIcon(HistoryViewHolder holder, boolean fav) {
+         if (fav) {
+             holder.toggleButton.setBackgroundDrawable(new IconDrawable(context, MaterialIcons.md_bookmark).colorRes(R.color.colorAccent));
+         }  else {
+             holder.toggleButton.setBackgroundDrawable(new IconDrawable(context, MaterialIcons.md_bookmark).colorRes(R.color.grey));
+         }
     }
 }

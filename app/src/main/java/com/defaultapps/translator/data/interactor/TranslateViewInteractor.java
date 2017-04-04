@@ -80,13 +80,12 @@ public class TranslateViewInteractor {
     }
 
     private Observable<RealmTranslate> database(String text, String languagePair) {
-        return Observable.just(localService.readFromRealm(text, languagePair))
-                .map(realmTranslate -> {
+        return Observable.fromCallable(() ->localService.readFromRealm(text, languagePair))
+                .compose(schedulerProvider.applyIoSchedulers())
+                .doOnNext(realmTranslate -> {
+                    localService.writeToRealm(realmTranslate);
                     memoryCache = realmTranslate;
-                    return memoryCache;
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(AndroidSchedulers.mainThread());
+                });
     }
 
     private Observable<RealmTranslate> memory() {

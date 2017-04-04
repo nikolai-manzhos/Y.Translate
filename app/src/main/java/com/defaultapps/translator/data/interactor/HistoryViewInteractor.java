@@ -35,7 +35,7 @@ public class HistoryViewInteractor {
         if (disposable == null || disposable.isDisposed()) {
             replayProcessor = ReplayProcessor.create();
 
-            disposable = Observable.just(localService.provideWholeDatabase())
+            disposable = Observable.fromCallable(localService::provideWholeDatabase)
                     .compose(schedulerProvider.applyIoSchedulers())
                     .subscribe(replayProcessor::onNext);
         }

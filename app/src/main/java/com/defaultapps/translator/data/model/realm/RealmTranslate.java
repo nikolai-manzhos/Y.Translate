@@ -41,7 +41,7 @@ public class RealmTranslate extends RealmObject {
         this.translatedText = translatedText;
     }
 
-    public boolean isFavorite() {
+    public boolean getFavorite() {
         return favorite;
     }
 

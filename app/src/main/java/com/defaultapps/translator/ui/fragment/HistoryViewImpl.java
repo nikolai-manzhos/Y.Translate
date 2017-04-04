@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +35,9 @@ public class HistoryViewImpl extends Fragment implements HistoryView {
 
     @BindView(R.id.historyRecycler)
     RecyclerView historyRecycler;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     @Inject
     HistoryViewPresenterImpl historyViewPresenter;
@@ -63,7 +67,9 @@ public class HistoryViewImpl extends Fragment implements HistoryView {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setHasOptionsMenu(true);
         unbinder = ButterKnife.bind(this, view);
+        toolbar.setTitle("History");
         ((MainActivity) getActivity()).getActivityComponent().inject(this);
         historyViewPresenter.onAttach(this);
         historyViewPresenter.requestHistoryItems();

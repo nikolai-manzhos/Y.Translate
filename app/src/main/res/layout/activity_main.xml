@@ -6,17 +6,11 @@
     android:layout_height="match_parent"
     tools:context="com.defaultapps.translator.ui.activity.MainActivity">
 
-    <!--<FrameLayout-->
-        <!--android:id="@+id/contentFrame"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:background="@color/whiteBackground"-->
-        <!--android:layout_marginBottom="56dp"/>-->
-
     <com.defaultapps.translator.ui.custom.NonSwipeableViewPager
         android:id="@+id/mainViewPager"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
+        android:background="@color/whiteBackground"
         android:layout_marginBottom="56dp"/>
 
     <android.support.design.widget.BottomNavigationView

@@ -10,6 +10,8 @@
     <color name="whiteDisabled">#80ffffff</color>
     <color name="whiteBackground">#fafafa</color>
 
+    <color name="grey">#E0E0E0</color>
+
     <!--Black-->
     <color name="blackPrimary">#de000000</color>
     <color name="blackSecondary">#8a000000</color>

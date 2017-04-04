@@ -33,9 +33,11 @@ public class LocalService {
 
     public void writeToRealm(TranslateResponse translateResponse) {
         Realm realm = Realm.getDefaultInstance();
+        Log.d("WriteToRealm", Thread.currentThread().getName());
         String currentText = sharedPreferencesManager.getCurrentText();
+        String languagePair = sharedPreferencesManager.getSourceLanguage() + "-" + sharedPreferencesManager.getTargetLanguage();
         realm.executeTransaction(transactionRealm -> {
-            RealmTranslate realmTranslate = findInRealm(realm, currentText);
+            RealmTranslate realmTranslate = findInRealm(realm, currentText, languagePair);
             if (realmTranslate != null) {
                 deleteFromRealm(realm, currentText);
             }
@@ -45,7 +47,14 @@ public class LocalService {
             realmTranslate.setTranslatedText(translateResponse.getText().get(0));
         });
         realm.close();
-        return;
+    }
+
+    public void writeToRealm(RealmTranslate realmTranslate) {
+        //TODO: finish method
+//        Realm realm = Realm.getDefaultInstance();
+//        realm.executeTransaction(transactionRealm -> {
+//            RealmTranslate previousData =  findInRealm(realm, pre)
+//        });
     }
 
     public void setCurrentText(String text) {
@@ -61,6 +70,7 @@ public class LocalService {
     }
 
     public RealmTranslate readFromRealm(String text, String languagePair) {
+        Log.d("ReadFromRealm", Thread.currentThread().getName());
         Realm realm = Realm.getDefaultInstance();
         RealmTranslate data = realm.where(RealmTranslate.class).equalTo("text", text).equalTo("languageSet", languagePair).findFirst();
         if (data != null) {
@@ -83,13 +93,14 @@ public class LocalService {
         Realm realm = Realm.getDefaultInstance();
         List<RealmTranslate> finalData = new ArrayList<>();
         RealmResults<RealmTranslate> data = realm.where(RealmTranslate.class).findAll();
+        Log.d("ProvideDatabase", Thread.currentThread().getName());
         finalData = realm.copyFromRealm(data);
         realm.close();
         return finalData;
     }
 
-    private RealmTranslate findInRealm(Realm realm, String text) {
-        return realm.where(RealmTranslate.class).equalTo("text", text).findFirst();
+    private RealmTranslate findInRealm(Realm realm, String text, String languagePair) {
+        return realm.where(RealmTranslate.class).equalTo("text", text).equalTo("languageSet", languagePair).findFirst();
     }
 
     private void deleteFromRealm(Realm realm, String text) {
