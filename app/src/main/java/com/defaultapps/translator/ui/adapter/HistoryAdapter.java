@@ -13,6 +13,8 @@ import com.defaultapps.translator.R;
 import com.defaultapps.translator.data.model.realm.RealmTranslate;
 import com.defaultapps.translator.di.ApplicationContext;
 import com.defaultapps.translator.di.scope.PerActivity;
+import com.defaultapps.translator.ui.fragment.HistoryView;
+import com.jakewharton.rxbinding2.widget.RxAdapter;
 import com.jakewharton.rxbinding2.widget.RxCompoundButton;
 import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.fonts.MaterialIcons;
@@ -28,6 +30,7 @@ import butterknife.ButterKnife;
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder> {
 
     private Context context;
+    private HistoryView view;
     private List<RealmTranslate> data;
 
     @Inject
@@ -62,8 +65,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         holder.translatedText.setText(data.get(adapterPosition).getTranslatedText());
         holder.languageSet.setText(data.get(adapterPosition).getLanguageSet().toUpperCase());
         setToggleButtonIcon(holder, data.get(adapterPosition).getFavorite());
+
         RxCompoundButton.checkedChanges(holder.toggleButton)
-                .doOnNext(toggleButtonStatus -> setToggleButtonIcon(holder, toggleButtonStatus))
+                .doOnNext(toggleButtonStatus -> {
+                    if (view != null)
+                        view.favorite(data.get(adapterPosition));
+                    setToggleButtonIcon(holder, toggleButtonStatus);
+                })
                 .subscribe();
     }
 
@@ -75,12 +83,16 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return data == null ? 0 : data.size();
     }
 
     public void setData(List<RealmTranslate> data) {
         this.data = data;
         notifyDataSetChanged();
+    }
+
+    public void setView(HistoryView view) {
+        this.view = view;
     }
 
     private void setToggleButtonIcon(HistoryViewHolder holder, boolean fav) {

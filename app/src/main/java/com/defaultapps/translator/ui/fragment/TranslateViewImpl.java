@@ -104,10 +104,11 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
         textChangeObservable = RxTextView.textChangeEvents(editText)
                 .debounce(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread());
+
         textChangeObservable.subscribe(text -> {
             if (editTextStatus) {
                 translateViewPresenter.setCurrentText(text.text().toString());
-                if (text.text().length() != 0) {
+                if (text.text().length() != 0 && !text.text().toString().trim().isEmpty()) {
                     translateViewPresenter.requestTranslation(true);
                 } else if (getView() != null){
                     hideResult();

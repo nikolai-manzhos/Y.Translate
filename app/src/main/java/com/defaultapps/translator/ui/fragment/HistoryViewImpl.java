@@ -112,6 +112,11 @@ public class HistoryViewImpl extends Fragment implements HistoryView {
     }
 
     @Override
+    public void favorite(RealmTranslate realmObject) {
+
+    }
+
+    @Override
     public void receiveResult(List<RealmTranslate> realmTranslateList) {
         initRecyclerView(realmTranslateList);
     }
@@ -122,6 +127,8 @@ public class HistoryViewImpl extends Fragment implements HistoryView {
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
         historyRecycler.setLayoutManager(linearLayoutManager);
-        historyAdapter.setData(realmTranslateList);
+        if (!realmTranslateList.isEmpty()) {
+            historyAdapter.setData(realmTranslateList);
+        }
     }
 }

@@ -9,8 +9,6 @@ import android.support.v4.app.FragmentTransaction;
 import com.defaultapps.translator.R;
 import com.defaultapps.translator.data.local.sp.SharedPreferencesManager;
 import com.defaultapps.translator.ui.base.BaseActivity;
-import com.defaultapps.translator.ui.fragment.SourceLanguageViewImpl;
-import com.defaultapps.translator.ui.fragment.TargetLanguageViewImpl;
 import com.defaultapps.translator.utils.Global;
 
 import javax.inject.Inject;

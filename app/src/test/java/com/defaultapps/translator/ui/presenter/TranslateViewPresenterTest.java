@@ -51,6 +51,10 @@ public class TranslateViewPresenterTest {
         mockRealmResponse.setTranslatedText(TEXT);
     }
 
+    /**
+     *
+     * @throws Exception
+     */
     @Test
     public void testSuccessScenario() throws Exception {
         TestScheduler testScheduler = new TestScheduler();

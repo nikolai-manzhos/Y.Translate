@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface HistoryView extends MvpView {
     void receiveResult(List<RealmTranslate> realmTranslateList);
+    void favorite(RealmTranslate realmTranslate);
 }

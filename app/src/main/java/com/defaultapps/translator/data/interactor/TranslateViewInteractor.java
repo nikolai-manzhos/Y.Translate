@@ -2,9 +2,9 @@ package com.defaultapps.translator.data.interactor;
 
 import android.util.Log;
 
-import com.defaultapps.translator.BuildConfig;
 import com.defaultapps.translator.data.SchedulerProvider;
 import com.defaultapps.translator.data.local.LocalService;
+import com.defaultapps.translator.data.model.TranslateResponse;
 import com.defaultapps.translator.data.model.realm.RealmTranslate;
 import com.defaultapps.translator.data.network.NetworkService;
 
@@ -12,10 +12,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.processors.ReplayProcessor;
-import io.reactivex.schedulers.Schedulers;
 
 @Singleton
 public class TranslateViewInteractor {
@@ -23,7 +21,6 @@ public class TranslateViewInteractor {
     private final String API_KEY = "trnsl.1.1.20170318T100130Z.eb5aab89080c4223.b30022ef0612fabacc605b1e3989f20e3871f17a";
 
     private final String TAG = "TranslateViewInteractor";
-    private final boolean DEBUG = true;
 
     private final SchedulerProvider schedulerProvider;
     private final NetworkService networkService;
@@ -75,6 +72,10 @@ public class TranslateViewInteractor {
         return networkService.getNetworkCall().getTranslation(API_KEY, text, language)
                 .doOnComplete(() -> Log.d(TAG, "NETWORK DONE"))
                 .doOnNext(localService::writeToRealm)
+                .onErrorReturn(throwable -> {
+                    Log.d("RETROFIT", throwable.toString());
+                    return new TranslateResponse();
+                })
                 .map(translateResponse -> memoryCache = localService.responseToRealm(translateResponse))
                 .compose(schedulerProvider.applyIoSchedulers());
     }
@@ -83,8 +84,10 @@ public class TranslateViewInteractor {
         return Observable.fromCallable(() ->localService.readFromRealm(text, languagePair))
                 .compose(schedulerProvider.applyIoSchedulers())
                 .doOnNext(realmTranslate -> {
-                    localService.writeToRealm(realmTranslate);
-                    memoryCache = realmTranslate;
+                    if (realmTranslate.getText() != null) {
+                        localService.rewriteRealmEntry(realmTranslate);
+                        memoryCache = realmTranslate;
+                    }
                 });
     }
 

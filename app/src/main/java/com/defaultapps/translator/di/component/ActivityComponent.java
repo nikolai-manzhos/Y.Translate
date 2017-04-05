@@ -5,6 +5,7 @@ import com.defaultapps.translator.di.scope.PerActivity;
 import com.defaultapps.translator.ui.activity.LanguageActivity;
 import com.defaultapps.translator.ui.fragment.FavoritesViewImpl;
 import com.defaultapps.translator.ui.fragment.HistoryViewImpl;
+import com.defaultapps.translator.ui.fragment.LanguageSelectionViewImpl;
 import com.defaultapps.translator.ui.fragment.TranslateViewImpl;
 
 import dagger.Component;
@@ -18,4 +19,5 @@ public interface ActivityComponent {
     void inject(HistoryViewImpl historyView);
     void inject(FavoritesViewImpl favoritesView);
     void inject(LanguageActivity languageActivity);
+    void inject(LanguageSelectionViewImpl languageSelectionView);
 }

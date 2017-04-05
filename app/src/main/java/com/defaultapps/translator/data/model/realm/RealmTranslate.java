@@ -1,7 +1,5 @@
 package com.defaultapps.translator.data.model.realm;
 
-import com.defaultapps.translator.data.model.TranslateResponse;
-
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 

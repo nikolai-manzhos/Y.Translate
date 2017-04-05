@@ -15,7 +15,7 @@ public class SharedPreferencesHelper {
 
     private SharedPreferences sharedPreferences;
 
-    private final String SHARED_PREFERENCES_NAME = "com.defaultapps.blueprint.SP";
+    private final String SHARED_PREFERENCES_NAME = "com.defaultapps.translator.SP";
 
     @Inject
     public SharedPreferencesHelper(@ApplicationContext Context context) {
