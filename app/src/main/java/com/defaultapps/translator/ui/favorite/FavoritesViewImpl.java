@@ -1,4 +1,4 @@
-package com.defaultapps.translator.ui.fragment;
+package com.defaultapps.translator.ui.favorite;
 
 
 import android.content.Context;
@@ -11,9 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.defaultapps.translator.R;
-import com.defaultapps.translator.ui.activity.MainActivity;
+import com.defaultapps.translator.ui.main.MainActivity;
 import com.defaultapps.translator.ui.base.BaseActivity;
-import com.defaultapps.translator.ui.presenter.FavoritesViewPresenterImpl;
 
 import javax.inject.Inject;
 

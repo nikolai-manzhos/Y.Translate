@@ -1,7 +1,6 @@
-package com.defaultapps.translator.ui.presenter;
+package com.defaultapps.translator.ui.translate;
 
 import com.defaultapps.translator.ui.base.MvpPresenter;
-import com.defaultapps.translator.ui.fragment.TranslateView;
 
 public interface TranslateViewPresenter extends MvpPresenter<TranslateView> {
     void setCurrentText(String text);

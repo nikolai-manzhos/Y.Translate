@@ -1,12 +1,12 @@
-package com.defaultapps.translator.ui.adapter;
+package com.defaultapps.translator.ui.main;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.defaultapps.translator.ui.fragment.FavoritesViewImpl;
-import com.defaultapps.translator.ui.fragment.HistoryViewImpl;
-import com.defaultapps.translator.ui.fragment.TranslateViewImpl;
+import com.defaultapps.translator.ui.favorite.FavoritesViewImpl;
+import com.defaultapps.translator.ui.history.HistoryViewImpl;
+import com.defaultapps.translator.ui.translate.TranslateViewImpl;
 
 
 public class MainTabAdapter extends FragmentPagerAdapter {

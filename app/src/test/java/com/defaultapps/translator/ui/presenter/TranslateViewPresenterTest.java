@@ -2,7 +2,8 @@ package com.defaultapps.translator.ui.presenter;
 
 import com.defaultapps.translator.data.interactor.TranslateViewInteractor;
 import com.defaultapps.translator.data.model.realm.RealmTranslate;
-import com.defaultapps.translator.ui.fragment.TranslateView;
+import com.defaultapps.translator.ui.translate.TranslateView;
+import com.defaultapps.translator.ui.translate.TranslateViewPresenterImpl;
 
 
 import org.junit.Before;
@@ -18,7 +19,6 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.TestScheduler;
 
 import static io.reactivex.Observable.just;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;

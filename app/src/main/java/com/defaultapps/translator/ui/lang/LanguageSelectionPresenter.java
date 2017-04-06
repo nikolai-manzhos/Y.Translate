@@ -1,7 +1,6 @@
-package com.defaultapps.translator.ui.presenter;
+package com.defaultapps.translator.ui.lang;
 
 import com.defaultapps.translator.ui.base.MvpPresenter;
-import com.defaultapps.translator.ui.fragment.LanguageSelectionView;
 
 
 public interface LanguageSelectionPresenter extends MvpPresenter<LanguageSelectionView> {

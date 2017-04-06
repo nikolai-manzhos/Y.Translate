@@ -1,4 +1,4 @@
-package com.defaultapps.translator.ui.fragment;
+package com.defaultapps.translator.ui.lang;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,9 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.defaultapps.translator.R;
-import com.defaultapps.translator.ui.activity.LanguageActivity;
 import com.defaultapps.translator.ui.base.BaseFragment;
-import com.defaultapps.translator.ui.presenter.LanguageSelectionPresenterImpl;
 
 import javax.inject.Inject;
 

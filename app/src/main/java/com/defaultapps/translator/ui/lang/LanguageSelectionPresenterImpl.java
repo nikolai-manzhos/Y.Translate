@@ -1,7 +1,6 @@
-package com.defaultapps.translator.ui.presenter;
+package com.defaultapps.translator.ui.lang;
 
 import com.defaultapps.translator.ui.base.BasePresenter;
-import com.defaultapps.translator.ui.fragment.LanguageSelectionView;
 
 import javax.inject.Inject;
 

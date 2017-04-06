@@ -1,11 +1,10 @@
-package com.defaultapps.translator.ui.presenter;
+package com.defaultapps.translator.ui.translate;
 
 import android.util.Log;
 
 import com.defaultapps.translator.data.interactor.TranslateViewInteractor;
 import com.defaultapps.translator.di.scope.PerActivity;
 import com.defaultapps.translator.ui.base.BasePresenter;
-import com.defaultapps.translator.ui.fragment.TranslateView;
 
 import javax.inject.Inject;
 

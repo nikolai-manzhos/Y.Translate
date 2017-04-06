@@ -1,4 +1,4 @@
-package com.defaultapps.translator.ui.adapter;
+package com.defaultapps.translator.ui.history;
 
 
 import android.content.Context;
@@ -13,8 +13,6 @@ import com.defaultapps.translator.R;
 import com.defaultapps.translator.data.model.realm.RealmTranslate;
 import com.defaultapps.translator.di.ApplicationContext;
 import com.defaultapps.translator.di.scope.PerActivity;
-import com.defaultapps.translator.ui.fragment.HistoryView;
-import com.jakewharton.rxbinding2.widget.RxAdapter;
 import com.jakewharton.rxbinding2.widget.RxCompoundButton;
 import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.fonts.MaterialIcons;

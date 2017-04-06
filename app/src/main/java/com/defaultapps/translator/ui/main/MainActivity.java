@@ -1,27 +1,14 @@
-package com.defaultapps.translator.ui.activity;
+package com.defaultapps.translator.ui.main;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import com.defaultapps.translator.R;
-import com.defaultapps.translator.ui.adapter.MainTabAdapter;
+import com.defaultapps.translator.ui.main.MainTabAdapter;
 import com.defaultapps.translator.ui.base.BaseActivity;
 import com.defaultapps.translator.ui.custom.NonSwipeableViewPager;
-import com.defaultapps.translator.ui.fragment.FavoritesViewImpl;
-import com.defaultapps.translator.ui.fragment.HistoryViewImpl;
-import com.defaultapps.translator.ui.fragment.TranslateViewImpl;
-import com.joanzapata.iconify.IconDrawable;
-import com.joanzapata.iconify.fonts.MaterialIcons;
 
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

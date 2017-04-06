@@ -1,4 +1,4 @@
-package com.defaultapps.translator.ui.activity;
+package com.defaultapps.translator.ui.lang;
 
 import android.content.Intent;
 import android.os.Bundle;

@@ -1,10 +1,9 @@
-package com.defaultapps.translator.ui.fragment;
+package com.defaultapps.translator.ui.translate;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +14,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.defaultapps.translator.R;
-import com.defaultapps.translator.ui.activity.LanguageActivity;
-import com.defaultapps.translator.ui.activity.MainActivity;
+import com.defaultapps.translator.ui.lang.LanguageActivity;
+import com.defaultapps.translator.ui.main.MainActivity;
 import com.defaultapps.translator.ui.base.BaseActivity;
 import com.defaultapps.translator.ui.base.BaseFragment;
-import com.defaultapps.translator.ui.presenter.TranslateViewPresenterImpl;
 import com.defaultapps.translator.utils.Global;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.jakewharton.rxbinding2.widget.TextViewTextChangeEvent;
@@ -36,11 +34,6 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
-import io.reactivex.processors.PublishProcessor;
-import io.reactivex.schedulers.Schedulers;
 
 
 public class TranslateViewImpl extends BaseFragment implements TranslateView {

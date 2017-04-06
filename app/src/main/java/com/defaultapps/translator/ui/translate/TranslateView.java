@@ -1,4 +1,4 @@
-package com.defaultapps.translator.ui.fragment;
+package com.defaultapps.translator.ui.translate;
 
 import com.defaultapps.translator.ui.base.MvpView;
 

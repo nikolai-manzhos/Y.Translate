@@ -1,4 +1,4 @@
-package com.defaultapps.translator.ui.fragment;
+package com.defaultapps.translator.ui.history;
 
 
 import android.content.Context;
@@ -12,15 +12,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.defaultapps.translator.R;
 import com.defaultapps.translator.data.model.realm.RealmTranslate;
 import com.defaultapps.translator.di.scope.PerActivity;
-import com.defaultapps.translator.ui.activity.MainActivity;
-import com.defaultapps.translator.ui.adapter.HistoryAdapter;
+import com.defaultapps.translator.ui.main.MainActivity;
 import com.defaultapps.translator.ui.base.BaseActivity;
-import com.defaultapps.translator.ui.presenter.HistoryViewPresenterImpl;
 
 import java.util.List;
 

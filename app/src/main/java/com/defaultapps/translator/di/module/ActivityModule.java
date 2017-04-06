@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentManager;
 
 import com.defaultapps.translator.di.ActivityContext;
 import com.defaultapps.translator.di.scope.PerActivity;
-import com.defaultapps.translator.ui.activity.MainActivity;
+import com.defaultapps.translator.ui.main.MainActivity;
 
 import dagger.Module;
 import dagger.Provides;
