@@ -70,12 +70,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     @Override
     public void onBindViewHolder(HistoryViewHolder holder, int position) {
         int adapterPosition = holder.getAdapterPosition();
-        holder.sourceText.setText(data.get(adapterPosition).getText());
-        holder.translatedText.setText(data.get(adapterPosition).getTranslatedText());
-        holder.languageSet.setText(data.get(adapterPosition).getLanguageSet().toUpperCase());
-        setToggleButtonIcon(holder, data.get(adapterPosition).getFavorite());
-        holder.toggleButton.setChecked(data.get(adapterPosition).getFavorite());
-
         RxCompoundButton.checkedChanges(holder.toggleButton)
                 .skip(1)
                 .subscribe(status -> {
@@ -87,6 +81,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                         view.delFromFavorite(data.get(adapterPosition));
                     }
                 });
+        holder.sourceText.setText(data.get(adapterPosition).getText());
+        holder.translatedText.setText(data.get(adapterPosition).getTranslatedText());
+        holder.languageSet.setText(data.get(adapterPosition).getLanguageSet().toUpperCase());
+        setToggleButtonIcon(holder, data.get(adapterPosition).getFavorite());
+        holder.toggleButton.setChecked(data.get(adapterPosition).getFavorite());
+
+
     }
 
     @Override
