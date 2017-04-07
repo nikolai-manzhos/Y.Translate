@@ -1,5 +1,8 @@
 package com.defaultapps.translator.ui.lang;
 
+import android.util.Log;
+
+import com.defaultapps.translator.data.interactor.LanguageViewInteractor;
 import com.defaultapps.translator.ui.base.BasePresenter;
 
 import javax.inject.Inject;
@@ -8,8 +11,43 @@ import io.reactivex.disposables.CompositeDisposable;
 
 public class LanguageSelectionPresenterImpl extends BasePresenter<LanguageSelectionView> implements LanguageSelectionPresenter {
 
+    private LanguageViewInteractor languageViewInteractor;
+
     @Inject
-    public LanguageSelectionPresenterImpl(CompositeDisposable compositeDisposable) {
+    public LanguageSelectionPresenterImpl(CompositeDisposable compositeDisposable,
+                                          LanguageViewInteractor languageViewInteractor) {
         super(compositeDisposable);
+        this.languageViewInteractor = languageViewInteractor;
+    }
+
+    @Override
+    public void requestSourceLangList(String typeOfRequest) {
+        getCompositeDisposable().add(
+                languageViewInteractor.requestSourceLang(typeOfRequest)
+                .subscribe(result -> {
+                    getView().updateLangList(result);
+                    Log.d("SourceList", result.toString());
+                })
+        );
+    }
+
+    @Override
+    public void setSourceLang(String sourceLang) {
+        languageViewInteractor.setSourceLang(sourceLang);
+    }
+
+    @Override
+    public void setSourceLangName(String sourceLangName) {
+        languageViewInteractor.setSourceLangName(sourceLangName);
+    }
+
+    @Override
+    public void setTargetLang(String targetLang) {
+        languageViewInteractor.setTargetLang(targetLang);
+    }
+
+    @Override
+    public void setTargetLangName(String targetLangName) {
+        languageViewInteractor.setTargetLangName(targetLangName);
     }
 }

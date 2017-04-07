@@ -34,7 +34,7 @@ public class HistoryViewPresenterImpl extends BasePresenter<HistoryView> impleme
                         realmTranslates -> {
                             getView().receiveResult(realmTranslates);
                         },
-                        err -> Log.d("REALM", "ERROR")
+                        err -> Log.d("REALM", err.toString())
                 )
         );
     }

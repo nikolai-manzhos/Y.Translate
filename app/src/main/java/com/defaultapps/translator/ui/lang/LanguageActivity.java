@@ -16,23 +16,24 @@ import javax.inject.Inject;
 //TODO: Implement list for Target and Source languages
 public class LanguageActivity extends BaseActivity {
 
-    @Inject
-    SharedPreferencesManager sharedPreferencesManager;
+//    @Inject
+//    SharedPreferencesManager sharedPreferencesManager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActivityComponent().inject(this); //TEMPORARY!
+        setContentView(R.layout.activity_language);
+//        getActivityComponent().inject(this); //TEMPORARY!
 
         Intent receivedIntent = getIntent();
         String receivedString = receivedIntent.getStringExtra(Global.SOURCE_OR_TARGET);
         if (savedInstanceState == null) {
             if (receivedString.equals("source")) {
-//                selectFragment(new SourceLanguageViewImpl());
-                sharedPreferencesManager.setSourceLanguage("en");
+                getSupportActionBar().setTitle("Source language");
+                selectFragment(LanguageSelectionViewImpl.newInstance(receivedString));
             } else if (receivedString.equals("target")) {
-//                selectFragment(new TargetLanguageViewImpl());
-                sharedPreferencesManager.setTargetLanguage("ru");
+                getSupportActionBar().setTitle("Target language");
+                selectFragment(LanguageSelectionViewImpl.newInstance(receivedString));
             }
         }
     }

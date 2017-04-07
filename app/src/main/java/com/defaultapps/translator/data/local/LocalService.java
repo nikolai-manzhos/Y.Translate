@@ -1,37 +1,42 @@
 package com.defaultapps.translator.data.local;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.defaultapps.translator.data.local.sp.SharedPreferencesManager;
 import com.defaultapps.translator.data.model.TranslateResponse;
 import com.defaultapps.translator.data.model.realm.RealmTranslate;
+import com.defaultapps.translator.di.ApplicationContext;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
+
 import java.io.IOException;
-import java.lang.reflect.Type;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
-import io.realm.RealmObject;
-import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 @Singleton
 public class LocalService {
 
     private SharedPreferencesManager sharedPreferencesManager;
+    private Context applicationContext;
 
     @Inject
-    public LocalService(SharedPreferencesManager sharedPreferencesManager) {
+    public LocalService(SharedPreferencesManager sharedPreferencesManager,
+                        @ApplicationContext Context context) {
         this.sharedPreferencesManager = sharedPreferencesManager;
+        this.applicationContext = context;
     }
 
 
@@ -68,6 +73,22 @@ public class LocalService {
 
     public String getCurrentText() {
         return sharedPreferencesManager.getCurrentText();
+    }
+
+    public void setSourceLang(String sourceLang) {
+        sharedPreferencesManager.setSourceLanguage(sourceLang);
+    }
+
+    public void setSourceLangName(String sourceLangName) {
+        sharedPreferencesManager.setSourceLanguageName(sourceLangName);
+    }
+
+    public void setTargetLang(String targetLang) {
+        sharedPreferencesManager.setTargetLanguage(targetLang);
+    }
+
+    public void setTargetLangName(String targetLangName) {
+        sharedPreferencesManager.setTargetLanguageName(targetLangName);
     }
 
     public String getCurrentLanguagePair() {
@@ -125,6 +146,27 @@ public class LocalService {
         realm.commitTransaction();
         realm.close();
         return true;
+    }
+
+    public Map<String, String> readLangFromFile(String requestParam) throws IOException {
+        String line = "";
+        StringBuilder jsonString = new StringBuilder();
+
+        InputStream inputStream = applicationContext.getAssets().open("lang.json");
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+        while ((line = bufferedReader.readLine()) != null) {
+            jsonString.append(line);
+        }
+        inputStream.close();
+
+        Map<String, String> retMap = new Gson().fromJson(
+                jsonString.toString(), new TypeToken<HashMap<String, String>>() {}.getType());
+        if (requestParam.equals("source")) {
+            retMap.remove(sharedPreferencesManager.getSourceLanguage());
+        } else if (requestParam.equals("target")) {
+            retMap.remove(sharedPreferencesManager.getTargetLanguage());
+        }
+        return retMap;
     }
 
     private RealmTranslate findInRealm(Realm realm, String text, String languagePair) {

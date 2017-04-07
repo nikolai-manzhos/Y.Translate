@@ -19,6 +19,7 @@ import com.jakewharton.rxbinding2.widget.RxCompoundButton;
 import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.fonts.MaterialIcons;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -34,11 +35,16 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
     private Context context;
     private HistoryView view;
-    private List<RealmTranslate> data;
+    private List<RealmTranslate> data = new ArrayList<>();
+
+    private IconDrawable greyIcon;
+    private IconDrawable coloredIcon;
 
     @Inject
     public HistoryAdapter(@ApplicationContext Context context) {
         this.context = context;
+        greyIcon = new IconDrawable(this.context, MaterialIcons.md_bookmark).colorRes(R.color.grey);
+        coloredIcon = new IconDrawable(this.context, MaterialIcons.md_bookmark).colorRes(R.color.colorAccent);
     }
 
     static class HistoryViewHolder extends RecyclerView.ViewHolder {
@@ -64,27 +70,23 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     @Override
     public void onBindViewHolder(HistoryViewHolder holder, int position) {
         int adapterPosition = holder.getAdapterPosition();
+        holder.sourceText.setText(data.get(adapterPosition).getText());
+        holder.translatedText.setText(data.get(adapterPosition).getTranslatedText());
+        holder.languageSet.setText(data.get(adapterPosition).getLanguageSet().toUpperCase());
+        setToggleButtonIcon(holder, data.get(adapterPosition).getFavorite());
+        holder.toggleButton.setChecked(data.get(adapterPosition).getFavorite());
+
         RxCompoundButton.checkedChanges(holder.toggleButton)
                 .skip(1)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(status -> {
                     Log.d("Adapter", String.valueOf(status));
                     setToggleButtonIcon(holder, status);
                     if (view != null && status) {
-                        Log.d("Adapter2", String.valueOf(status));
                         view.favorite(data.get(adapterPosition));
                     } else if (view != null) {
                         view.delFromFavorite(data.get(adapterPosition));
                     }
                 });
-
-        holder.sourceText.setText(data.get(adapterPosition).getText());
-        holder.translatedText.setText(data.get(adapterPosition).getTranslatedText());
-        holder.languageSet.setText(data.get(adapterPosition).getLanguageSet().toUpperCase());
-        setToggleButtonIcon(holder, data.get(adapterPosition).getFavorite());
-
-
     }
 
     @Override
@@ -99,7 +101,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     }
 
     public void setData(List<RealmTranslate> data) {
-        this.data = data;
+        this.data.clear();
+        this.data.addAll(data);
         notifyDataSetChanged();
     }
 
@@ -109,9 +112,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
     private void setToggleButtonIcon(HistoryViewHolder holder, boolean fav) {
          if (fav) {
-             holder.toggleButton.setBackgroundDrawable(new IconDrawable(context, MaterialIcons.md_bookmark).colorRes(R.color.colorAccent));
+             holder.toggleButton.setBackgroundDrawable(coloredIcon);
          }  else {
-             holder.toggleButton.setBackgroundDrawable(new IconDrawable(context, MaterialIcons.md_bookmark).colorRes(R.color.grey));
+             holder.toggleButton.setBackgroundDrawable(greyIcon);
          }
     }
 }

@@ -2,7 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true">
 
     <ToggleButton
         android:id="@+id/favoriteFlag"
@@ -27,6 +29,7 @@
         <TextView
             android:id="@+id/sourceText"
             android:text="empty"
+            android:textColor="@color/blackPrimary"
             android:maxLines="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,13 +38,12 @@
         <TextView
             android:id="@+id/translatedText"
             android:text="empty"
+            android:textColor="@color/blackSecondary"
             android:maxLines="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
     </LinearLayout>
-
-
 
     <TextView
         android:id="@+id/languageSet"

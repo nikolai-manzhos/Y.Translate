@@ -93,7 +93,7 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
         }
 
         textChangeObservable = RxTextView.textChangeEvents(editText)
-                .debounce(1000, TimeUnit.MILLISECONDS)
+                .debounce(700, TimeUnit.MILLISECONDS)
                 .skip(1)
                 .observeOn(AndroidSchedulers.mainThread());
 

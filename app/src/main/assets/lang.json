@@ -1,6 +1,4 @@
-{
-  "langs": {
-    "af": "Afrikaans",
+{   "af": "Afrikaans",
     "am": "Amharic",
     "ar": "Arabic",
     "az": "Azerbaijani",
@@ -93,5 +91,4 @@
     "xh": "Xhosa",
     "yi": "Yiddish",
     "zh": "Chinese"
-  }
 }

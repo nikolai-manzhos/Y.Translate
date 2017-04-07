@@ -27,8 +27,7 @@ public class HistoryViewInteractor {
     @Inject
     public HistoryViewInteractor(
           SchedulerProvider schedulerProvider,
-          LocalService localService
-    ) {
+          LocalService localService) {
         this.schedulerProvider = schedulerProvider;
         this.localService = localService;
     }
@@ -48,7 +47,7 @@ public class HistoryViewInteractor {
         if (favDisposable == null || disposable.isDisposed()) {
             favReplayProcessor = ReplayProcessor.create();
 
-            Observable.fromCallable(() -> localService.addToFavorite(realmTranslate))
+            favDisposable = Observable.fromCallable(() -> localService.addToFavorite(realmTranslate))
                     .compose(schedulerProvider.applyIoSchedulers())
                     .subscribe(favReplayProcessor::onNext);
         }
@@ -59,7 +58,7 @@ public class HistoryViewInteractor {
         if (favDisposable == null || disposable.isDisposed()) {
             favReplayProcessor = ReplayProcessor.create();
 
-            Observable.fromCallable(() -> localService.deleteFromFavorite(realmTranslate))
+            favDisposable = Observable.fromCallable(() -> localService.deleteFromFavorite(realmTranslate))
                     .compose(schedulerProvider.applyIoSchedulers())
                     .subscribe(favReplayProcessor::onNext);
         }
