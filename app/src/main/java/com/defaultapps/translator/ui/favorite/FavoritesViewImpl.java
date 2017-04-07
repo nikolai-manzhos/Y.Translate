@@ -48,9 +48,9 @@ public class FavoritesViewImpl extends Fragment implements FavoritesView {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ((MainActivity) getActivity()).getActivityComponent().inject(this);
         unbinder = ButterKnife.bind(this, view);
         toolbar.setTitle("Favorites");
-        ((MainActivity) getActivity()).getActivityComponent().inject(this);
         favoritesViewPresenter.onAttach(this);
     }
 

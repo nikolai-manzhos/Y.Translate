@@ -20,7 +20,9 @@ public class HistoryViewInteractor {
     private final LocalService localService;
 
     private ReplayProcessor<List<RealmTranslate>> replayProcessor;
+    private ReplayProcessor<Boolean> favReplayProcessor;
     private Disposable disposable;
+    private Disposable favDisposable;
 
     @Inject
     public HistoryViewInteractor(
@@ -40,5 +42,27 @@ public class HistoryViewInteractor {
                     .subscribe(replayProcessor::onNext);
         }
         return replayProcessor.toObservable();
+    }
+
+    public Observable<Boolean> addToFavorite(RealmTranslate realmTranslate) {
+        if (favDisposable == null || disposable.isDisposed()) {
+            favReplayProcessor = ReplayProcessor.create();
+
+            Observable.fromCallable(() -> localService.addToFavorite(realmTranslate))
+                    .compose(schedulerProvider.applyIoSchedulers())
+                    .subscribe(favReplayProcessor::onNext);
+        }
+        return favReplayProcessor.toObservable();
+    }
+
+    public Observable<Boolean> deleteFromFavorite(RealmTranslate realmTranslate) {
+        if (favDisposable == null || disposable.isDisposed()) {
+            favReplayProcessor = ReplayProcessor.create();
+
+            Observable.fromCallable(() -> localService.deleteFromFavorite(realmTranslate))
+                    .compose(schedulerProvider.applyIoSchedulers())
+                    .subscribe(favReplayProcessor::onNext);
+        }
+        return favReplayProcessor.toObservable();
     }
 }

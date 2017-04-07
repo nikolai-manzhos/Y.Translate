@@ -6,6 +6,10 @@ import com.defaultapps.translator.data.local.sp.SharedPreferencesManager;
 import com.defaultapps.translator.data.model.TranslateResponse;
 import com.defaultapps.translator.data.model.realm.RealmTranslate;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,6 +105,26 @@ public class LocalService {
         finalData = realm.copyFromRealm(data);
         realm.close();
         return finalData;
+    }
+
+    public boolean addToFavorite(RealmTranslate realmTranslate) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realmTranslate.setFavorite(true);
+        realm.insertOrUpdate(realmTranslate);
+        realm.commitTransaction();
+        realm.close();
+        return true;
+    }
+
+    public boolean deleteFromFavorite(RealmTranslate realmTranslate) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realmTranslate.setFavorite(false);
+        realm.insertOrUpdate(realmTranslate);
+        realm.commitTransaction();
+        realm.close();
+        return true;
     }
 
     private RealmTranslate findInRealm(Realm realm, String text, String languagePair) {

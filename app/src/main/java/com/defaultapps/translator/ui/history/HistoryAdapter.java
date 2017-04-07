@@ -3,9 +3,11 @@ package com.defaultapps.translator.ui.history;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -23,6 +25,9 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import scout.core.Scanner$reify__163;
 
 @PerActivity
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder> {
@@ -59,18 +64,27 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     @Override
     public void onBindViewHolder(HistoryViewHolder holder, int position) {
         int adapterPosition = holder.getAdapterPosition();
+        RxCompoundButton.checkedChanges(holder.toggleButton)
+                .skip(1)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(status -> {
+                    Log.d("Adapter", String.valueOf(status));
+                    setToggleButtonIcon(holder, status);
+                    if (view != null && status) {
+                        Log.d("Adapter2", String.valueOf(status));
+                        view.favorite(data.get(adapterPosition));
+                    } else if (view != null) {
+                        view.delFromFavorite(data.get(adapterPosition));
+                    }
+                });
+
         holder.sourceText.setText(data.get(adapterPosition).getText());
         holder.translatedText.setText(data.get(adapterPosition).getTranslatedText());
         holder.languageSet.setText(data.get(adapterPosition).getLanguageSet().toUpperCase());
         setToggleButtonIcon(holder, data.get(adapterPosition).getFavorite());
 
-        RxCompoundButton.checkedChanges(holder.toggleButton)
-                .doOnNext(toggleButtonStatus -> {
-                    if (view != null)
-                        view.favorite(data.get(adapterPosition));
-                    setToggleButtonIcon(holder, toggleButtonStatus);
-                })
-                .subscribe();
+
     }
 
     @Override

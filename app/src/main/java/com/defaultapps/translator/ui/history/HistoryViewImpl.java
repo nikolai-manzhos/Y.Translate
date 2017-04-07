@@ -64,10 +64,12 @@ public class HistoryViewImpl extends Fragment implements HistoryView {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setHasOptionsMenu(true);
-        unbinder = ButterKnife.bind(this, view);
-        toolbar.setTitle("History");
         ((MainActivity) getActivity()).getActivityComponent().inject(this);
+        unbinder = ButterKnife.bind(this, view);
+        setHasOptionsMenu(true);
+        toolbar.setTitle("History");
+        historyAdapter.setView(this);
+        initRecyclerView();
         historyViewPresenter.onAttach(this);
         historyViewPresenter.requestHistoryItems();
     }
@@ -83,6 +85,7 @@ public class HistoryViewImpl extends Fragment implements HistoryView {
         super.onDestroyView();
         Log.d("HistoryView", "DESTROYED");
         unbinder.unbind();
+        historyAdapter.setView(null);
         historyViewPresenter.onDetach();
     }
 
@@ -110,22 +113,26 @@ public class HistoryViewImpl extends Fragment implements HistoryView {
 
     @Override
     public void favorite(RealmTranslate realmObject) {
+        historyViewPresenter.addToFav(realmObject);
+    }
 
+    @Override
+    public void delFromFavorite(RealmTranslate realmTranslate) {
+        historyViewPresenter.deleteFromFav(realmTranslate);
     }
 
     @Override
     public void receiveResult(List<RealmTranslate> realmTranslateList) {
-        initRecyclerView(realmTranslateList);
+        if (!realmTranslateList.isEmpty()) {
+            historyAdapter.setData(realmTranslateList);
+        }
     }
 
-    private void initRecyclerView(List<RealmTranslate> realmTranslateList) {
-        historyRecycler.setAdapter(historyAdapter);
+    private void initRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext().getApplicationContext());
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
         historyRecycler.setLayoutManager(linearLayoutManager);
-        if (!realmTranslateList.isEmpty()) {
-            historyAdapter.setData(realmTranslateList);
-        }
+        historyRecycler.setAdapter(historyAdapter);
     }
 }

@@ -39,7 +39,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 public class TranslateViewImpl extends BaseFragment implements TranslateView {
 
     private final String TAG = "TranslateViewImpl";
-    private boolean editTextStatus = false;
 
     private MainActivity activity;
     private Unbinder unbinder;
@@ -84,31 +83,27 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ((MainActivity) getActivity()).getActivityComponent().inject(this);
         unbinder = ButterKnife.bind(this, view);
         initSwipeButton();
-        ((MainActivity) getActivity()).getActivityComponent().inject(this);
         translateViewPresenter.onAttach(this);
         if (!translateViewPresenter.getCurrentText().equals("")) {
             editText.setText(translateViewPresenter.getCurrentText());
             translateViewPresenter.requestTranslation(false);
-            editTextStatus = false;
         }
 
         textChangeObservable = RxTextView.textChangeEvents(editText)
                 .debounce(1000, TimeUnit.MILLISECONDS)
+                .skip(1)
                 .observeOn(AndroidSchedulers.mainThread());
 
         textChangeObservable.subscribe(text -> {
-            if (editTextStatus) {
-                translateViewPresenter.setCurrentText(text.text().toString());
-                if (text.text().length() != 0 && !text.text().toString().trim().isEmpty()) {
-                    translateViewPresenter.requestTranslation(true);
-                } else if (getView() != null){
-                    hideResult();
-                    hideError();
-                }
-            } else {
-                editTextStatus = true;
+            translateViewPresenter.setCurrentText(text.text().toString());
+            if (text.text().length() != 0 && !text.text().toString().trim().isEmpty()) {
+                translateViewPresenter.requestTranslation(true);
+            } else if (getView() != null){
+                hideResult();
+                hideError();
             }
         });
     }
