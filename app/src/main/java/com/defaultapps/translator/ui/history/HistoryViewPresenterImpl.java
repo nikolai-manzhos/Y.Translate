@@ -32,7 +32,9 @@ public class HistoryViewPresenterImpl extends BasePresenter<HistoryView> impleme
                 historyViewInteractor.provideHistoryData()
                 .subscribe(
                         realmTranslates -> {
-                            getView().receiveResult(realmTranslates);
+                            if (getView() != null) {
+                                getView().receiveResult(realmTranslates);
+                            }
                         },
                         err -> Log.d("REALM", err.toString())
                 )

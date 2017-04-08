@@ -34,6 +34,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 
 public class TranslateViewImpl extends BaseFragment implements TranslateView {
@@ -178,7 +179,7 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
         swipeLanguagesButton.setImageDrawable(new IconDrawable(
                 getContext().getApplicationContext(),
                 MaterialIcons.md_swap_horiz)
-                .colorRes(R.color.whiteSecondary)
+                .colorRes(R.color.blackPrimary)
         );
     }
 }

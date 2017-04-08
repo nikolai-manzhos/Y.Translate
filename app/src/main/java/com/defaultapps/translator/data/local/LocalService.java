@@ -39,7 +39,6 @@ public class LocalService {
         this.applicationContext = context;
     }
 
-
     public void writeToRealm(TranslateResponse translateResponse) {
         Realm realm = Realm.getDefaultInstance();
         Log.d("WriteToRealm", Thread.currentThread().getName());

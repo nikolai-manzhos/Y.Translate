@@ -25,8 +25,10 @@ public class LanguageSelectionPresenterImpl extends BasePresenter<LanguageSelect
         getCompositeDisposable().add(
                 languageViewInteractor.requestSourceLang(typeOfRequest)
                 .subscribe(result -> {
-                    getView().updateLangList(result);
-                    Log.d("SourceList", result.toString());
+                    if (getView() != null) {
+                        getView().updateLangList(result);
+                        Log.d("SourceList", result.toString());
+                    }
                 })
         );
     }
