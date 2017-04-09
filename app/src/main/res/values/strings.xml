@@ -2,8 +2,10 @@
     <string name="app_name">Translator</string>
 
     <string name="error_message">Error please try again</string>
-    <string name="error_button">Try Again</string>
+    <string name="error_button">RETRY</string>
 
     <string name="place_holder">PLACE HOLDER</string>
 
+    <string name="favorites">Favorites</string>
+    <string name="history">History</string>
 </resources>

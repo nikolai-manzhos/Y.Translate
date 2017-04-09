@@ -13,17 +13,13 @@ import com.defaultapps.translator.utils.Global;
 
 import javax.inject.Inject;
 
-//TODO: Implement list for Target and Source languages
 public class LanguageActivity extends BaseActivity {
 
-//    @Inject
-//    SharedPreferencesManager sharedPreferencesManager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_language);
-//        getActivityComponent().inject(this); //TEMPORARY!
 
         Intent receivedIntent = getIntent();
         String receivedString = receivedIntent.getStringExtra(Global.SOURCE_OR_TARGET);

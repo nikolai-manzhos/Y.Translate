@@ -8,10 +8,13 @@ import com.defaultapps.translator.data.model.TranslateResponse;
 import com.defaultapps.translator.data.model.realm.RealmTranslate;
 import com.defaultapps.translator.data.network.NetworkService;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.processors.ReplayProcessor;
 
@@ -60,14 +63,6 @@ public class TranslateViewInteractor {
         return translateProcessor.toObservable();
     }
 
-    public String provideCurrentText() {
-        return localService.getCurrentText();
-    }
-
-    public void setCurrentText(String text) {
-        localService.setCurrentText(text);
-    }
-
     private Observable<RealmTranslate> network(String text, String language) {
         return networkService.getNetworkCall().getTranslation(API_KEY, text, language)
                 .doOnComplete(() -> Log.d(TAG, "NETWORK DONE"))
@@ -93,5 +88,21 @@ public class TranslateViewInteractor {
 
     private Observable<RealmTranslate> memory() {
         return Observable.just(memoryCache);
+    }
+
+    public String provideCurrentText() {
+        return localService.getCurrentText();
+    }
+
+    public void setCurrentText(String text) {
+        localService.setCurrentText(text);
+    }
+
+    public Single<List<String>> provideLangNames() {
+        return Single.just(localService.provideLangNames());
+    }
+
+    public void checkFirstTimeUser() {
+        localService.checkFirstTimeUser();
     }
 }

@@ -13,12 +13,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.defaultapps.translator.R;
 import com.defaultapps.translator.data.model.realm.RealmTranslate;
 import com.defaultapps.translator.di.scope.PerActivity;
 import com.defaultapps.translator.ui.main.MainActivity;
 import com.defaultapps.translator.ui.base.BaseActivity;
+import com.joanzapata.iconify.IconDrawable;
+import com.joanzapata.iconify.fonts.MaterialIcons;
 
 import java.util.List;
 
@@ -36,6 +40,9 @@ public class HistoryViewImpl extends Fragment implements HistoryView {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
+    @BindView(R.id.deleteHistory)
+    ImageView deleteHistory;
 
     @Inject
     HistoryViewPresenterImpl historyViewPresenter;
@@ -67,10 +74,9 @@ public class HistoryViewImpl extends Fragment implements HistoryView {
         super.onViewCreated(view, savedInstanceState);
         ((MainActivity) getActivity()).getActivityComponent().inject(this);
         unbinder = ButterKnife.bind(this, view);
-        setHasOptionsMenu(true);
-        toolbar.setTitle("History");
-        historyAdapter.setView(this);
+        initToolbar();
         initRecyclerView();
+        historyAdapter.setView(this);
         historyViewPresenter.onAttach(this);
         historyViewPresenter.requestHistoryItems();
     }
@@ -127,6 +133,13 @@ public class HistoryViewImpl extends Fragment implements HistoryView {
         if (!realmTranslateList.isEmpty()) {
             historyAdapter.setData(realmTranslateList);
         }
+    }
+
+    private void initToolbar() {
+        deleteHistory.setImageDrawable(new IconDrawable(
+                getActivity().getApplicationContext(),
+                MaterialIcons.md_delete
+        ).colorRes(R.color.blackPrimary).actionBarSize());
     }
 
     private void initRecyclerView() {

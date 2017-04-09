@@ -6,46 +6,37 @@
     android:fitsSystemWindows="true">
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:elevation="2dp">
+        android:layout_height="wrap_content"
+        app:elevation="0dp">
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <Button
-                    android:id="@+id/sourceLanguage"
-                    android:text="English"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/colorPrimary">
+                <TextView
+                    android:id="@+id/sourceLanguageName"
                     style="@style/ToolbarText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="15dp"
                     android:layout_centerVertical="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginStart="10dp" />
-
+                    android:layout_toStartOf="@+id/swipeLanguages" />
                 <ImageButton
                     android:id="@+id/swipeLanguages"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
+                    android:padding="2dp"
                     android:layout_centerInParent="true"
-                    android:background="@android:color/transparent" />
-                <Button
-                    android:id="@+id/targetLanguage"
-                    android:text="Russian"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"/>
+                <TextView
+                    android:id="@+id/targetLanguageName"
                     style="@style/ToolbarText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="19dp"
-                    android:layout_alignBaseline="@+id/sourceLanguage"
-                    android:layout_alignBottom="@+id/sourceLanguage"
-                    android:layout_alignParentEnd="true" />
+                    android:layout_marginStart="15dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/swipeLanguages"/>
             </RelativeLayout>
-        </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"

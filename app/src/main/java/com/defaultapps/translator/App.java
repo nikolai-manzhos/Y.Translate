@@ -18,13 +18,9 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         initIconify();
-        Realm.init(this);
-
-        applicationComponent = DaggerApplicationComponent.builder()
-                .applicationModule(new ApplicationModule(this))
-                .build();
-
+        initDaggerAppComponent();
         applicationComponent.inject(this);
+        Realm.init(this);
     }
 
     public ApplicationComponent getComponent() {
@@ -34,5 +30,11 @@ public class App extends Application {
     private void initIconify() {
         Iconify
                 .with(new MaterialModule());
+    }
+
+    private void initDaggerAppComponent() {
+        applicationComponent = DaggerApplicationComponent.builder()
+                .applicationModule(new ApplicationModule(this))
+                .build();
     }
 }

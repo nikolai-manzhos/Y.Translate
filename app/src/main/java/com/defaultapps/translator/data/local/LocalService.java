@@ -15,7 +15,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +50,7 @@ public class LocalService {
                 deleteFromRealm(realm, currentText, languagePair);
             }
             realmTranslate = transactionRealm.createObject(RealmTranslate.class, currentText);
+            realmTranslate.setHistory(true);
             realmTranslate.setFavorite(false);
             realmTranslate.setLanguageSet(translateResponse.getLang());
             realmTranslate.setTranslatedText(translateResponse.getText().get(0));
@@ -94,6 +95,20 @@ public class LocalService {
         return sharedPreferencesManager.getSourceLanguage() + "-" + sharedPreferencesManager.getTargetLanguage();
     }
 
+    public List<String> provideLangNames() {
+        return Arrays.asList(sharedPreferencesManager.getSourceLanguageName(), sharedPreferencesManager.getTargetLanguageName());
+    }
+
+    public void checkFirstTimeUser() {
+        if (!sharedPreferencesManager.getFirstTimeUser()) {
+            sharedPreferencesManager.setSourceLanguage("en");
+            sharedPreferencesManager.setSourceLanguageName("English");
+            sharedPreferencesManager.setTargetLanguage("ru");
+            sharedPreferencesManager.setTargetLanguageName("Russian");
+            sharedPreferencesManager.setFirstTimeUser(true);
+        }
+    }
+
     public RealmTranslate readFromRealm(String text, String languagePair) {
         Log.d("ReadFromRealm", Thread.currentThread().getName());
         Realm realm = Realm.getDefaultInstance();
@@ -112,15 +127,16 @@ public class LocalService {
             return new RealmTranslate(sharedPreferencesManager.getCurrentText(),
                     translateResponse.getText().get(0),
                     false,
+                    true,
                     sharedPreferencesManager.getSourceLanguage() + "-" + sharedPreferencesManager.getTargetLanguage());
         }
         return new RealmTranslate();
     }
 
-    public List<RealmTranslate> provideWholeDatabase() {
+    public List<RealmTranslate> provideHistoryDatabase() {
         Realm realm = Realm.getDefaultInstance();
-        List<RealmTranslate> finalData = new ArrayList<>();
-        RealmResults<RealmTranslate> data = realm.where(RealmTranslate.class).findAll();
+        List<RealmTranslate> finalData;
+        RealmResults<RealmTranslate> data = realm.where(RealmTranslate.class).equalTo("history", true).findAll();
         Log.d("ProvideDatabase", Thread.currentThread().getName());
         finalData = realm.copyFromRealm(data);
         realm.close();
@@ -148,7 +164,7 @@ public class LocalService {
     }
 
     public Map<String, String> readLangFromFile(String requestParam) throws IOException {
-        String line = "";
+        String line;
         StringBuilder jsonString = new StringBuilder();
 
         InputStream inputStream = applicationContext.getAssets().open("lang.json");

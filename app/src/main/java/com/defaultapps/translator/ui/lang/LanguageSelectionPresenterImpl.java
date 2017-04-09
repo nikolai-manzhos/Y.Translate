@@ -21,7 +21,7 @@ public class LanguageSelectionPresenterImpl extends BasePresenter<LanguageSelect
     }
 
     @Override
-    public void requestSourceLangList(String typeOfRequest) {
+    public void requestLangList(String typeOfRequest) {
         getCompositeDisposable().add(
                 languageViewInteractor.requestSourceLang(typeOfRequest)
                 .subscribe(result -> {

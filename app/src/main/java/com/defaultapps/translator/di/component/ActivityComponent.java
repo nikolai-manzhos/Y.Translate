@@ -18,6 +18,5 @@ public interface ActivityComponent {
     void inject(TranslateViewImpl translateView);
     void inject(HistoryViewImpl historyView);
     void inject(FavoritesViewImpl favoritesView);
-    void inject(LanguageActivity languageActivity);
     void inject(LanguageSelectionViewImpl languageSelectionView);
 }

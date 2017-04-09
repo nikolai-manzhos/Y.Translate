@@ -65,4 +65,25 @@ public class TranslateViewPresenterImpl extends BasePresenter<TranslateView> imp
                 )
         );
     }
+
+    @Override
+    public void requestLangNames() {
+        getCompositeDisposable().add(
+                translateViewInteractor.provideLangNames()
+                .subscribe(
+                        langList -> {
+                            Log.d("TRANSLATE_PRESENTER", langList.toString());
+                            if (getView() != null) {
+                                getView().setLangNames(langList.get(0), langList.get(1));
+                            }
+                        },
+                        err -> {}
+                )
+        );
+    }
+
+    @Override
+    public void checkFirstTimeUser() {
+        translateViewInteractor.checkFirstTimeUser();
+    }
 }

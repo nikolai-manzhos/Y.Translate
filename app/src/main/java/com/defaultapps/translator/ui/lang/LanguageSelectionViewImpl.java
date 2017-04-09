@@ -14,7 +14,6 @@ import com.defaultapps.translator.R;
 import com.defaultapps.translator.ui.base.BaseFragment;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -74,7 +73,7 @@ public class LanguageSelectionViewImpl extends BaseFragment implements LanguageS
         unbinder = ButterKnife.bind(this, view);
         languageSelectionPresenter.onAttach(this);
         fragmentMode = getArguments().getString(ARGUMENT_KEY);
-        languageSelectionPresenter.requestSourceLangList(fragmentMode);
+        languageSelectionPresenter.requestLangList(fragmentMode);
     }
 
     @Override
@@ -121,7 +120,7 @@ public class LanguageSelectionViewImpl extends BaseFragment implements LanguageS
 
     private void setSource(String sourceLangName, String sourceLang) {
         languageSelectionPresenter.setSourceLang(sourceLang);
-        languageSelectionPresenter.setTargetLangName(sourceLangName);
+        languageSelectionPresenter.setSourceLangName(sourceLangName);
     }
 
     private void setTarget(String targetLangName, String targetLang) {

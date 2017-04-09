@@ -13,6 +13,7 @@ public class SharedPreferencesManager {
     private final String SOURCE_LANGUAGE_NAME = "source_language_name";
     private final String TARGET_LANGUAGE = "target_language";
     private final String TARGET_LANGUAGE_NAME = "target_language_name";
+    private final String FIRST_TIME_USER = "first_time_user";
 
     @Inject
     public SharedPreferencesManager(SharedPreferencesHelper sharedPreferencesHelper) {
@@ -57,5 +58,13 @@ public class SharedPreferencesManager {
 
     public void setTargetLanguageName(String targetLanguageName) {
         sharedPreferencesHelper.putString(TARGET_LANGUAGE_NAME, targetLanguageName);
+    }
+
+    public boolean getFirstTimeUser() {
+        return sharedPreferencesHelper.getBoolean(FIRST_TIME_USER);
+    }
+
+    public void setFirstTimeUser(boolean firstTimeUser) {
+        sharedPreferencesHelper.putBoolean(FIRST_TIME_USER, firstTimeUser);
     }
 }

@@ -9,6 +9,7 @@ public class RealmTranslate extends RealmObject {
     private String text;
     private String translatedText;
     private boolean favorite;
+    private boolean history;
     private String languageSet;
 
     public RealmTranslate() {}
@@ -16,10 +17,12 @@ public class RealmTranslate extends RealmObject {
     public RealmTranslate(String text,
                           String translatedText,
                           boolean favorite,
+                          boolean history,
                           String languageSet) {
         this.text = text;
         this.translatedText = translatedText;
         this.favorite = favorite;
+        this.history = history;
         this.languageSet = languageSet;
     }
 
@@ -45,6 +48,14 @@ public class RealmTranslate extends RealmObject {
 
     public void setFavorite(boolean favorite) {
         this.favorite = favorite;
+    }
+
+    public boolean getHistory() {
+        return history;
+    }
+
+    public void setHistory(boolean history) {
+        this.history = history;
     }
 
     public String getLanguageSet() {

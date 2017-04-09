@@ -8,4 +8,6 @@ public interface TranslateView extends MvpView {
     void showError();
     void hideResult();
     void showResult(String result);
+    void setLangNames(String sourceLangName,
+                      String targetLangName);
 }

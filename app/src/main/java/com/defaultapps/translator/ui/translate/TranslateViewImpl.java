@@ -63,6 +63,12 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
     @BindView(R.id.swipeLanguages)
     ImageButton swipeLanguagesButton;
 
+    @BindView(R.id.sourceLanguageName)
+    TextView sourceLanguageName;
+
+    @BindView(R.id.targetLanguageName)
+    TextView targetLanguageName;
+
     @Inject
     TranslateViewPresenterImpl translateViewPresenter;
 
@@ -88,6 +94,8 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
         unbinder = ButterKnife.bind(this, view);
         initSwipeButton();
         translateViewPresenter.onAttach(this);
+        translateViewPresenter.checkFirstTimeUser();
+        translateViewPresenter.requestLangNames();
         if (!translateViewPresenter.getCurrentText().equals("")) {
             editText.setText(translateViewPresenter.getCurrentText());
             translateViewPresenter.requestTranslation(false);
@@ -128,14 +136,14 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
         translateViewPresenter.requestTranslation(true);
     }
 
-    @OnClick(R.id.sourceLanguage)
+    @OnClick(R.id.sourceLanguageName)
     void onSourceClick() {
         Intent intent = new Intent(getActivity(), LanguageActivity.class);
         intent.putExtra(Global.SOURCE_OR_TARGET, "source");
         startActivity(intent);
     }
 
-    @OnClick(R.id.targetLanguage)
+    @OnClick(R.id.targetLanguageName)
     void onTargetClick() {
         Intent intent = new Intent(getActivity(), LanguageActivity.class);
         intent.putExtra(Global.SOURCE_OR_TARGET, "target");
@@ -173,6 +181,12 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
     public void showResult(String result) {
         translatedText.setVisibility(View.VISIBLE);
         translatedText.setText(result);
+    }
+
+    @Override
+    public void setLangNames(String sourceLangName, String targetLangName) {
+        this.sourceLanguageName.setText(sourceLangName);
+        this.targetLanguageName.setText(targetLangName);
     }
 
     private void initSwipeButton() {

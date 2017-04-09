@@ -7,12 +7,17 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.defaultapps.translator.R;
 import com.defaultapps.translator.ui.main.MainActivity;
 import com.defaultapps.translator.ui.base.BaseActivity;
+import com.joanzapata.iconify.IconDrawable;
+import com.joanzapata.iconify.fonts.MaterialIcons;
 
 import javax.inject.Inject;
 
@@ -24,6 +29,9 @@ public class FavoritesViewImpl extends Fragment implements FavoritesView {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
+    @BindView(R.id.deleteFavorites)
+    ImageView deleteFavorites;
 
     @Inject
     FavoritesViewPresenterImpl favoritesViewPresenter;
@@ -50,7 +58,7 @@ public class FavoritesViewImpl extends Fragment implements FavoritesView {
         super.onViewCreated(view, savedInstanceState);
         ((MainActivity) getActivity()).getActivityComponent().inject(this);
         unbinder = ButterKnife.bind(this, view);
-        toolbar.setTitle("Favorites");
+        initToolbar();
         favoritesViewPresenter.onAttach(this);
     }
 
@@ -76,4 +84,16 @@ public class FavoritesViewImpl extends Fragment implements FavoritesView {
     public void showLoading() {
 
     }
+
+    private void initToolbar() {
+        deleteFavorites.setImageDrawable(new IconDrawable(
+                getActivity().getApplicationContext(),
+                MaterialIcons.md_delete
+        ).colorRes(R.color.blackPrimary));
+    }
+
+    private void initRecyclerView() {
+
+    }
+
 }
