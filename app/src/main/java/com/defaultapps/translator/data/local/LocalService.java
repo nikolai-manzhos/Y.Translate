@@ -49,10 +49,11 @@ public class LocalService {
             if (realmTranslate != null) {
                 deleteFromRealm(realm, currentText, languagePair);
             }
-            realmTranslate = transactionRealm.createObject(RealmTranslate.class, currentText);
+            realmTranslate = transactionRealm.createObject(RealmTranslate.class, currentText + translateResponse.getLang());
             realmTranslate.setHistory(true);
             realmTranslate.setFavorite(false);
             realmTranslate.setLanguageSet(translateResponse.getLang());
+            realmTranslate.setText(currentText);
             realmTranslate.setTranslatedText(translateResponse.getText().get(0));
         });
         realm.close();
@@ -99,6 +100,15 @@ public class LocalService {
         return Arrays.asList(sharedPreferencesManager.getSourceLanguageName(), sharedPreferencesManager.getTargetLanguageName());
     }
 
+    public void swapLangs() {
+        String srcLng = sharedPreferencesManager.getSourceLanguage();
+        String srcLngName = sharedPreferencesManager.getSourceLanguageName();
+        sharedPreferencesManager.setSourceLanguage(sharedPreferencesManager.getTargetLanguage());
+        sharedPreferencesManager.setSourceLanguageName(sharedPreferencesManager.getTargetLanguageName());
+        sharedPreferencesManager.setTargetLanguage(srcLng);
+        sharedPreferencesManager.setTargetLanguageName(srcLngName);
+    }
+
     public void checkFirstTimeUser() {
         if (!sharedPreferencesManager.getFirstTimeUser()) {
             sharedPreferencesManager.setSourceLanguage("en");
@@ -124,7 +134,8 @@ public class LocalService {
 
     public RealmTranslate responseToRealm(TranslateResponse translateResponse) {
         if (translateResponse.getText() != null) {
-            return new RealmTranslate(sharedPreferencesManager.getCurrentText(),
+            return new RealmTranslate(sharedPreferencesManager.getCurrentText() + translateResponse.getLang(),
+                    sharedPreferencesManager.getCurrentText(),
                     translateResponse.getText().get(0),
                     false,
                     true,
@@ -143,22 +154,56 @@ public class LocalService {
         return finalData;
     }
 
+    public void wipeHistory() {
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(realm1 -> {
+            RealmResults<RealmTranslate> rows = realm.where(RealmTranslate.class).equalTo("history", true).findAll();
+            for (RealmTranslate entity : rows) {
+                entity.setHistory(false);
+            }
+            RealmResults<RealmTranslate> finalRows = realm.where(RealmTranslate.class).equalTo("history", false).equalTo("favorite", false).findAll();
+            finalRows.deleteAllFromRealm();
+        });
+        realm.close();
+    }
+
+    public List<RealmTranslate> provideFavoritesDatabase() {
+        Realm realm = Realm.getDefaultInstance();
+        List<RealmTranslate> finalData;
+        RealmResults<RealmTranslate> data = realm.where(RealmTranslate.class).equalTo("favorite", true).findAll();
+        finalData = realm.copyFromRealm(data);
+        realm.close();
+        return finalData;
+    }
+
+    public void wipeFavorites() {
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(realm1 -> {
+            RealmResults<RealmTranslate> rows = realm.where(RealmTranslate.class).equalTo("favorite", true).findAll();
+            for (RealmTranslate entity : rows) {
+                entity.setFavorite(false);
+            }
+            RealmResults<RealmTranslate> finalRows = realm.where(RealmTranslate.class).equalTo("favorite", false).equalTo("history", false).findAll();
+            finalRows.deleteAllFromRealm();
+        });
+    }
+
     public boolean addToFavorite(RealmTranslate realmTranslate) {
         Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
-        realmTranslate.setFavorite(true);
-        realm.insertOrUpdate(realmTranslate);
-        realm.commitTransaction();
+        realm.executeTransaction(realm1 -> {
+            realmTranslate.setFavorite(true);
+            realm.insertOrUpdate(realmTranslate);
+        });
         realm.close();
         return true;
     }
 
     public boolean deleteFromFavorite(RealmTranslate realmTranslate) {
         Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
-        realmTranslate.setFavorite(false);
-        realm.insertOrUpdate(realmTranslate);
-        realm.commitTransaction();
+        realm.executeTransaction(realm1 -> {
+            realmTranslate.setFavorite(false);
+            realm.insertOrUpdate(realmTranslate);
+        });
         realm.close();
         return true;
     }

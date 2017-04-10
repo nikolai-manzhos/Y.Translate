@@ -15,7 +15,7 @@
 
     <style name="ToolbarText">
         <item name="android:textColor">@color/blackPrimary</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">20sp</item>
         <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
         <item name="android:clickable">true</item>
     </style>

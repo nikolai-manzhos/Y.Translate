@@ -6,6 +6,7 @@ import io.realm.annotations.PrimaryKey;
 
 public class RealmTranslate extends RealmObject {
     @PrimaryKey
+    private String textPrimaryKey;
     private String text;
     private String translatedText;
     private boolean favorite;
@@ -14,11 +15,13 @@ public class RealmTranslate extends RealmObject {
 
     public RealmTranslate() {}
 
-    public RealmTranslate(String text,
+    public RealmTranslate(String textPrimaryKey,
+                          String text,
                           String translatedText,
                           boolean favorite,
                           boolean history,
                           String languageSet) {
+        this.textPrimaryKey = textPrimaryKey;
         this.text = text;
         this.translatedText = translatedText;
         this.favorite = favorite;
@@ -64,5 +67,11 @@ public class RealmTranslate extends RealmObject {
 
     public void setLanguageSet(String languageSet) {
         this.languageSet = languageSet;
+    }
+
+    public void setPrimaryKey() {
+        if (text != null && languageSet != null) {
+            textPrimaryKey = text + languageSet;
+        }
     }
 }

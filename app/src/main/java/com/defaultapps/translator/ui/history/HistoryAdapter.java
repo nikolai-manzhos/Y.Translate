@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -26,9 +25,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnCheckedChanged;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import scout.core.Scanner$reify__163;
 
 @PerActivity
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder> {
@@ -55,7 +51,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         @BindView(R.id.translatedText)
         TextView translatedText;
 
-        @BindView(R.id.languageSet)
+        @BindView(R.id.languagePair)
         TextView languageSet;
 
         @BindView(R.id.favoriteFlag)
@@ -86,8 +82,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         holder.languageSet.setText(data.get(adapterPosition).getLanguageSet().toUpperCase());
         setToggleButtonIcon(holder, data.get(adapterPosition).getFavorite());
         holder.toggleButton.setChecked(data.get(adapterPosition).getFavorite());
-
-
     }
 
     @Override
@@ -98,7 +92,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
     @Override
     public int getItemCount() {
-        return data == null ? 0 : data.size();
+        return data.isEmpty() ? 0 : data.size();
     }
 
     public void setData(List<RealmTranslate> data) {

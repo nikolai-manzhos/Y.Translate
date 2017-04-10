@@ -8,4 +8,5 @@ public interface TranslateViewPresenter extends MvpPresenter<TranslateView> {
     String getCurrentText();
     void requestLangNames();
     void checkFirstTimeUser();
+    void swapLanguages();
 }

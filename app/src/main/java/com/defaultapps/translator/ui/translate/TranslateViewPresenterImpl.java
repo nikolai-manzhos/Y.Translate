@@ -86,4 +86,9 @@ public class TranslateViewPresenterImpl extends BasePresenter<TranslateView> imp
     public void checkFirstTimeUser() {
         translateViewInteractor.checkFirstTimeUser();
     }
+
+    @Override
+    public void swapLanguages() {
+        translateViewInteractor.swapLanguages();
+    }
 }

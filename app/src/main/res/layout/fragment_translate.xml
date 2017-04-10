@@ -16,12 +16,13 @@
                     android:id="@+id/sourceLanguageName"
                     style="@style/ToolbarText"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40dp"
                     android:layout_marginEnd="15dp"
                     android:layout_centerVertical="true"
-                    android:layout_toStartOf="@+id/swipeLanguages" />
+                    android:gravity="center_vertical"
+                    android:layout_toStartOf="@+id/swapLanguages" />
                 <ImageButton
-                    android:id="@+id/swipeLanguages"
+                    android:id="@+id/swapLanguages"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:padding="2dp"
@@ -32,10 +33,11 @@
                     android:id="@+id/targetLanguageName"
                     style="@style/ToolbarText"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40dp"
                     android:layout_marginStart="15dp"
                     android:layout_centerVertical="true"
-                    android:layout_toEndOf="@+id/swipeLanguages"/>
+                    android:gravity="center_vertical"
+                    android:layout_toEndOf="@+id/swapLanguages"/>
             </RelativeLayout>
     </android.support.design.widget.AppBarLayout>
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

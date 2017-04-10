@@ -34,7 +34,6 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 
 public class TranslateViewImpl extends BaseFragment implements TranslateView {
@@ -60,7 +59,7 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
     @BindView(R.id.translation)
     TextView translatedText;
 
-    @BindView(R.id.swipeLanguages)
+    @BindView(R.id.swapLanguages)
     ImageButton swipeLanguagesButton;
 
     @BindView(R.id.sourceLanguageName)
@@ -148,6 +147,11 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
         Intent intent = new Intent(getActivity(), LanguageActivity.class);
         intent.putExtra(Global.SOURCE_OR_TARGET, "target");
         startActivity(intent);
+    }
+
+    @OnClick(R.id.swapLanguages)
+    void onSwapClick() {
+        translateViewPresenter.swapLanguages();
     }
 
     @Override

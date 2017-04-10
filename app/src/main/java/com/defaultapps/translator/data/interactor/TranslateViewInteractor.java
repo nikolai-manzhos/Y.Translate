@@ -105,4 +105,8 @@ public class TranslateViewInteractor {
     public void checkFirstTimeUser() {
         localService.checkFirstTimeUser();
     }
+
+    public void swapLanguages() {
+        localService.swapLangs();
+    }
 }

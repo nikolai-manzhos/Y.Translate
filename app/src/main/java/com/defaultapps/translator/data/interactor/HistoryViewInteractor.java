@@ -43,6 +43,10 @@ public class HistoryViewInteractor {
         return replayProcessor.toObservable();
     }
 
+    public void deleteHistoryData() {
+        localService.wipeHistory();
+    }
+
     public Observable<Boolean> addToFavorite(RealmTranslate realmTranslate) {
         if (favDisposable == null || disposable.isDisposed()) {
             favReplayProcessor = ReplayProcessor.create();

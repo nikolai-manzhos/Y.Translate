@@ -33,7 +33,11 @@ public class HistoryViewPresenterImpl extends BasePresenter<HistoryView> impleme
                 .subscribe(
                         realmTranslates -> {
                             if (getView() != null) {
-                                getView().receiveResult(realmTranslates);
+
+                                    getView().receiveResult(realmTranslates);
+
+                                    //TODO: Show NoData view.
+
                             }
                         },
                         err -> Log.d("REALM", err.toString())
@@ -58,5 +62,10 @@ public class HistoryViewPresenterImpl extends BasePresenter<HistoryView> impleme
                 historyViewInteractor.deleteFromFavorite(realmModel)
                 .subscribe()
         );
+    }
+
+    @Override
+    public void deleteHistoryData() {
+        historyViewInteractor.deleteHistoryData();
     }
 }

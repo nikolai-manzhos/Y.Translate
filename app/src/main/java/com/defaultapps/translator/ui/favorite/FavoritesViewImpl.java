@@ -5,24 +5,32 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import com.defaultapps.translator.R;
+import com.defaultapps.translator.data.model.realm.RealmTranslate;
 import com.defaultapps.translator.ui.main.MainActivity;
 import com.defaultapps.translator.ui.base.BaseActivity;
 import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.fonts.MaterialIcons;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 public class FavoritesViewImpl extends Fragment implements FavoritesView {
@@ -33,8 +41,17 @@ public class FavoritesViewImpl extends Fragment implements FavoritesView {
     @BindView(R.id.deleteFavorites)
     ImageView deleteFavorites;
 
+    @BindView(R.id.favoriteRecycler)
+    RecyclerView favoriteRecycler;
+
+    @BindView(R.id.testButton)
+    Button testButton;
+
     @Inject
     FavoritesViewPresenterImpl favoritesViewPresenter;
+
+    @Inject
+    FavoritesAdapter favoritesAdapter;
 
     private MainActivity activity;
     private Unbinder unbinder;
@@ -58,8 +75,12 @@ public class FavoritesViewImpl extends Fragment implements FavoritesView {
         super.onViewCreated(view, savedInstanceState);
         ((MainActivity) getActivity()).getActivityComponent().inject(this);
         unbinder = ButterKnife.bind(this, view);
-        initToolbar();
         favoritesViewPresenter.onAttach(this);
+        favoritesViewPresenter.requestFavoriteItems();
+
+        initToolbar();
+        initRecyclerView();
+
     }
 
     @Override
@@ -75,6 +96,16 @@ public class FavoritesViewImpl extends Fragment implements FavoritesView {
         activity = null;
     }
 
+    @OnClick(R.id.testButton)
+    void onClick() {
+        favoritesViewPresenter.requestFavoriteItems();
+    }
+
+    @OnClick(R.id.deleteFavorites)
+    void onFavoritesDeleteClick() {
+        favoritesViewPresenter.deleteFavorites();
+    }
+
     @Override
     public void hideLoading() {
 
@@ -85,6 +116,11 @@ public class FavoritesViewImpl extends Fragment implements FavoritesView {
 
     }
 
+    @Override
+    public void receiveResult(List<RealmTranslate> realmTranslateList) {
+        favoritesAdapter.setData(realmTranslateList);
+    }
+
     private void initToolbar() {
         deleteFavorites.setImageDrawable(new IconDrawable(
                 getActivity().getApplicationContext(),
@@ -93,7 +129,13 @@ public class FavoritesViewImpl extends Fragment implements FavoritesView {
     }
 
     private void initRecyclerView() {
-
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext().getApplicationContext());
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
+        DividerItemDecoration divider = new DividerItemDecoration(getActivity().getApplicationContext(), linearLayoutManager.getOrientation());
+        favoriteRecycler.setLayoutManager(linearLayoutManager);
+        favoriteRecycler.setAdapter(favoritesAdapter);
+        favoriteRecycler.addItemDecoration(divider);
     }
 
 }

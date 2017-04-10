@@ -108,6 +108,11 @@ public class HistoryViewImpl extends Fragment implements HistoryView {
         historyViewPresenter.requestHistoryItems();
     }
 
+    @OnClick(R.id.deleteHistory)
+    void onDeleteClick() {
+        historyViewPresenter.deleteHistoryData();
+    }
+
     @Override
     public void hideLoading() {
 
@@ -130,9 +135,7 @@ public class HistoryViewImpl extends Fragment implements HistoryView {
 
     @Override
     public void receiveResult(List<RealmTranslate> realmTranslateList) {
-        if (!realmTranslateList.isEmpty()) {
-            historyAdapter.setData(realmTranslateList);
-        }
+        historyAdapter.setData(realmTranslateList);
     }
 
     private void initToolbar() {

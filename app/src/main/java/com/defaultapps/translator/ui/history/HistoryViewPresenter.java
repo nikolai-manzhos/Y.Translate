@@ -8,4 +8,5 @@ public interface HistoryViewPresenter extends MvpPresenter<HistoryView> {
     void requestHistoryItems();
     void addToFav(RealmTranslate realmModel);
     void deleteFromFav(RealmTranslate realmModel);
+    void deleteHistoryData();
 }
