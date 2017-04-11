@@ -21,6 +21,8 @@ import com.defaultapps.translator.data.model.realm.RealmTranslate;
 import com.defaultapps.translator.di.scope.PerActivity;
 import com.defaultapps.translator.ui.main.MainActivity;
 import com.defaultapps.translator.ui.base.BaseActivity;
+import com.defaultapps.translator.utils.Global;
+import com.defaultapps.translator.utils.RxBus;
 import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.fonts.MaterialIcons;
 
@@ -51,8 +53,12 @@ public class HistoryViewImpl extends Fragment implements HistoryView {
     @Inject
     HistoryAdapter historyAdapter;
 
+    @Inject
+    RxBus rxBus;
+
     private MainActivity activity;
     private Unbinder unbinder;
+    private LinearLayoutManager linearLayoutManager;
 
 
     @Override
@@ -79,6 +85,12 @@ public class HistoryViewImpl extends Fragment implements HistoryView {
         historyAdapter.setView(this);
         historyViewPresenter.onAttach(this);
         historyViewPresenter.requestHistoryItems();
+
+        rxBus.subscribe(Global.HISTORY_UPDATE,
+                this,
+                message -> {
+                    if ((boolean) message) historyViewPresenter.requestHistoryItems();
+                });
     }
 
     @Override
@@ -94,6 +106,7 @@ public class HistoryViewImpl extends Fragment implements HistoryView {
         unbinder.unbind();
         historyAdapter.setView(null);
         historyViewPresenter.onDetach();
+        rxBus.unsubscribe(this);
     }
 
     @Override
@@ -146,7 +159,7 @@ public class HistoryViewImpl extends Fragment implements HistoryView {
     }
 
     private void initRecyclerView() {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext().getApplicationContext());
+        linearLayoutManager = new LinearLayoutManager(getContext().getApplicationContext());
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
         DividerItemDecoration divider = new DividerItemDecoration(getActivity().getApplicationContext(), linearLayoutManager.getOrientation());

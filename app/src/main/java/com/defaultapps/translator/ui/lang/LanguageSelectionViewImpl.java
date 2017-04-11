@@ -12,6 +12,8 @@ import android.widget.ListView;
 
 import com.defaultapps.translator.R;
 import com.defaultapps.translator.ui.base.BaseFragment;
+import com.defaultapps.translator.utils.Global;
+import com.defaultapps.translator.utils.RxBus;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,6 +41,9 @@ public class LanguageSelectionViewImpl extends BaseFragment implements LanguageS
 
     @Inject
     LanguageSelectionPresenterImpl languageSelectionPresenter;
+
+    @Inject
+    RxBus rxBus;
 
     @BindView(R.id.languageList)
     ListView langList;
@@ -102,8 +107,10 @@ public class LanguageSelectionViewImpl extends BaseFragment implements LanguageS
         if (fragmentMode.equals("source")) {
             setSource(itemName, findLangCode(itemName));
             getActivity().finish();
+            rxBus.publish(Global.LANG_CHANGED, true);
         } else if (fragmentMode.equals("target")) {
             setTarget(itemName, findLangCode(itemName));
+            rxBus.publish(Global.LANG_CHANGED, true);
             getActivity().finish();
         }
     }

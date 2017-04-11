@@ -1,5 +1,7 @@
 package com.defaultapps.translator.ui.translate;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,13 +14,16 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.defaultapps.translator.R;
+import com.defaultapps.translator.di.ApplicationContext;
 import com.defaultapps.translator.ui.lang.LanguageActivity;
 import com.defaultapps.translator.ui.main.MainActivity;
 import com.defaultapps.translator.ui.base.BaseActivity;
 import com.defaultapps.translator.ui.base.BaseFragment;
 import com.defaultapps.translator.utils.Global;
+import com.defaultapps.translator.utils.RxBus;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.jakewharton.rxbinding2.widget.TextViewTextChangeEvent;
 import com.joanzapata.iconify.IconDrawable;
@@ -71,6 +76,13 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
     @Inject
     TranslateViewPresenterImpl translateViewPresenter;
 
+    @Inject
+    RxBus rxBus;
+
+    @Inject
+    @ApplicationContext
+    Context applicationContext;
+
 
     @Override
     public void onAttach(Context context) {
@@ -114,6 +126,12 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
                 hideError();
             }
         });
+
+        rxBus.subscribe(Global.LANG_CHANGED,
+                this,
+                message -> {
+                    if ((boolean) message) translateViewPresenter.requestLangNames();
+                });
     }
 
     @Override
@@ -122,6 +140,7 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
         unbinder.unbind();
         translateViewPresenter.onDetach();
         textChangeObservable.unsubscribeOn(AndroidSchedulers.mainThread());
+        rxBus.unsubscribe(this);
     }
 
     @Override
@@ -149,9 +168,18 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
         startActivity(intent);
     }
 
+    @OnClick(R.id.translation)
+    void onTranslatedTextClick(TextView view) {
+        Toast.makeText(applicationContext, "Copied to clipboard.", Toast.LENGTH_SHORT).show();
+        ClipboardManager clipboard = (ClipboardManager) applicationContext.getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("Translator", view.getText());
+        clipboard.setPrimaryClip(clip);
+    }
+
     @OnClick(R.id.swapLanguages)
     void onSwapClick() {
         translateViewPresenter.swapLanguages();
+        translateViewPresenter.requestLangNames();
     }
 
     @Override
@@ -185,6 +213,7 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
     public void showResult(String result) {
         translatedText.setVisibility(View.VISIBLE);
         translatedText.setText(result);
+        rxBus.publish(Global.HISTORY_UPDATE, true);
     }
 
     @Override

@@ -21,6 +21,8 @@ import com.defaultapps.translator.R;
 import com.defaultapps.translator.data.model.realm.RealmTranslate;
 import com.defaultapps.translator.ui.main.MainActivity;
 import com.defaultapps.translator.ui.base.BaseActivity;
+import com.defaultapps.translator.utils.Global;
+import com.defaultapps.translator.utils.RxBus;
 import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.fonts.MaterialIcons;
 
@@ -53,6 +55,9 @@ public class FavoritesViewImpl extends Fragment implements FavoritesView {
     @Inject
     FavoritesAdapter favoritesAdapter;
 
+    @Inject
+    RxBus rxBus;
+
     private MainActivity activity;
     private Unbinder unbinder;
 
@@ -81,6 +86,11 @@ public class FavoritesViewImpl extends Fragment implements FavoritesView {
         initToolbar();
         initRecyclerView();
 
+        rxBus.subscribe(Global.FAVORITES_UPDATE,
+                this,
+                message -> {
+                    if ((boolean) message) favoritesViewPresenter.requestFavoriteItems();
+                });
     }
 
     @Override
@@ -88,6 +98,7 @@ public class FavoritesViewImpl extends Fragment implements FavoritesView {
         super.onDestroyView();
         unbinder.unbind();
         favoritesViewPresenter.onDetach();
+        rxBus.unsubscribe(this);
     }
 
     @Override

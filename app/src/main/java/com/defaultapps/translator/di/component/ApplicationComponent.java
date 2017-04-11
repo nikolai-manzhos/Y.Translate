@@ -16,6 +16,7 @@ import com.defaultapps.translator.di.ApplicationContext;
 import com.defaultapps.translator.di.module.ApplicationModule;
 import com.defaultapps.translator.ui.favorite.FavoritesAdapter;
 import com.defaultapps.translator.ui.history.HistoryAdapter;
+import com.defaultapps.translator.utils.RxBus;
 
 import javax.inject.Singleton;
 
@@ -31,6 +32,8 @@ public interface ApplicationComponent {
     Context context();
 
     SchedulerProvider schedulerProvider();
+
+    RxBus rxBus();
 
     LocalService localService();
 

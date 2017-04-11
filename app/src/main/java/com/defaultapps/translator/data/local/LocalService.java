@@ -63,6 +63,7 @@ public class LocalService {
         Realm realm = Realm.getDefaultInstance();
         realm.executeTransaction(transactionRealm -> {
             deleteFromRealm(realm, realmTranslate.getText(), realmTranslate.getLanguageSet());
+            realmTranslate.setHistory(true);
             transactionRealm.copyToRealm(realmTranslate);
         });
         realm.close();
@@ -154,7 +155,7 @@ public class LocalService {
         return finalData;
     }
 
-    public void wipeHistory() {
+    public boolean wipeHistory() {
         Realm realm = Realm.getDefaultInstance();
         realm.executeTransaction(realm1 -> {
             RealmResults<RealmTranslate> rows = realm.where(RealmTranslate.class).equalTo("history", true).findAll();
@@ -165,6 +166,7 @@ public class LocalService {
             finalRows.deleteAllFromRealm();
         });
         realm.close();
+        return true;
     }
 
     public List<RealmTranslate> provideFavoritesDatabase() {
