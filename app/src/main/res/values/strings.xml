@@ -6,6 +6,15 @@
 
     <string name="place_holder">PLACE HOLDER</string>
 
+    <string name="translate_hint">Type text</string>
+
     <string name="favorites">Favorites</string>
+    <string name="favorites_delete_all">Delete your favorites?</string>
+
     <string name="history">History</string>
+    <string name="history_delete_all">Delete your history?</string>
+
+    <!--Alert dialog strings-->
+    <string name="alert_ok">OK</string>
+    <string name="alert_cancel">Cancel</string>
 </resources>

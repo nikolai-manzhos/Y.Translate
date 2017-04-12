@@ -2,6 +2,8 @@ package com.defaultapps.translator.ui.favorite;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,6 +11,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,6 +22,7 @@ import android.widget.ImageView;
 
 import com.defaultapps.translator.R;
 import com.defaultapps.translator.data.model.realm.RealmTranslate;
+import com.defaultapps.translator.ui.base.BaseFragment;
 import com.defaultapps.translator.ui.main.MainActivity;
 import com.defaultapps.translator.ui.base.BaseActivity;
 import com.defaultapps.translator.utils.Global;
@@ -35,7 +39,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-public class FavoritesViewImpl extends Fragment implements FavoritesView {
+public class FavoritesViewImpl extends BaseFragment implements FavoritesView {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -45,9 +49,6 @@ public class FavoritesViewImpl extends Fragment implements FavoritesView {
 
     @BindView(R.id.favoriteRecycler)
     RecyclerView favoriteRecycler;
-
-    @BindView(R.id.testButton)
-    Button testButton;
 
     @Inject
     FavoritesViewPresenterImpl favoritesViewPresenter;
@@ -60,6 +61,7 @@ public class FavoritesViewImpl extends Fragment implements FavoritesView {
 
     private MainActivity activity;
     private Unbinder unbinder;
+    private Resources resources;
 
     @Override
     public void onAttach(Context context) {
@@ -78,6 +80,7 @@ public class FavoritesViewImpl extends Fragment implements FavoritesView {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        resources = getActivity().getApplicationContext().getResources();
         ((MainActivity) getActivity()).getActivityComponent().inject(this);
         unbinder = ButterKnife.bind(this, view);
         favoritesViewPresenter.onAttach(this);
@@ -107,24 +110,23 @@ public class FavoritesViewImpl extends Fragment implements FavoritesView {
         activity = null;
     }
 
-    @OnClick(R.id.testButton)
-    void onClick() {
-        favoritesViewPresenter.requestFavoriteItems();
-    }
-
     @OnClick(R.id.deleteFavorites)
     void onFavoritesDeleteClick() {
-        favoritesViewPresenter.deleteFavorites();
+        displayDialog(resources.getString(R.string.favorites),
+                resources.getString(R.string.favorites_delete_all),
+                (dialog, which) ->  {
+                    if (which == DialogInterface.BUTTON_POSITIVE) {
+                        favoritesViewPresenter.deleteFavorites();
+                    }
+                });
     }
 
     @Override
     public void hideLoading() {
-
     }
 
     @Override
     public void showLoading() {
-
     }
 
     @Override
@@ -148,5 +150,4 @@ public class FavoritesViewImpl extends Fragment implements FavoritesView {
         favoriteRecycler.setAdapter(favoritesAdapter);
         favoriteRecycler.addItemDecoration(divider);
     }
-
 }

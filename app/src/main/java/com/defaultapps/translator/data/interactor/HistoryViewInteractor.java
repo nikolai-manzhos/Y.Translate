@@ -52,7 +52,7 @@ public class HistoryViewInteractor {
         if (wipeDisposable == null || wipeDisposable.isDisposed()) {
             wipeReplayProcessor = ReplayProcessor.create();
 
-            Observable.fromCallable(localService::wipeHistory)
+            wipeDisposable = Observable.fromCallable(localService::wipeHistory)
                     .compose(schedulerProvider.applyIoSchedulers())
                     .onErrorReturn(throwable -> {
                         Log.d("HistoryInteractor", "wipe history data error: " + throwable.toString());

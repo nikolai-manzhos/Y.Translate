@@ -178,7 +178,7 @@ public class LocalService {
         return finalData;
     }
 
-    public void wipeFavorites() {
+    public boolean wipeFavorites() {
         Realm realm = Realm.getDefaultInstance();
         realm.executeTransaction(realm1 -> {
             RealmResults<RealmTranslate> rows = realm.where(RealmTranslate.class).equalTo("favorite", true).findAll();
@@ -188,6 +188,8 @@ public class LocalService {
             RealmResults<RealmTranslate> finalRows = realm.where(RealmTranslate.class).equalTo("favorite", false).equalTo("history", false).findAll();
             finalRows.deleteAllFromRealm();
         });
+        realm.close();
+        return true;
     }
 
     public boolean addToFavorite(RealmTranslate realmTranslate) {
@@ -210,7 +212,7 @@ public class LocalService {
         return true;
     }
 
-    public Map<String, String> readLangFromFile(String requestParam) throws IOException {
+    public Map<String, String> readLangFromFile() throws IOException {
         String line;
         StringBuilder jsonString = new StringBuilder();
 
@@ -223,11 +225,8 @@ public class LocalService {
 
         Map<String, String> retMap = new Gson().fromJson(
                 jsonString.toString(), new TypeToken<HashMap<String, String>>() {}.getType());
-        if (requestParam.equals("source")) {
-            retMap.remove(sharedPreferencesManager.getSourceLanguage());
-        } else if (requestParam.equals("target")) {
-            retMap.remove(sharedPreferencesManager.getTargetLanguage());
-        }
+        retMap.remove(sharedPreferencesManager.getSourceLanguage());
+        retMap.remove(sharedPreferencesManager.getTargetLanguage());
         return retMap;
     }
 

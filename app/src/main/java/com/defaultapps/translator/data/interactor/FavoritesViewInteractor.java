@@ -21,6 +21,8 @@ public class FavoritesViewInteractor {
     private final LocalService localService;
 
     private Disposable disposable;
+    private Disposable wipeDisposable;
+    private ReplayProcessor<Boolean> wipeReplayProcessor;
     private ReplayProcessor<List<RealmTranslate>> replayProcessor;
 
     @Inject
@@ -41,7 +43,14 @@ public class FavoritesViewInteractor {
         return replayProcessor.toObservable();
     }
 
-    public void deleteFavoritesData() {
-        localService.wipeFavorites();
+    public Observable<Boolean> deleteFavoritesData() {
+        if (wipeDisposable == null || wipeDisposable.isDisposed()) {
+            wipeReplayProcessor = ReplayProcessor.create();
+
+            wipeDisposable = Observable.fromCallable(localService::wipeFavorites)
+                    .compose(schedulerProvider.applyIoSchedulers())
+                    .subscribe(wipeReplayProcessor::onNext);
+        }
+        return wipeReplayProcessor.toObservable();
     }
 }

@@ -10,11 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.defaultapps.translator.R;
 import com.defaultapps.translator.data.model.realm.RealmTranslate;
 import com.defaultapps.translator.di.ApplicationContext;
 import com.defaultapps.translator.di.scope.PerActivity;
+import com.joanzapata.iconify.IconDrawable;
+import com.joanzapata.iconify.fonts.MaterialIcons;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +34,14 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Favo
     private Context context;
     private List<RealmTranslate> data = new ArrayList<>();
 
+    private IconDrawable greyIcon;
+    private IconDrawable coloredIcon;
+
     @Inject
     public FavoritesAdapter(@ApplicationContext Context context) {
         this.context = context;
+        greyIcon = new IconDrawable(this.context, MaterialIcons.md_bookmark).colorRes(R.color.grey);
+        coloredIcon = new IconDrawable(this.context, MaterialIcons.md_bookmark).colorRes(R.color.colorPrimary);
     }
 
     static class FavoriteViewHolder extends RecyclerView.ViewHolder {
@@ -46,6 +54,9 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Favo
         @BindView(R.id.languagePair)
         TextView languagePair;
 
+        @BindView(R.id.favoriteFlag)
+        ToggleButton toggleButton;
+
         FavoriteViewHolder(View v) {
             super(v);
             ButterKnife.bind(this, v);
@@ -56,9 +67,12 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Favo
     public void onBindViewHolder(FavoriteViewHolder holder, int position) {
         int adapterPosition = holder.getAdapterPosition();
         RealmTranslate realmEntry = data.get(adapterPosition);
+
         holder.sourceText.setText(realmEntry.getText());
         holder.translatedText.setText(realmEntry.getTranslatedText());
         holder.languagePair.setText(realmEntry.getLanguageSet().toUpperCase());
+        holder.toggleButton.setChecked(realmEntry.getFavorite());
+        setToggleButtonIcon(holder, realmEntry.getFavorite());
     }
 
     @Override
@@ -76,5 +90,13 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Favo
         this.data.clear();
         this.data.addAll(data);
         notifyDataSetChanged();
+    }
+
+    private void setToggleButtonIcon(FavoriteViewHolder holder, boolean fav) {
+        if (fav) {
+            holder.toggleButton.setBackgroundDrawable(coloredIcon);
+        }  else {
+            holder.toggleButton.setBackgroundDrawable(greyIcon);
+        }
     }
 }

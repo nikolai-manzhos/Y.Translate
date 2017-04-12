@@ -4,7 +4,7 @@ import com.defaultapps.translator.ui.base.MvpPresenter;
 
 
 public interface LanguageSelectionPresenter extends MvpPresenter<LanguageSelectionView> {
-    void requestLangList(String typeOfRequest);
+    void requestLangList();
     void setSourceLang(String sourceLang);
     void setSourceLangName(String sourceLangName);
     void setTargetLang(String targetLang);

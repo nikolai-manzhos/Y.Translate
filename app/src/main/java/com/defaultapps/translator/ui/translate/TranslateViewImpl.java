@@ -15,6 +15,7 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.defaultapps.translator.R;
 import com.defaultapps.translator.di.ApplicationContext;
@@ -39,6 +40,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 
 
 public class TranslateViewImpl extends BaseFragment implements TranslateView {
@@ -48,6 +50,7 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
     private MainActivity activity;
     private Unbinder unbinder;
     private Observable<TextViewTextChangeEvent> textChangeObservable;
+    private Disposable disposable;
 
     @BindView(R.id.editText)
     EditText editText;
@@ -72,6 +75,9 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
 
     @BindView(R.id.targetLanguageName)
     TextView targetLanguageName;
+
+    @BindView(R.id.favoriteFlag)
+    ToggleButton favoriteToggle;
 
     @Inject
     TranslateViewPresenterImpl translateViewPresenter;
@@ -117,7 +123,7 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
                 .skip(1)
                 .observeOn(AndroidSchedulers.mainThread());
 
-        textChangeObservable.subscribe(text -> {
+        disposable = textChangeObservable.subscribe(text -> {
             translateViewPresenter.setCurrentText(text.text().toString());
             if (text.text().length() != 0 && !text.text().toString().trim().isEmpty()) {
                 translateViewPresenter.requestTranslation(true);
@@ -139,7 +145,7 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
         super.onDestroyView();
         unbinder.unbind();
         translateViewPresenter.onDetach();
-        textChangeObservable.unsubscribeOn(AndroidSchedulers.mainThread());
+        disposable.dispose();
         rxBus.unsubscribe(this);
     }
 

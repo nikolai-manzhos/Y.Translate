@@ -78,7 +78,7 @@ public class LanguageSelectionViewImpl extends BaseFragment implements LanguageS
         unbinder = ButterKnife.bind(this, view);
         languageSelectionPresenter.onAttach(this);
         fragmentMode = getArguments().getString(ARGUMENT_KEY);
-        languageSelectionPresenter.requestLangList(fragmentMode);
+        languageSelectionPresenter.requestLangList();
     }
 
     @Override

@@ -27,11 +27,11 @@ public class LanguageViewInteractor {
         this.localService = localService;
     }
 
-    public Observable<Map<String, String>> requestSourceLang(String requestParam) {
+    public Observable<Map<String, String>> requestSourceLang() {
         replayProcessor = ReplayProcessor.create();
         Observable.concat(
                 memory(),
-                local(requestParam))
+                local())
                 .filter(response -> !response.isEmpty()).first(new HashMap<>())
                 .subscribe(replayProcessor::onNext);
         return replayProcessor.toObservable();
@@ -53,8 +53,8 @@ public class LanguageViewInteractor {
         localService.setTargetLangName(targetLangName);
     }
 
-    private Observable<Map<String, String>> local(String requestParam) {
-        return Observable.fromCallable(() -> localService.readLangFromFile(requestParam))
+    private Observable<Map<String, String>> local() {
+        return Observable.fromCallable(() -> localService.readLangFromFile())
                 .compose(schedulerProvider.applyIoSchedulers());
     }
 

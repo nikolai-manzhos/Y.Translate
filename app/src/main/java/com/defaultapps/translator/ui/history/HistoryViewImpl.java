@@ -2,6 +2,8 @@ package com.defaultapps.translator.ui.history;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,6 +21,7 @@ import android.widget.ImageView;
 import com.defaultapps.translator.R;
 import com.defaultapps.translator.data.model.realm.RealmTranslate;
 import com.defaultapps.translator.di.scope.PerActivity;
+import com.defaultapps.translator.ui.base.BaseFragment;
 import com.defaultapps.translator.ui.main.MainActivity;
 import com.defaultapps.translator.ui.base.BaseActivity;
 import com.defaultapps.translator.utils.Global;
@@ -35,7 +38,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-public class HistoryViewImpl extends Fragment implements HistoryView {
+public class HistoryViewImpl extends BaseFragment implements HistoryView {
 
     @BindView(R.id.historyRecycler)
     RecyclerView historyRecycler;
@@ -58,6 +61,7 @@ public class HistoryViewImpl extends Fragment implements HistoryView {
 
     private MainActivity activity;
     private Unbinder unbinder;
+    private Resources resources;
     private LinearLayoutManager linearLayoutManager;
 
 
@@ -78,6 +82,7 @@ public class HistoryViewImpl extends Fragment implements HistoryView {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        resources = getActivity().getApplicationContext().getResources();
         ((MainActivity) getActivity()).getActivityComponent().inject(this);
         unbinder = ButterKnife.bind(this, view);
         initToolbar();
@@ -94,15 +99,8 @@ public class HistoryViewImpl extends Fragment implements HistoryView {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        Log.d("History", "OnResume");
-    }
-
-    @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.d("HistoryView", "DESTROYED");
         unbinder.unbind();
         historyAdapter.setView(null);
         historyViewPresenter.onDetach();
@@ -115,15 +113,15 @@ public class HistoryViewImpl extends Fragment implements HistoryView {
         activity = null;
     }
 
-    @OnClick(R.id.testButton)
-    void onClick() {
-        Log.d("HistoryView", "onClick");
-        historyViewPresenter.requestHistoryItems();
-    }
-
     @OnClick(R.id.deleteHistory)
     void onDeleteClick() {
-        historyViewPresenter.deleteHistoryData();
+        displayDialog(resources.getString(R.string.history),
+                resources.getString(R.string.history_delete_all),
+                (dialog, which) -> {
+                    if (which == DialogInterface.BUTTON_POSITIVE) {
+                        historyViewPresenter.deleteHistoryData();
+                    }
+                });
     }
 
     @Override
