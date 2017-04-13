@@ -35,8 +35,12 @@ public class FavoritesViewPresenterImpl extends BasePresenter<FavoritesView> imp
                 .subscribe(
                         realmData -> {
                             if (getView() != null) {
+                                if (realmData.isEmpty()) {
+                                    getView().showNoDataView();
+                                } else {
+                                    getView().hideNoDataView();
+                                }
                                 getView().receiveResult(realmData);
-                                //TODO: Show NoData view.
                             }
                         },
                         err -> {}
@@ -53,6 +57,7 @@ public class FavoritesViewPresenterImpl extends BasePresenter<FavoritesView> imp
                             if (result) {
                                 rxBus.publish(Global.FAVORITES_UPDATE, true);
                                 rxBus.publish(Global.HISTORY_UPDATE, true);
+                                rxBus.publish(Global.TRANSLATE_UPDATE, true);
                             }
                         }
                 )

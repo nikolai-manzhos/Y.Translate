@@ -7,6 +7,7 @@ import com.defaultapps.translator.data.local.sp.SharedPreferencesManager;
 import com.defaultapps.translator.data.model.TranslateResponse;
 import com.defaultapps.translator.data.model.realm.RealmTranslate;
 import com.defaultapps.translator.di.ApplicationContext;
+import com.defaultapps.translator.di.scope.PerActivity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -26,13 +27,11 @@ import javax.inject.Singleton;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-@Singleton
 public class LocalService {
 
     private SharedPreferencesManager sharedPreferencesManager;
     private Context applicationContext;
 
-    @Inject
     public LocalService(SharedPreferencesManager sharedPreferencesManager,
                         @ApplicationContext Context context) {
         this.sharedPreferencesManager = sharedPreferencesManager;

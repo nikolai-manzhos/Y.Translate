@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface FavoritesView extends MvpView {
     void receiveResult(List<RealmTranslate> realmTranslateList);
+    void showNoDataView();
+    void hideNoDataView();
 }

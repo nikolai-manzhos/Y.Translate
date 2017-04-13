@@ -28,22 +28,21 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
+import io.reactivex.disposables.Disposable;
 
 @PerActivity
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder> {
 
     private Context context;
-    private HistoryView view;
+    private HistoryViewPresenterImpl presenter;
     private List<RealmTranslate> data = new ArrayList<>();
-
-    private IconDrawable greyIcon;
-    private IconDrawable coloredIcon;
+    private Disposable favSubscr;
 
     @Inject
-    public HistoryAdapter(@ApplicationContext Context context) {
+    public HistoryAdapter(@ApplicationContext Context context,
+                          HistoryViewPresenterImpl presenter) {
         this.context = context;
-        greyIcon = new IconDrawable(this.context, MaterialIcons.md_bookmark).colorRes(R.color.grey);
-        coloredIcon = new IconDrawable(this.context, MaterialIcons.md_bookmark).colorRes(R.color.colorPrimary);
+        this.presenter = presenter;
     }
 
     static class HistoryViewHolder extends RecyclerView.ViewHolder {
@@ -69,28 +68,27 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     @Override
     public void onBindViewHolder(HistoryViewHolder holder, int position) {
         int adapterPosition = holder.getAdapterPosition();
-        RxCompoundButton.checkedChanges(holder.toggleButton)
-                .skip(1)
-                .subscribe(status -> {
-                    Log.d("Adapter", String.valueOf(status));
-                    setToggleButtonIcon(holder, status);
-                    if (view != null && status) {
-                        view.favorite(data.get(adapterPosition));
-                    } else if (view != null) {
-                        view.delFromFavorite(data.get(adapterPosition));
-                    }
-                });
+
         holder.sourceText.setText(data.get(adapterPosition).getText());
         holder.translatedText.setText(data.get(adapterPosition).getTranslatedText());
         holder.languageSet.setText(data.get(adapterPosition).getLanguageSet().toUpperCase());
-        setToggleButtonIcon(holder, data.get(adapterPosition).getFavorite());
         holder.toggleButton.setChecked(data.get(adapterPosition).getFavorite());
+
     }
 
     @Override
     public HistoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_history_favorite, parent, false);
-        return new HistoryViewHolder(view);
+        HistoryViewHolder vh = new HistoryViewHolder(view);
+        vh.toggleButton.setOnClickListener(toggleView -> {
+            boolean status = ((ToggleButton) toggleView).isChecked();
+            if (presenter != null && status) {
+                presenter.addToFav(data.get(vh.getAdapterPosition()));
+            } else if (presenter != null) {
+                presenter.deleteFromFav(data.get(vh.getAdapterPosition()));
+            }
+        });
+        return vh;
     }
 
     @Override
@@ -99,20 +97,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     }
 
     public void setData(List<RealmTranslate> data) {
+        if (favSubscr != null) {
+            favSubscr.dispose();
+        }
         this.data.clear();
         this.data.addAll(data);
         notifyDataSetChanged();
-    }
-
-    public void setView(HistoryView view) {
-        this.view = view;
-    }
-
-    private void setToggleButtonIcon(HistoryViewHolder holder, boolean fav) {
-         if (fav) {
-             holder.toggleButton.setBackgroundDrawable(coloredIcon);
-         }  else {
-             holder.toggleButton.setBackgroundDrawable(greyIcon);
-         }
     }
 }

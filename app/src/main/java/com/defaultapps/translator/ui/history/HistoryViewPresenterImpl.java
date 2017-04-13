@@ -38,11 +38,12 @@ public class HistoryViewPresenterImpl extends BasePresenter<HistoryView> impleme
                 .subscribe(
                         realmTranslates -> {
                             if (getView() != null) {
-
-                                    getView().receiveResult(realmTranslates);
-
-                                    //TODO: Show NoData view.
-
+                                if (realmTranslates.isEmpty()) {
+                                    getView().showNoDataView();
+                                } else {
+                                    getView().hideNoDataView();
+                                }
+                                getView().receiveResult(realmTranslates);
                             }
                         },
                         err -> Log.d("REALM", err.toString())
@@ -58,6 +59,7 @@ public class HistoryViewPresenterImpl extends BasePresenter<HistoryView> impleme
                     success -> {
                         if (success) {
                             rxBus.publish(Global.FAVORITES_UPDATE, true);
+                            rxBus.publish(Global.TRANSLATE_UPDATE, true);
                         }
                     }
 
@@ -72,7 +74,9 @@ public class HistoryViewPresenterImpl extends BasePresenter<HistoryView> impleme
                 .subscribe(
                         success -> {
                             if (success) {
+                                Log.d("HistPresenter", "UPDATE TRANSLATE");
                                 rxBus.publish(Global.FAVORITES_UPDATE, true);
+                                rxBus.publish(Global.TRANSLATE_UPDATE, true);
                             }
                         }
                 )

@@ -6,13 +6,12 @@
     android:background="?android:attr/selectableItemBackground"
     android:clickable="true">
 
-    <ToggleButton
+    <com.joanzapata.iconify.widget.IconToggleButton
         android:id="@+id/favoriteFlag"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:textOn=""
-        android:textOff=""
-        android:checked="false"
+        android:textOn="{md-bookmark 40dp @color/colorPrimary}"
+        android:textOff="{md-bookmark 40dp @color/grey}"
         android:background="@null"
         android:layout_centerVertical="true"/>
 

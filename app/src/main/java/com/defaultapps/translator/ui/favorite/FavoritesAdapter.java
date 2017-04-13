@@ -1,11 +1,9 @@
 package com.defaultapps.translator.ui.favorite;
 
 
-import android.app.Activity;
-import android.app.Application;
+
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +14,11 @@ import com.defaultapps.translator.R;
 import com.defaultapps.translator.data.model.realm.RealmTranslate;
 import com.defaultapps.translator.di.ApplicationContext;
 import com.defaultapps.translator.di.scope.PerActivity;
-import com.joanzapata.iconify.IconDrawable;
-import com.joanzapata.iconify.fonts.MaterialIcons;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,14 +29,9 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Favo
     private Context context;
     private List<RealmTranslate> data = new ArrayList<>();
 
-    private IconDrawable greyIcon;
-    private IconDrawable coloredIcon;
-
     @Inject
     public FavoritesAdapter(@ApplicationContext Context context) {
         this.context = context;
-        greyIcon = new IconDrawable(this.context, MaterialIcons.md_bookmark).colorRes(R.color.grey);
-        coloredIcon = new IconDrawable(this.context, MaterialIcons.md_bookmark).colorRes(R.color.colorPrimary);
     }
 
     static class FavoriteViewHolder extends RecyclerView.ViewHolder {
@@ -72,7 +62,6 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Favo
         holder.translatedText.setText(realmEntry.getTranslatedText());
         holder.languagePair.setText(realmEntry.getLanguageSet().toUpperCase());
         holder.toggleButton.setChecked(realmEntry.getFavorite());
-        setToggleButtonIcon(holder, realmEntry.getFavorite());
     }
 
     @Override
@@ -90,13 +79,5 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Favo
         this.data.clear();
         this.data.addAll(data);
         notifyDataSetChanged();
-    }
-
-    private void setToggleButtonIcon(FavoriteViewHolder holder, boolean fav) {
-        if (fav) {
-            holder.toggleButton.setBackgroundDrawable(coloredIcon);
-        }  else {
-            holder.toggleButton.setBackgroundDrawable(greyIcon);
-        }
     }
 }

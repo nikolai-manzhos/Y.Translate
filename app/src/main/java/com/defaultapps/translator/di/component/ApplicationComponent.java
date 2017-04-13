@@ -35,10 +35,6 @@ public interface ApplicationComponent {
 
     RxBus rxBus();
 
-    LocalService localService();
-
-    NetworkService networkService();
-
     TranslateViewInteractor translateViewInteractor();
 
     HistoryViewInteractor historyViewInteractor();

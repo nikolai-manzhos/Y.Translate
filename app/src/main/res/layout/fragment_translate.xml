@@ -73,17 +73,15 @@
                 android:layout_marginEnd="10dp"
                 android:visibility="gone"/>
 
-            <ToggleButton
+            <com.joanzapata.iconify.widget.IconToggleButton
                 android:id="@+id/favoriteFlag"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:textOn=""
-                android:textOff=""
-                android:checked="false"
-                android:background="@null"
+                android:textOn="{md-bookmark 30dp @color/colorPrimary}"
+                android:textOff="{md-bookmark-border 30dp @color/blackDisabled}"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:layout_marginEnd="10dp"
                 android:layout_alignParentEnd="true" />
 
             <include layout="@layout/view_progress" />

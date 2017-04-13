@@ -8,7 +8,11 @@ import com.defaultapps.translator.R;
 import com.defaultapps.translator.ui.main.MainTabAdapter;
 import com.defaultapps.translator.ui.base.BaseActivity;
 import com.defaultapps.translator.ui.custom.NonSwipeableViewPager;
+import com.defaultapps.translator.utils.Global;
+import com.defaultapps.translator.utils.RxBus;
 
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,6 +27,9 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.mainViewPager)
     NonSwipeableViewPager viewPager;
 
+    @Inject
+    RxBus rxBus;
+
     MainTabAdapter mainTabAdapter;
 
     @State
@@ -31,6 +38,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getActivityComponent().inject(this);
         Icepick.restoreInstanceState(this, savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
@@ -38,6 +46,7 @@ public class MainActivity extends BaseActivity {
         mainTabAdapter = new MainTabAdapter(getSupportFragmentManager());
         viewPager.setAdapter(mainTabAdapter);
         viewPager.setPagingEnabled(false); //TODO: offScreenPageLimit
+        viewPager.setOffscreenPageLimit(3);
         bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
             selectItem(menuItem);
             return true;

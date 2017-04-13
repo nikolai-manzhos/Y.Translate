@@ -4,6 +4,9 @@ import android.app.Application;
 import android.content.Context;
 
 import com.defaultapps.translator.data.SchedulerProvider;
+import com.defaultapps.translator.data.local.LocalService;
+import com.defaultapps.translator.data.local.sp.SharedPreferencesHelper;
+import com.defaultapps.translator.data.local.sp.SharedPreferencesManager;
 import com.defaultapps.translator.di.ApplicationContext;
 
 import javax.inject.Singleton;
@@ -32,4 +35,11 @@ public class ApplicationModule {
     SchedulerProvider provideSchedulerProvider() {
         return SchedulerProvider.DEFAULT;
     }
+
+    @Provides
+    LocalService provideLocalService(SharedPreferencesManager sharedPreferencesManager) {
+        return new LocalService(sharedPreferencesManager, application);
+    }
+
+
 }

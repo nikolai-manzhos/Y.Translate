@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.defaultapps.translator.R;
 import com.defaultapps.translator.data.model.realm.RealmTranslate;
@@ -48,6 +49,9 @@ public class HistoryViewImpl extends BaseFragment implements HistoryView {
 
     @BindView(R.id.deleteHistory)
     ImageView deleteHistory;
+
+    @BindView(R.id.histNoData)
+    LinearLayout noDataView;
 
     @Inject
     HistoryViewPresenterImpl historyViewPresenter;
@@ -87,7 +91,6 @@ public class HistoryViewImpl extends BaseFragment implements HistoryView {
         unbinder = ButterKnife.bind(this, view);
         initToolbar();
         initRecyclerView();
-        historyAdapter.setView(this);
         historyViewPresenter.onAttach(this);
         historyViewPresenter.requestHistoryItems();
 
@@ -102,7 +105,6 @@ public class HistoryViewImpl extends BaseFragment implements HistoryView {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
-        historyAdapter.setView(null);
         historyViewPresenter.onDetach();
         rxBus.unsubscribe(this);
     }
@@ -135,18 +137,20 @@ public class HistoryViewImpl extends BaseFragment implements HistoryView {
     }
 
     @Override
-    public void favorite(RealmTranslate realmObject) {
-        historyViewPresenter.addToFav(realmObject);
-    }
-
-    @Override
-    public void delFromFavorite(RealmTranslate realmTranslate) {
-        historyViewPresenter.deleteFromFav(realmTranslate);
-    }
-
-    @Override
     public void receiveResult(List<RealmTranslate> realmTranslateList) {
         historyAdapter.setData(realmTranslateList);
+    }
+
+    @Override
+    public void showNoDataView() {
+        noDataView.setVisibility(View.VISIBLE);
+        deleteHistory.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hideNoDataView() {
+        noDataView.setVisibility(View.GONE);
+        deleteHistory.setVisibility(View.VISIBLE);
     }
 
     private void initToolbar() {
@@ -164,5 +168,9 @@ public class HistoryViewImpl extends BaseFragment implements HistoryView {
         historyRecycler.setLayoutManager(linearLayoutManager);
         historyRecycler.setAdapter(historyAdapter);
         historyRecycler.addItemDecoration(divider);
+
+//        historyRecycler.setItemViewCacheSize(20);
+//        historyRecycler.setDrawingCacheEnabled(true);
+//        historyRecycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
     }
 }

@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.defaultapps.translator.R;
+import com.defaultapps.translator.data.model.realm.RealmTranslate;
 import com.defaultapps.translator.di.ApplicationContext;
 import com.defaultapps.translator.ui.lang.LanguageActivity;
 import com.defaultapps.translator.ui.main.MainActivity;
@@ -25,6 +27,7 @@ import com.defaultapps.translator.ui.base.BaseActivity;
 import com.defaultapps.translator.ui.base.BaseFragment;
 import com.defaultapps.translator.utils.Global;
 import com.defaultapps.translator.utils.RxBus;
+import com.jakewharton.rxbinding2.widget.RxCompoundButton;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.jakewharton.rxbinding2.widget.TextViewTextChangeEvent;
 import com.joanzapata.iconify.IconDrawable;
@@ -51,6 +54,7 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
     private Unbinder unbinder;
     private Observable<TextViewTextChangeEvent> textChangeObservable;
     private Disposable disposable;
+    private Disposable favoriteChangeSubscription;
 
     @BindView(R.id.editText)
     EditText editText;
@@ -136,7 +140,16 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
         rxBus.subscribe(Global.LANG_CHANGED,
                 this,
                 message -> {
-                    if ((boolean) message) translateViewPresenter.requestLangNames();
+                    if ((boolean) message) {
+                        translateViewPresenter.requestLangNames();
+                        translateViewPresenter.requestTranslation(true);
+                    }
+                });
+
+        rxBus.subscribe(Global.TRANSLATE_UPDATE,
+                this,
+                message -> {
+                    if ((boolean) message) translateViewPresenter.requestTranslation(true);
                 });
     }
 
@@ -145,8 +158,9 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
         super.onDestroyView();
         unbinder.unbind();
         translateViewPresenter.onDetach();
-        disposable.dispose();
         rxBus.unsubscribe(this);
+        disposable.dispose();
+        favoriteChangeSubscription.dispose();
     }
 
     @Override
@@ -213,13 +227,42 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
     @Override
     public void hideResult() {
         translatedText.setVisibility(View.GONE);
+        favoriteToggle.setVisibility(View.GONE);
     }
 
     @Override
-    public void showResult(String result) {
+    public void showResult() {
         translatedText.setVisibility(View.VISIBLE);
-        translatedText.setText(result);
-        rxBus.publish(Global.HISTORY_UPDATE, true);
+        favoriteToggle.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void deliverData(RealmTranslate realmInstance) {
+        if (favoriteChangeSubscription != null && !favoriteChangeSubscription.isDisposed()) {
+            favoriteChangeSubscription.dispose();
+        }
+        favoriteChangeSubscription = RxCompoundButton.checkedChanges(favoriteToggle)
+                .skip(1)
+                .subscribe(status -> {
+                    if (status) {
+                        translateViewPresenter.addToFavorites(realmInstance);
+                    } else {
+                        translateViewPresenter.deleteFromFavorites(realmInstance);
+                    }
+                });
+
+        translatedText.setText(realmInstance.getTranslatedText());
+        favoriteToggle.setChecked(realmInstance.getFavorite());
+//        favoriteToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton compoundButton, boolean status) {
+//                if (status) {
+//                    translateViewPresenter.addToFavorites(realmInstance);
+//                } else {
+//                    translateViewPresenter.deleteFromFavorites(realmInstance);
+//                }
+//            }
+//        });
     }
 
     @Override

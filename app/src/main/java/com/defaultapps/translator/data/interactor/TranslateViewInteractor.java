@@ -42,6 +42,7 @@ public class TranslateViewInteractor {
         this.schedulerProvider = schedulerProvider;
         this.networkService = networkService;
         this.localService = localService;
+        Log.d("Translate", localService.toString());
     }
 
     public Observable<RealmTranslate> requestTranslation(boolean forceUpdate) {
@@ -61,6 +62,39 @@ public class TranslateViewInteractor {
                     .subscribe(translateProcessor::onNext);
         }
         return translateProcessor.toObservable();
+    }
+
+    public String provideCurrentText() {
+        return localService.getCurrentText();
+    }
+
+    public void setCurrentText(String text) {
+        localService.setCurrentText(text);
+    }
+
+    public Single<List<String>> provideLangNames() {
+        return Single.just(localService.provideLangNames());
+    }
+
+    public void checkFirstTimeUser() {
+        localService.checkFirstTimeUser();
+    }
+
+    public void swapLanguages() {
+        localService.swapLangs();
+    }
+
+    public Observable<Boolean> addToFavorites(RealmTranslate realmInstance) {
+        Log.d("Translate", "AddToFav");
+        return Observable.fromCallable(() -> localService.addToFavorite(realmInstance))
+                .onErrorReturn(throwable -> false)
+                .compose(schedulerProvider.applyIoSchedulers());
+    }
+
+    public Observable<Boolean> removeFromFavorites(RealmTranslate realmInstance) {
+        return Observable.fromCallable(() -> localService.deleteFromFavorite(realmInstance))
+                .onErrorReturn(throwable -> false)
+                .compose(schedulerProvider.applyIoSchedulers());
     }
 
     private Observable<RealmTranslate> network(String text, String language) {
@@ -90,23 +124,4 @@ public class TranslateViewInteractor {
         return Observable.just(memoryCache);
     }
 
-    public String provideCurrentText() {
-        return localService.getCurrentText();
-    }
-
-    public void setCurrentText(String text) {
-        localService.setCurrentText(text);
-    }
-
-    public Single<List<String>> provideLangNames() {
-        return Single.just(localService.provideLangNames());
-    }
-
-    public void checkFirstTimeUser() {
-        localService.checkFirstTimeUser();
-    }
-
-    public void swapLanguages() {
-        localService.swapLangs();
-    }
 }

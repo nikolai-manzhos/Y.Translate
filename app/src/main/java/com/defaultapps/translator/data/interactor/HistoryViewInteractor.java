@@ -11,7 +11,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import clojure.lang.IFn;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.processors.ReplayProcessor;
@@ -35,6 +34,7 @@ public class HistoryViewInteractor {
           LocalService localService) {
         this.schedulerProvider = schedulerProvider;
         this.localService = localService;
+        Log.d("History", localService.toString());
     }
 
     public Observable<List<RealmTranslate>> provideHistoryData() {
@@ -64,6 +64,7 @@ public class HistoryViewInteractor {
     }
 
     public Observable<Boolean> addToFavorite(RealmTranslate realmTranslate) {
+        Log.d("History", "AddToFav");
         if (favDisposable == null || disposable.isDisposed()) {
             favReplayProcessor = ReplayProcessor.create();
 
