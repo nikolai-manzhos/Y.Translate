@@ -36,7 +36,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     private Context context;
     private HistoryViewPresenterImpl presenter;
     private List<RealmTranslate> data = new ArrayList<>();
-    private Disposable favSubscr;
 
     @Inject
     public HistoryAdapter(@ApplicationContext Context context,
@@ -97,9 +96,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     }
 
     public void setData(List<RealmTranslate> data) {
-        if (favSubscr != null) {
-            favSubscr.dispose();
-        }
         this.data.clear();
         this.data.addAll(data);
         notifyDataSetChanged();

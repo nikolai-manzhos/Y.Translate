@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,7 @@ import com.jakewharton.rxbinding2.widget.TextViewTextChangeEvent;
 import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.fonts.MaterialIcons;
 
+import java.util.TooManyListenersException;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -54,7 +56,6 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
     private Unbinder unbinder;
     private Observable<TextViewTextChangeEvent> textChangeObservable;
     private Disposable disposable;
-    private Disposable favoriteChangeSubscription;
 
     @BindView(R.id.editText)
     EditText editText;
@@ -149,7 +150,7 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
         rxBus.subscribe(Global.TRANSLATE_UPDATE,
                 this,
                 message -> {
-                    if ((boolean) message) translateViewPresenter.requestTranslation(true);
+                    if (!editText.getText().toString().trim().isEmpty()) translateViewPresenter.requestTranslation(true);
                 });
     }
 
@@ -160,7 +161,6 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
         translateViewPresenter.onDetach();
         rxBus.unsubscribe(this);
         disposable.dispose();
-        favoriteChangeSubscription.dispose();
     }
 
     @Override
@@ -238,31 +238,19 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
 
     @Override
     public void deliverData(RealmTranslate realmInstance) {
-        if (favoriteChangeSubscription != null && !favoriteChangeSubscription.isDisposed()) {
-            favoriteChangeSubscription.dispose();
-        }
-        favoriteChangeSubscription = RxCompoundButton.checkedChanges(favoriteToggle)
-                .skip(1)
-                .subscribe(status -> {
-                    if (status) {
-                        translateViewPresenter.addToFavorites(realmInstance);
-                    } else {
-                        translateViewPresenter.deleteFromFavorites(realmInstance);
-                    }
-                });
+
+        favoriteToggle.setOnClickListener(view -> {
+            Log.d("TranslateView", "Triggered");
+            boolean status = ((ToggleButton) view).isChecked();
+            if (status) {
+                translateViewPresenter.addToFavorites(realmInstance);
+            } else {
+                translateViewPresenter.deleteFromFavorites(realmInstance);
+            }
+        });
 
         translatedText.setText(realmInstance.getTranslatedText());
         favoriteToggle.setChecked(realmInstance.getFavorite());
-//        favoriteToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton compoundButton, boolean status) {
-//                if (status) {
-//                    translateViewPresenter.addToFavorites(realmInstance);
-//                } else {
-//                    translateViewPresenter.deleteFromFavorites(realmInstance);
-//                }
-//            }
-//        });
     }
 
     @Override

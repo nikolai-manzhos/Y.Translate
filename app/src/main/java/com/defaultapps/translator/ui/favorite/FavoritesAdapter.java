@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filterable;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -24,7 +25,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 @PerActivity
-public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.FavoriteViewHolder> {
+public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.FavoriteViewHolder>{
 
     private Context context;
     private List<RealmTranslate> data = new ArrayList<>();

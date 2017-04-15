@@ -56,6 +56,7 @@ public class TranslateViewPresenterImpl extends BasePresenter<TranslateView> imp
                                 getView().hideError();
                                 getView().showResult();
                                 getView().deliverData(translateResponse);
+                                rxBus.publish(Global.HISTORY_UPDATE, true);
                             }
                         },
                         err -> {

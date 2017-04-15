@@ -45,7 +45,7 @@ public class MainActivity extends BaseActivity {
 
         mainTabAdapter = new MainTabAdapter(getSupportFragmentManager());
         viewPager.setAdapter(mainTabAdapter);
-        viewPager.setPagingEnabled(false); //TODO: offScreenPageLimit
+        viewPager.setPagingEnabled(false);
         viewPager.setOffscreenPageLimit(3);
         bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
             selectItem(menuItem);
