@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filterable;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -29,13 +30,20 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Favo
 
     private Context context;
     private List<RealmTranslate> data = new ArrayList<>();
+    private FavoritesViewPresenterImpl presenter;
 
     @Inject
-    public FavoritesAdapter(@ApplicationContext Context context) {
+    public FavoritesAdapter(@ApplicationContext Context context,
+                            FavoritesViewPresenterImpl presenter) {
         this.context = context;
+        this.presenter = presenter;
     }
 
     static class FavoriteViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.itemContainer)
+        RelativeLayout itemContainer;
+
         @BindView(R.id.sourceText)
         TextView sourceText;
 
@@ -63,6 +71,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Favo
         holder.translatedText.setText(realmEntry.getTranslatedText());
         holder.languagePair.setText(realmEntry.getLanguageSet().toUpperCase());
         holder.toggleButton.setChecked(realmEntry.getFavorite());
+        holder.itemContainer.setOnClickListener(view -> presenter.selectItem(realmEntry));
     }
 
     @Override

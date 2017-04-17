@@ -12,6 +12,8 @@ public class RealmTranslate extends RealmObject {
     private boolean favorite;
     private boolean history;
     private String languageSet;
+    private String sourceLangName;
+    private String targetLangName;
 
     public RealmTranslate() {}
 
@@ -20,13 +22,17 @@ public class RealmTranslate extends RealmObject {
                           String translatedText,
                           boolean favorite,
                           boolean history,
-                          String languageSet) {
+                          String languageSet,
+                          String sourceLangName,
+                          String targetLangName) {
         this.textPrimaryKey = textPrimaryKey;
         this.text = text;
         this.translatedText = translatedText;
         this.favorite = favorite;
         this.history = history;
         this.languageSet = languageSet;
+        this.sourceLangName = sourceLangName;
+        this.targetLangName = targetLangName;
     }
 
     public String getText() {
@@ -67,6 +73,22 @@ public class RealmTranslate extends RealmObject {
 
     public void setLanguageSet(String languageSet) {
         this.languageSet = languageSet;
+    }
+
+    public String getSourceLangName() {
+        return sourceLangName;
+    }
+
+    public void setSourceLangName(String sourceLangName) {
+        this.sourceLangName = sourceLangName;
+    }
+
+    public String getTargetLangName() {
+        return targetLangName;
+    }
+
+    public void setTargetLangName(String targetLangName) {
+        this.targetLangName = targetLangName;
     }
 
     public void setPrimaryKey() {

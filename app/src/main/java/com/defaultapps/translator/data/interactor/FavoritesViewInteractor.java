@@ -22,7 +22,9 @@ public class FavoritesViewInteractor {
 
     private Disposable disposable;
     private Disposable wipeDisposable;
+    private Disposable selectItemDisposable;
     private ReplayProcessor<Boolean> wipeReplayProcessor;
+    private ReplayProcessor<Boolean> selectItemReplayProcessor;
     private ReplayProcessor<List<RealmTranslate>> replayProcessor;
 
     @Inject
@@ -52,5 +54,16 @@ public class FavoritesViewInteractor {
                     .subscribe(wipeReplayProcessor::onNext);
         }
         return wipeReplayProcessor.toObservable();
+    }
+
+    public Observable<Boolean> setCurrentParams(RealmTranslate realmInstance) {
+        if (selectItemDisposable == null || selectItemDisposable.isDisposed()) {
+            selectItemReplayProcessor = ReplayProcessor.create();
+
+            selectItemDisposable = Observable.just(localService.setCurrentParams(realmInstance))
+                    .onErrorReturnItem(false)
+                    .subscribe(selectItemReplayProcessor::onNext);
+        }
+        return selectItemReplayProcessor.toObservable();
     }
 }

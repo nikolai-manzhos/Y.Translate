@@ -2,6 +2,7 @@ package com.defaultapps.translator.ui.favorite;
 
 
 import com.defaultapps.translator.data.interactor.FavoritesViewInteractor;
+import com.defaultapps.translator.data.model.realm.RealmTranslate;
 import com.defaultapps.translator.di.scope.PerActivity;
 import com.defaultapps.translator.ui.base.BasePresenter;
 import com.defaultapps.translator.ui.favorite.FavoritesView;
@@ -58,6 +59,21 @@ public class FavoritesViewPresenterImpl extends BasePresenter<FavoritesView> imp
                                 rxBus.publish(Global.FAVORITES_UPDATE, true);
                                 rxBus.publish(Global.HISTORY_UPDATE, true);
                                 rxBus.publish(Global.TRANSLATE_UPDATE, true);
+                            }
+                        }
+                )
+        );
+    }
+
+    @Override
+    public void selectItem(RealmTranslate realmInstance) {
+        getCompositeDisposable().add(
+                favoritesViewInteractor.setCurrentParams(realmInstance)
+                .subscribe(
+                        result -> {
+                            if (result) {
+                                rxBus.publish(Global.LANG_CHANGED, true);
+                                rxBus.publish(Global.SELECT_TRANSLATE_FRAGMENT, true);
                             }
                         }
                 )

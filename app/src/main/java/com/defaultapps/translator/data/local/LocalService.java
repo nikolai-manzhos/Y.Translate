@@ -54,6 +54,8 @@ public class LocalService {
             realmTranslate.setLanguageSet(translateResponse.getLang());
             realmTranslate.setText(currentText);
             realmTranslate.setTranslatedText(translateResponse.getText().get(0));
+            realmTranslate.setSourceLangName(sharedPreferencesManager.getSourceLanguageName());
+            realmTranslate.setTargetLangName(sharedPreferencesManager.getTargetLanguageName());
         });
         realm.close();
     }
@@ -139,7 +141,9 @@ public class LocalService {
                     translateResponse.getText().get(0),
                     false,
                     true,
-                    sharedPreferencesManager.getSourceLanguage() + "-" + sharedPreferencesManager.getTargetLanguage());
+                    sharedPreferencesManager.getSourceLanguage() + "-" + sharedPreferencesManager.getTargetLanguage(),
+                    sharedPreferencesManager.getSourceLanguageName(),
+                    sharedPreferencesManager.getTargetLanguageName());
         }
         return new RealmTranslate();
     }
@@ -227,6 +231,19 @@ public class LocalService {
         retMap.remove(sharedPreferencesManager.getSourceLanguage());
         retMap.remove(sharedPreferencesManager.getTargetLanguage());
         return retMap;
+    }
+
+    public boolean setCurrentParams(RealmTranslate realmInstance) {
+        String langPair = realmInstance.getLanguageSet().toLowerCase();
+        String sourceLang = langPair.substring(0, langPair.indexOf("-"));
+        String targetLang = langPair.substring(langPair.indexOf("-") + 1);
+
+        sharedPreferencesManager.setCurrentText(realmInstance.getText());
+        sharedPreferencesManager.setSourceLanguage(sourceLang);
+        sharedPreferencesManager.setSourceLanguageName(realmInstance.getSourceLangName());
+        sharedPreferencesManager.setTargetLanguage(targetLang);
+        sharedPreferencesManager.setTargetLanguageName(realmInstance.getTargetLangName());
+        return true;
     }
 
     private RealmTranslate findInRealm(Realm realm, String text, String languagePair) {

@@ -96,4 +96,19 @@ public class HistoryViewPresenterImpl extends BasePresenter<HistoryView> impleme
                 )
         );
     }
+
+    @Override
+    public void selectItem(RealmTranslate realmInstance) {
+        getCompositeDisposable().add(
+                historyViewInteractor.setCurrentParams(realmInstance)
+                .subscribe(
+                        result -> {
+                            if (result) {
+                                rxBus.publish(Global.LANG_CHANGED, true);
+                                rxBus.publish(Global.SELECT_TRANSLATE_FRAGMENT, true);
+                            }
+                        }
+                )
+        );
+    }
 }

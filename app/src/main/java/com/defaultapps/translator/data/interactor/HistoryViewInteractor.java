@@ -24,9 +24,11 @@ public class HistoryViewInteractor {
     private ReplayProcessor<List<RealmTranslate>> replayProcessor;
     private ReplayProcessor<Boolean> favReplayProcessor;
     private ReplayProcessor<Boolean> wipeReplayProcessor;
+    private ReplayProcessor<Boolean> selectItemReplayProcessor;
     private Disposable disposable;
     private Disposable favDisposable;
     private Disposable wipeDisposable;
+    private Disposable selectItemDisposable;
 
     @Inject
     public HistoryViewInteractor(
@@ -84,5 +86,16 @@ public class HistoryViewInteractor {
                     .subscribe(favReplayProcessor::onNext);
         }
         return favReplayProcessor.toObservable();
+    }
+
+    public Observable<Boolean> setCurrentParams(RealmTranslate realmInstance) {
+        if (selectItemDisposable == null || selectItemDisposable.isDisposed()) {
+            selectItemReplayProcessor = ReplayProcessor.create();
+
+            selectItemDisposable = Observable.just(localService.setCurrentParams(realmInstance))
+                    .onErrorReturnItem(false)
+                    .subscribe(selectItemReplayProcessor::onNext);
+        }
+        return selectItemReplayProcessor.toObservable();
     }
 }

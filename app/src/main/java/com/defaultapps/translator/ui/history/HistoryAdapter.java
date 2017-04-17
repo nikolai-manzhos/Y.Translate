@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -14,11 +15,6 @@ import com.defaultapps.translator.R;
 import com.defaultapps.translator.data.model.realm.RealmTranslate;
 import com.defaultapps.translator.di.ApplicationContext;
 import com.defaultapps.translator.di.scope.PerActivity;
-import com.defaultapps.translator.utils.Global;
-import com.defaultapps.translator.utils.RxBus;
-import com.jakewharton.rxbinding2.widget.RxCompoundButton;
-import com.joanzapata.iconify.IconDrawable;
-import com.joanzapata.iconify.fonts.MaterialIcons;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +23,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnCheckedChanged;
-import io.reactivex.disposables.Disposable;
 
 @PerActivity
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder> {
@@ -45,6 +39,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     }
 
     static class HistoryViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.itemContainer)
+        RelativeLayout itemContainer;
 
         @BindView(R.id.sourceText)
         TextView sourceText;
@@ -87,6 +84,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                 presenter.deleteFromFav(data.get(vh.getAdapterPosition()));
             }
         });
+        vh.itemContainer.setOnClickListener(containerView -> presenter.selectItem(data.get(vh.getAdapterPosition())));
         return vh;
     }
 

@@ -61,6 +61,22 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        rxBus.subscribe(Global.SELECT_TRANSLATE_FRAGMENT,
+                this,
+                message -> {
+                    if ((boolean) message) selectItem(bottomNavigationView.getMenu().getItem(0));
+                });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        rxBus.unsubscribe(this);
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         Icepick.saveInstanceState(this, outState);
