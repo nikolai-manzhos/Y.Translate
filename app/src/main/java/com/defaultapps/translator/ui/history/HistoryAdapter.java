@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -25,11 +27,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 @PerActivity
-public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder> {
+public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder> implements Filterable {
 
     private Context context;
     private HistoryViewPresenterImpl presenter;
     private List<RealmTranslate> data = new ArrayList<>();
+    private List<RealmTranslate> originalData = new ArrayList<>();
 
     @Inject
     public HistoryAdapter(@ApplicationContext Context context,
@@ -93,9 +96,49 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         return data.isEmpty() ? 0 : data.size();
     }
 
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                List<RealmTranslate> filteredResults;
+                if (charSequence.length() == 0) {
+                    filteredResults = originalData;
+                } else {
+                    filteredResults = getFilteredResults(charSequence.toString().toLowerCase());
+                }
+
+                FilterResults results = new FilterResults();
+                results.values = filteredResults;
+
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                data.clear();
+                data.addAll((List<RealmTranslate>) filterResults.values);
+                notifyDataSetChanged();
+            }
+        };
+    }
+
     public void setData(List<RealmTranslate> data) {
         this.data.clear();
         this.data.addAll(data);
+        originalData.clear();
+        originalData.addAll(data);
         notifyDataSetChanged();
+    }
+
+    protected List<RealmTranslate> getFilteredResults(String constraint) {
+        List<RealmTranslate> results = new ArrayList<>();
+
+        for (RealmTranslate item : data) {
+            if (item.getText().toLowerCase().contains(constraint)) {
+                results.add(item);
+            }
+        }
+        return results;
     }
 }

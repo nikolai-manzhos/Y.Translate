@@ -36,11 +36,24 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/searchHistory"
+            android:hint="@string/history_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="14dp"
+            android:textCursorDrawable="@null"
+            app:backgroundTint="@color/colorPrimary"/>
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/historyRecycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_below="@+id/searchHistory"
             android:scrollbars="vertical"/>
 
         <include layout="@layout/view_history_no_data" />

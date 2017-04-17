@@ -7,6 +7,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,6 +28,7 @@ import com.defaultapps.translator.ui.main.MainActivity;
 import com.defaultapps.translator.ui.base.BaseActivity;
 import com.defaultapps.translator.utils.Global;
 import com.defaultapps.translator.utils.RxBus;
+import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.fonts.MaterialIcons;
 
@@ -38,6 +40,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 
 public class HistoryViewImpl extends BaseFragment implements HistoryView {
 
@@ -53,6 +57,9 @@ public class HistoryViewImpl extends BaseFragment implements HistoryView {
     @BindView(R.id.histNoData)
     LinearLayout noDataView;
 
+    @BindView(R.id.searchHistory)
+    AppCompatEditText searchView;
+
     @Inject
     HistoryViewPresenterImpl historyViewPresenter;
 
@@ -67,6 +74,7 @@ public class HistoryViewImpl extends BaseFragment implements HistoryView {
     private Unbinder unbinder;
     private Resources resources;
     private LinearLayoutManager linearLayoutManager;
+    private Disposable searchDisposable;
 
 
     @Override
@@ -99,6 +107,14 @@ public class HistoryViewImpl extends BaseFragment implements HistoryView {
                 message -> {
                     if ((boolean) message) historyViewPresenter.requestHistoryItems();
                 });
+
+        searchDisposable = RxTextView.textChangeEvents(searchView)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        textChangeEvent -> {
+                            historyAdapter.getFilter().filter(textChangeEvent.text());
+                        }
+                );
     }
 
     @Override
@@ -107,6 +123,7 @@ public class HistoryViewImpl extends BaseFragment implements HistoryView {
         unbinder.unbind();
         historyViewPresenter.onDetach();
         rxBus.unsubscribe(this);
+        searchDisposable.dispose();
     }
 
     @Override
@@ -145,12 +162,14 @@ public class HistoryViewImpl extends BaseFragment implements HistoryView {
     public void showNoDataView() {
         noDataView.setVisibility(View.VISIBLE);
         deleteHistory.setVisibility(View.GONE);
+        searchView.setVisibility(View.GONE);
     }
 
     @Override
     public void hideNoDataView() {
         noDataView.setVisibility(View.GONE);
         deleteHistory.setVisibility(View.VISIBLE);
+        searchView.setVisibility(View.VISIBLE);
     }
 
     private void initToolbar() {
@@ -168,9 +187,5 @@ public class HistoryViewImpl extends BaseFragment implements HistoryView {
         historyRecycler.setLayoutManager(linearLayoutManager);
         historyRecycler.setAdapter(historyAdapter);
         historyRecycler.addItemDecoration(divider);
-
-//        historyRecycler.setItemViewCacheSize(20);
-//        historyRecycler.setDrawingCacheEnabled(true);
-//        historyRecycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
     }
 }

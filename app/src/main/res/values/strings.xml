@@ -12,11 +12,13 @@
     <string name="favorites">Favorites</string>
     <string name="favorites_empty">Favorites is empty</string>
     <string name="favorites_delete_all">Delete your favorites?</string>
+    <string name="favorites_hint">Search in Favorites</string>
 
     <!--History view strings-->
     <string name="history">History</string>
     <string name="history_empty">History is empty</string>
     <string name="history_delete_all">Delete your history?</string>
+    <string name="history_hint">Search in History</string>
 
     <!--Alert dialog strings-->
     <string name="alert_ok">OK</string>
