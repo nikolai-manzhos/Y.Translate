@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -23,6 +24,7 @@ import com.defaultapps.translator.ui.main.MainActivity;
 import com.defaultapps.translator.ui.base.BaseActivity;
 import com.defaultapps.translator.utils.Global;
 import com.defaultapps.translator.utils.RxBus;
+import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.fonts.MaterialIcons;
 
@@ -34,6 +36,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 
 public class FavoritesViewImpl extends BaseFragment implements FavoritesView {
 
@@ -49,6 +53,9 @@ public class FavoritesViewImpl extends BaseFragment implements FavoritesView {
     @BindView(R.id.favNoData)
     LinearLayout noDataView;
 
+    @BindView(R.id.searchFavorites)
+    EditText searchFavorites;
+
     @Inject
     FavoritesViewPresenterImpl favoritesViewPresenter;
 
@@ -58,17 +65,9 @@ public class FavoritesViewImpl extends BaseFragment implements FavoritesView {
     @Inject
     RxBus rxBus;
 
-    private MainActivity activity;
     private Unbinder unbinder;
     private Resources resources;
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof BaseActivity) {
-            activity = (MainActivity) context;
-        }
-    }
+    private Disposable searchDisposable;
 
     @Nullable
     @Override
@@ -93,6 +92,12 @@ public class FavoritesViewImpl extends BaseFragment implements FavoritesView {
                 message -> {
                     if ((boolean) message) favoritesViewPresenter.requestFavoriteItems();
                 });
+
+        searchDisposable = RxTextView.textChangeEvents(searchFavorites)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        textViewTextChangeEvent -> favoritesAdapter.getFilter().filter(textViewTextChangeEvent.text())
+                );
     }
 
     @Override
@@ -101,12 +106,7 @@ public class FavoritesViewImpl extends BaseFragment implements FavoritesView {
         unbinder.unbind();
         favoritesViewPresenter.onDetach();
         rxBus.unsubscribe(this);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        activity = null;
+        searchDisposable.dispose();
     }
 
     @OnClick(R.id.deleteFavorites)
@@ -137,12 +137,14 @@ public class FavoritesViewImpl extends BaseFragment implements FavoritesView {
     public void showNoDataView() {
         noDataView.setVisibility(View.VISIBLE);
         deleteFavorites.setVisibility(View.GONE);
+        searchFavorites.setVisibility(View.GONE);
     }
 
     @Override
     public void hideNoDataView() {
         noDataView.setVisibility(View.GONE);
         deleteFavorites.setVisibility(View.VISIBLE);
+        searchFavorites.setVisibility(View.VISIBLE);
     }
 
     private void initToolbar() {

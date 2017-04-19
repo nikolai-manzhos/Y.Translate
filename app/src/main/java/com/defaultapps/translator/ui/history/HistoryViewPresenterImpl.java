@@ -74,7 +74,6 @@ public class HistoryViewPresenterImpl extends BasePresenter<HistoryView> impleme
                 .subscribe(
                         success -> {
                             if (success) {
-                                Log.d("HistPresenter", "UPDATE TRANSLATE");
                                 rxBus.publish(Global.FAVORITES_UPDATE, true);
                                 rxBus.publish(Global.TRANSLATE_UPDATE, true);
                             }

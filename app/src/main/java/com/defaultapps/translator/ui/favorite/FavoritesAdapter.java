@@ -31,6 +31,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Favo
 
     private Context context;
     private List<RealmTranslate> data = new ArrayList<>();
+    private List<RealmTranslate> originalData = new ArrayList<>();
     private FavoritesViewPresenterImpl presenter;
 
     @Inject
@@ -91,12 +92,24 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Favo
         return new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence charSequence) {
-                return null;
+                List<RealmTranslate> filteredResults;
+                if (charSequence.length() == 0) {
+                    filteredResults = originalData;
+                } else {
+                    filteredResults = getFilteredResults(charSequence.toString().toLowerCase());
+                }
+
+                FilterResults results = new FilterResults();
+                results.values = filteredResults;
+
+                return results;
             }
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-
+                data.clear();
+                data.addAll((List<RealmTranslate>) filterResults.values);
+                notifyDataSetChanged();
             }
         };
     }
@@ -104,6 +117,19 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Favo
     public void setData(List<RealmTranslate> data) {
         this.data.clear();
         this.data.addAll(data);
+        this.originalData.clear();
+        this.originalData.addAll(data);
         notifyDataSetChanged();
+    }
+
+    protected List<RealmTranslate> getFilteredResults(String constraint) {
+        List<RealmTranslate> results = new ArrayList<>();
+
+        for (RealmTranslate item : data) {
+            if (item.getText().toLowerCase().contains(constraint)) {
+                results.add(item);
+            }
+        }
+        return results;
     }
 }
