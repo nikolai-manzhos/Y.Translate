@@ -98,4 +98,8 @@ public class HistoryViewInteractor {
         }
         return selectItemReplayProcessor.toObservable();
     }
+
+    public void removeHistoryItem(RealmTranslate realmInstance) {
+        localService.removeItemFromHistory(realmInstance);
+    }
 }

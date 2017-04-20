@@ -246,6 +246,19 @@ public class LocalService {
         return true;
     }
 
+    public void removeItemFromHistory(RealmTranslate realmInstance) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(transaction -> {
+            realmInstance.setHistory(false);
+            if (!realmInstance.getFavorite()) {
+                deleteFromRealm(realm, realmInstance.getText(), realmInstance.getLanguageSet());
+            } else {
+                realm.insertOrUpdate(realmInstance);
+            }
+        });
+        realm.close();
+    }
+
     private RealmTranslate findInRealm(Realm realm, String text, String languagePair) {
         return realm.where(RealmTranslate.class).equalTo("text", text).equalTo("languageSet", languagePair).findFirst();
     }

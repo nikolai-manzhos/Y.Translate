@@ -145,17 +145,16 @@ public class HistoryViewImpl extends BaseFragment implements HistoryView {
 
     @Override
     public void hideLoading() {
-
     }
 
     @Override
     public void showLoading() {
-
     }
 
     @Override
     public void receiveResult(List<RealmTranslate> realmTranslateList) {
         historyAdapter.setData(realmTranslateList);
+        historyRecycler.scrollToPosition(realmTranslateList.size() - 1);
     }
 
     @Override
@@ -183,9 +182,7 @@ public class HistoryViewImpl extends BaseFragment implements HistoryView {
         linearLayoutManager = new LinearLayoutManager(getContext().getApplicationContext());
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
-        DividerItemDecoration divider = new DividerItemDecoration(getActivity().getApplicationContext(), linearLayoutManager.getOrientation());
         historyRecycler.setLayoutManager(linearLayoutManager);
         historyRecycler.setAdapter(historyAdapter);
-        historyRecycler.addItemDecoration(divider);
     }
 }

@@ -9,5 +9,6 @@ public interface HistoryViewPresenter extends MvpPresenter<HistoryView> {
     void addToFav(RealmTranslate realmModel);
     void deleteFromFav(RealmTranslate realmModel);
     void deleteHistoryData();
+    void deleteHistoryItem(RealmTranslate realmInstance);
     void selectItem(RealmTranslate realmInstance);
 }

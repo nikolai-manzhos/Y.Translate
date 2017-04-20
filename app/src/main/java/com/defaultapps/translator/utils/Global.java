@@ -11,6 +11,8 @@ public class Global {
     public static final String FAVORITES_UPDATE = "favorites_update";
     public static final String SELECT_TRANSLATE_FRAGMENT = "select_translate";
 
+    public static final String FAVORITE_CHANGED = "fav_changed";
+
     private Global() {
         throw new AssertionError("This class should not have instances.");
     }

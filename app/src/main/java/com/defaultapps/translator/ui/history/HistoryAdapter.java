@@ -2,6 +2,8 @@ package com.defaultapps.translator.ui.history;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +17,7 @@ import android.widget.ToggleButton;
 
 import com.defaultapps.translator.R;
 import com.defaultapps.translator.data.model.realm.RealmTranslate;
+import com.defaultapps.translator.di.ActivityContext;
 import com.defaultapps.translator.di.ApplicationContext;
 import com.defaultapps.translator.di.scope.PerActivity;
 
@@ -35,7 +38,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     private List<RealmTranslate> originalData = new ArrayList<>();
 
     @Inject
-    public HistoryAdapter(@ApplicationContext Context context,
+    public HistoryAdapter(@ActivityContext Context context,
                           HistoryViewPresenterImpl presenter) {
         this.context = context;
         this.presenter = presenter;
@@ -73,6 +76,21 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         holder.languageSet.setText(data.get(adapterPosition).getLanguageSet().toUpperCase());
         holder.toggleButton.setChecked(data.get(adapterPosition).getFavorite());
 
+        holder.itemContainer.setOnLongClickListener(containerView -> {
+            new AlertDialog.Builder(context, R.style.AppCompatAlertDialogStyle)
+                    .setTitle(R.string.history_delete_entry)
+                    .setPositiveButton(R.string.alert_ok, (dialog, which) -> {
+                        if (which == DialogInterface.BUTTON_POSITIVE) {
+                            Log.d("hAdapter", data.get(adapterPosition).getText());
+                            presenter.deleteHistoryItem(data.get(adapterPosition));
+                            removeAt(adapterPosition);
+                        }
+                    })
+                    .setNegativeButton(R.string.alert_cancel, (dialog, which) -> {})
+                    .show();
+            return true;
+        });
+
     }
 
     @Override
@@ -88,6 +106,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             }
         });
         vh.itemContainer.setOnClickListener(containerView -> presenter.selectItem(data.get(vh.getAdapterPosition())));
+
         return vh;
     }
 
@@ -140,5 +159,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             }
         }
         return results;
+    }
+
+    protected void removeAt(int position) {
+        data.remove(position);
+        originalData.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, data.size());
     }
 }

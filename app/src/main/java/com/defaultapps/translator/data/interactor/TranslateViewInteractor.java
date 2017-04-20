@@ -49,6 +49,7 @@ public class TranslateViewInteractor {
         if (disposable != null && forceUpdate) {
             disposable.dispose();
             memoryCache = new RealmTranslate();
+            Log.d("TransInteractor", "FORCE_UPDATE");
         }
         if (disposable == null || disposable.isDisposed()) {
             translateProcessor = ReplayProcessor.create();
@@ -121,6 +122,7 @@ public class TranslateViewInteractor {
     }
 
     private Observable<RealmTranslate> memory() {
+        if (memoryCache.getText() != null) Log.d("TransInteractor", memoryCache.getText());
         return Observable.just(memoryCache);
     }
 

@@ -5,6 +5,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.BoolRes;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -150,7 +151,25 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
         rxBus.subscribe(Global.TRANSLATE_UPDATE,
                 this,
                 message -> {
-                    if (!editText.getText().toString().trim().isEmpty()) translateViewPresenter.requestTranslation(true);
+                    if ((boolean) message) {
+                        translateViewPresenter.requestLangNames();
+                        editText.setText(translateViewPresenter.getCurrentText());
+                    }
+                });
+
+        rxBus.subscribe(Global.FAVORITE_CHANGED,
+                this,
+                message -> {
+                    if (message instanceof Boolean) {
+                        favoriteToggle.setChecked(false);
+                        return;
+                    }
+                    RealmTranslate instance = (RealmTranslate) message;
+                    if (instance.getText().equals(editText.getText().toString())
+                            && instance.getTargetLangName().equals(targetLanguageName.getText())
+                            && instance.getSourceLangName().equals(sourceLanguageName.getText())) {
+                        favoriteToggle.setChecked(instance.getFavorite());
+                    }
                 });
     }
 

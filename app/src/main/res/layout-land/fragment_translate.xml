@@ -41,26 +41,30 @@
             </RelativeLayout>
     </android.support.design.widget.AppBarLayout>
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:weightSum="2"
         android:padding="16dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <EditText
             android:id="@+id/editText"
             android:hint="@string/translate_hint"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="150dp"
+            android:layout_weight="1"
             android:background="@drawable/rounded_border_edittext"
             android:inputType="textMultiLine"
             android:scrollbars="vertical"
             android:gravity="top"
-            android:padding="10dp"/>
+            android:padding="10dp"
+            android:layout_marginEnd="16dp"/>
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
             <TextView
                 android:id="@+id/translation"
@@ -68,7 +72,6 @@
                 android:textColor="@color/blackPrimary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:layout_marginEnd="50dp"
                 android:visibility="gone"/>
@@ -80,7 +83,6 @@
                 android:textOn="{md-bookmark 30dp @color/colorPrimary}"
                 android:textOff="{md-bookmark-border 30dp @color/blackDisabled}"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:layout_alignParentEnd="true"
                 android:visibility="gone"/>

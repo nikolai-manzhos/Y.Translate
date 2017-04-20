@@ -4,6 +4,7 @@ import com.defaultapps.translator.data.interactor.TranslateViewInteractor;
 import com.defaultapps.translator.data.model.realm.RealmTranslate;
 import com.defaultapps.translator.ui.translate.TranslateView;
 import com.defaultapps.translator.ui.translate.TranslateViewPresenterImpl;
+import com.defaultapps.translator.utils.RxBus;
 
 
 import org.junit.Before;
@@ -40,12 +41,13 @@ public class TranslateViewPresenterTest {
     private TranslateViewInteractor translateViewInteractor;
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private final RxBus rxBus = new RxBus();
     private final String TEXT = "example";
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        translateViewPresenter = new TranslateViewPresenterImpl(translateViewInteractor, compositeDisposable);
+        translateViewPresenter = new TranslateViewPresenterImpl(translateViewInteractor, compositeDisposable, rxBus);
         translateViewPresenter.onAttach(translateView);
         mockRealmResponse = new RealmTranslate();
         mockRealmResponse.setTranslatedText(TEXT);
@@ -68,23 +70,20 @@ public class TranslateViewPresenterTest {
         verify(translateView, times(2)).hideError(); // First called when requestTranslation(true); from presenter is called, second time after result arrives
         verify(translateView).showLoading();
 
-        verify(translateView, times(2)).hideLoading(); // onNext, onComplete
-        verify(translateView).showResult(TEXT);
+        verify(translateView).hideLoading(); // onNext
+        verify(translateView).showResult();
     }
 
     @Test
     public void testErrorScenario() throws Exception {
-        mockRealmResponse.setTranslatedText(null);
-        TestScheduler testScheduler = new TestScheduler();
-        Observable<RealmTranslate> result = just(mockRealmResponse).subscribeOn(testScheduler);
-        when(translateViewInteractor.requestTranslation(true)).thenReturn(result);
+        when(translateViewInteractor.requestTranslation(true)).thenReturn(Observable.error(new Exception("some error")));
         translateViewPresenter.requestTranslation(true);
 
-        verify(translateView).hideResult();
+        verify(translateView, times(2)).hideResult();
         verify(translateView).hideError();
         verify(translateView).showLoading();
 
-        testScheduler.triggerActions();
-        verify(translateView, never()).showResult(TEXT);
+        verify(translateView).hideLoading();
+        verify(translateView).showError();
     }
 }

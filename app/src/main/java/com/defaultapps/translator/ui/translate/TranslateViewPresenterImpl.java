@@ -65,10 +65,6 @@ public class TranslateViewPresenterImpl extends BasePresenter<TranslateView> imp
                                 getView().hideResult();
                                 getView().showError();
                             }
-                        },
-                        () -> {
-                            if (getView() != null)
-                                getView().hideLoading();
                         }
                 )
         );

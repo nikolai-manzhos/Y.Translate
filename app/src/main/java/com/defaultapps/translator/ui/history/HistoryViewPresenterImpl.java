@@ -59,10 +59,9 @@ public class HistoryViewPresenterImpl extends BasePresenter<HistoryView> impleme
                     success -> {
                         if (success) {
                             rxBus.publish(Global.FAVORITES_UPDATE, true);
-                            rxBus.publish(Global.TRANSLATE_UPDATE, true);
+                            rxBus.publish(Global.FAVORITE_CHANGED, realmModel);
                         }
                     }
-
                 )
         );
     }
@@ -75,7 +74,7 @@ public class HistoryViewPresenterImpl extends BasePresenter<HistoryView> impleme
                         success -> {
                             if (success) {
                                 rxBus.publish(Global.FAVORITES_UPDATE, true);
-                                rxBus.publish(Global.TRANSLATE_UPDATE, true);
+                                rxBus.publish(Global.FAVORITE_CHANGED, realmModel);
                             }
                         }
                 )
@@ -97,13 +96,18 @@ public class HistoryViewPresenterImpl extends BasePresenter<HistoryView> impleme
     }
 
     @Override
+    public void deleteHistoryItem(RealmTranslate realmInstance) {
+        historyViewInteractor.removeHistoryItem(realmInstance);
+    }
+
+    @Override
     public void selectItem(RealmTranslate realmInstance) {
         getCompositeDisposable().add(
                 historyViewInteractor.setCurrentParams(realmInstance)
                 .subscribe(
                         result -> {
                             if (result) {
-                                rxBus.publish(Global.LANG_CHANGED, true);
+                                rxBus.publish(Global.TRANSLATE_UPDATE, true);
                                 rxBus.publish(Global.SELECT_TRANSLATE_FRAGMENT, true);
                             }
                         }

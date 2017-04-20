@@ -58,7 +58,7 @@ public class FavoritesViewPresenterImpl extends BasePresenter<FavoritesView> imp
                             if (result) {
                                 rxBus.publish(Global.FAVORITES_UPDATE, true);
                                 rxBus.publish(Global.HISTORY_UPDATE, true);
-                                rxBus.publish(Global.TRANSLATE_UPDATE, true);
+                                rxBus.publish(Global.FAVORITE_CHANGED, true);
                             }
                         }
                 )
@@ -72,7 +72,7 @@ public class FavoritesViewPresenterImpl extends BasePresenter<FavoritesView> imp
                 .subscribe(
                         result -> {
                             if (result) {
-                                rxBus.publish(Global.LANG_CHANGED, true);
+                                rxBus.publish(Global.TRANSLATE_UPDATE, true);
                                 rxBus.publish(Global.SELECT_TRANSLATE_FRAGMENT, true);
                             }
                         }

@@ -131,6 +131,7 @@ public class FavoritesViewImpl extends BaseFragment implements FavoritesView {
     @Override
     public void receiveResult(List<RealmTranslate> realmTranslateList) {
         favoritesAdapter.setData(realmTranslateList);
+        favoriteRecycler.scrollToPosition(realmTranslateList.size() - 1);
     }
 
     @Override
@@ -158,9 +159,7 @@ public class FavoritesViewImpl extends BaseFragment implements FavoritesView {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext().getApplicationContext());
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
-        DividerItemDecoration divider = new DividerItemDecoration(getActivity().getApplicationContext(), linearLayoutManager.getOrientation());
         favoriteRecycler.setLayoutManager(linearLayoutManager);
         favoriteRecycler.setAdapter(favoritesAdapter);
-        favoriteRecycler.addItemDecoration(divider);
     }
 }
