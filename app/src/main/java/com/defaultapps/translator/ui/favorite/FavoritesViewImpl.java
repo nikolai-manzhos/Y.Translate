@@ -93,6 +93,10 @@ public class FavoritesViewImpl extends BaseFragment implements FavoritesView {
                     if ((boolean) message) favoritesViewPresenter.requestFavoriteItems();
                 });
 
+        rxBus.subscribe(Global.FAVORITES_NO_DATA,
+                this,
+                message -> showNoDataView());
+
         searchDisposable = RxTextView.textChangeEvents(searchFavorites)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(

@@ -20,6 +20,8 @@ import com.defaultapps.translator.data.model.realm.RealmTranslate;
 import com.defaultapps.translator.di.ActivityContext;
 import com.defaultapps.translator.di.ApplicationContext;
 import com.defaultapps.translator.di.scope.PerActivity;
+import com.defaultapps.translator.utils.Global;
+import com.defaultapps.translator.utils.RxBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,11 +39,15 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     private List<RealmTranslate> data = new ArrayList<>();
     private List<RealmTranslate> originalData = new ArrayList<>();
 
+    private RxBus rxBus;
+
     @Inject
     public HistoryAdapter(@ActivityContext Context context,
-                          HistoryViewPresenterImpl presenter) {
+                          HistoryViewPresenterImpl presenter,
+                          RxBus rxBus) {
         this.context = context;
         this.presenter = presenter;
+        this.rxBus = rxBus;
     }
 
     static class HistoryViewHolder extends RecyclerView.ViewHolder {
@@ -76,12 +82,21 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         holder.languageSet.setText(data.get(adapterPosition).getLanguageSet().toUpperCase());
         holder.toggleButton.setChecked(data.get(adapterPosition).getFavorite());
 
+        holder.toggleButton.setOnClickListener(toggleView -> {
+            boolean status = ((ToggleButton) toggleView).isChecked();
+            if (presenter != null && status) {
+                presenter.addToFav(data.get(adapterPosition));
+            } else if (presenter != null) {
+                presenter.deleteFromFav(data.get(adapterPosition));
+            }
+        });
+
+        holder.itemContainer.setOnClickListener(containerView -> presenter.selectItem(data.get(adapterPosition)));
         holder.itemContainer.setOnLongClickListener(containerView -> {
             new AlertDialog.Builder(context, R.style.AppCompatAlertDialogStyle)
                     .setTitle(R.string.history_delete_entry)
                     .setPositiveButton(R.string.alert_ok, (dialog, which) -> {
                         if (which == DialogInterface.BUTTON_POSITIVE) {
-                            Log.d("hAdapter", data.get(adapterPosition).getText());
                             presenter.deleteHistoryItem(data.get(adapterPosition));
                             removeAt(adapterPosition);
                         }
@@ -90,24 +105,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                     .show();
             return true;
         });
-
     }
 
     @Override
     public HistoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_history_favorite, parent, false);
-        HistoryViewHolder vh = new HistoryViewHolder(view);
-        vh.toggleButton.setOnClickListener(toggleView -> {
-            boolean status = ((ToggleButton) toggleView).isChecked();
-            if (presenter != null && status) {
-                presenter.addToFav(data.get(vh.getAdapterPosition()));
-            } else if (presenter != null) {
-                presenter.deleteFromFav(data.get(vh.getAdapterPosition()));
-            }
-        });
-        vh.itemContainer.setOnClickListener(containerView -> presenter.selectItem(data.get(vh.getAdapterPosition())));
-
-        return vh;
+        return new HistoryViewHolder(view);
     }
 
     @Override
@@ -166,5 +169,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         originalData.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, data.size());
+        if (data.size() == 0) {
+            rxBus.publish(Global.HISTORY_NO_DATA, true);
+        }
     }
 }

@@ -79,4 +79,19 @@ public class FavoritesViewPresenterImpl extends BasePresenter<FavoritesView> imp
                 )
         );
     }
+
+    @Override
+    public void deleteItemFromFavorites(RealmTranslate realmInstance) {
+        getCompositeDisposable().add(
+                favoritesViewInteractor.deleteFavoriteItem(realmInstance)
+                .subscribe(
+                        result -> {
+                            if (result) {
+                                rxBus.publish(Global.HISTORY_UPDATE, true);
+                                rxBus.publish(Global.FAVORITE_CHANGED, realmInstance);
+                            }
+                        }
+                )
+        );
+    }
 }

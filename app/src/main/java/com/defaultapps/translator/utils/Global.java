@@ -12,6 +12,8 @@ public class Global {
     public static final String SELECT_TRANSLATE_FRAGMENT = "select_translate";
 
     public static final String FAVORITE_CHANGED = "fav_changed";
+    public static final String HISTORY_NO_DATA = "hist_no_data";
+    public static final String FAVORITES_NO_DATA = "favs_no_data";
 
     private Global() {
         throw new AssertionError("This class should not have instances.");

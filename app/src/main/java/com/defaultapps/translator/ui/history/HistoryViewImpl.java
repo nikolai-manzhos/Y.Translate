@@ -108,6 +108,10 @@ public class HistoryViewImpl extends BaseFragment implements HistoryView {
                     if ((boolean) message) historyViewPresenter.requestHistoryItems();
                 });
 
+        rxBus.subscribe(Global.HISTORY_NO_DATA,
+                this,
+                message -> showNoDataView());
+
         searchDisposable = RxTextView.textChangeEvents(searchView)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(

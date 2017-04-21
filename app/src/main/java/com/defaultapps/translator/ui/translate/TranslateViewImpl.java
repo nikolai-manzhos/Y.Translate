@@ -144,7 +144,9 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
                 message -> {
                     if ((boolean) message) {
                         translateViewPresenter.requestLangNames();
-                        translateViewPresenter.requestTranslation(true);
+                        if (!editText.getText().toString().trim().isEmpty()) {
+                            translateViewPresenter.requestTranslation(true);
+                        }
                     }
                 });
 

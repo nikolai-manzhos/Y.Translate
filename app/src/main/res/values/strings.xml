@@ -13,6 +13,7 @@
     <string name="favorites_empty">Favorites is empty</string>
     <string name="favorites_delete_all">Delete your favorites?</string>
     <string name="favorites_hint">Search in Favorites</string>
+    <string name="favorites_delete_entry">Delete this entry?</string>
 
     <!--History view strings-->
     <string name="history">History</string>

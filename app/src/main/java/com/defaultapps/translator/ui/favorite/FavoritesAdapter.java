@@ -3,6 +3,8 @@ package com.defaultapps.translator.ui.favorite;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +17,11 @@ import android.widget.ToggleButton;
 
 import com.defaultapps.translator.R;
 import com.defaultapps.translator.data.model.realm.RealmTranslate;
+import com.defaultapps.translator.di.ActivityContext;
 import com.defaultapps.translator.di.ApplicationContext;
 import com.defaultapps.translator.di.scope.PerActivity;
+import com.defaultapps.translator.utils.Global;
+import com.defaultapps.translator.utils.RxBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,11 +39,15 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Favo
     private List<RealmTranslate> originalData = new ArrayList<>();
     private FavoritesViewPresenterImpl presenter;
 
+    private RxBus rxBus;
+
     @Inject
-    public FavoritesAdapter(@ApplicationContext Context context,
-                            FavoritesViewPresenterImpl presenter) {
+    public FavoritesAdapter(@ActivityContext Context context,
+                            FavoritesViewPresenterImpl presenter,
+                            RxBus rxBus) {
         this.context = context;
         this.presenter = presenter;
+        this.rxBus = rxBus;
     }
 
     static class FavoriteViewHolder extends RecyclerView.ViewHolder {
@@ -73,7 +82,29 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Favo
         holder.translatedText.setText(realmEntry.getTranslatedText());
         holder.languagePair.setText(realmEntry.getLanguageSet().toUpperCase());
         holder.toggleButton.setChecked(realmEntry.getFavorite());
-        holder.itemContainer.setOnClickListener(view -> presenter.selectItem(realmEntry));
+
+        holder.toggleButton.setOnClickListener(toggleView -> {
+            boolean status = ((ToggleButton) toggleView).isChecked();
+            if (presenter != null && !status) {
+                presenter.deleteItemFromFavorites(data.get(adapterPosition));
+                removeAt(adapterPosition);
+            }
+        });
+
+        holder.itemContainer.setOnClickListener(containerView -> presenter.selectItem(data.get(adapterPosition)));
+        holder.itemContainer.setOnLongClickListener(containerView -> {
+            new AlertDialog.Builder(context, R.style.AppCompatAlertDialogStyle)
+                    .setTitle(R.string.favorites_delete_entry)
+                    .setPositiveButton(R.string.alert_ok, (dialog, which) -> {
+                        if (which == DialogInterface.BUTTON_POSITIVE) {
+                            presenter.deleteItemFromFavorites(data.get(adapterPosition));
+                            removeAt(adapterPosition);
+                        }
+                    })
+                    .setNegativeButton(R.string.alert_cancel, (dialog, which) -> {})
+                    .show();
+            return true;
+        });
     }
 
     @Override
@@ -131,5 +162,15 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Favo
             }
         }
         return results;
+    }
+
+    protected void removeAt(int position) {
+        data.remove(position);
+        originalData.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, data.size());
+        if (data.size() == 0) {
+            rxBus.publish(Global.FAVORITES_NO_DATA, true);
+        }
     }
 }

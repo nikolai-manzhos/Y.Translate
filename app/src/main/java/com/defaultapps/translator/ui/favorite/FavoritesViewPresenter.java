@@ -7,4 +7,5 @@ public interface FavoritesViewPresenter extends MvpPresenter<FavoritesView> {
     void requestFavoriteItems();
     void deleteFavorites();
     void selectItem(RealmTranslate realmInstance);
+    void deleteItemFromFavorites(RealmTranslate realmInstance);
 }
