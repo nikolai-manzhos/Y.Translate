@@ -42,14 +42,12 @@ public class TranslateViewInteractor {
         this.schedulerProvider = schedulerProvider;
         this.networkService = networkService;
         this.localService = localService;
-        Log.d("Translate", localService.toString());
     }
 
     public Observable<RealmTranslate> requestTranslation(boolean forceUpdate) {
         if (disposable != null && forceUpdate) {
             disposable.dispose();
             memoryCache = new RealmTranslate();
-            Log.d("TransInteractor", "FORCE_UPDATE");
         }
         if (disposable == null || disposable.isDisposed()) {
             translateProcessor = ReplayProcessor.create();
@@ -86,7 +84,6 @@ public class TranslateViewInteractor {
     }
 
     public Observable<Boolean> addToFavorites(RealmTranslate realmInstance) {
-        Log.d("Translate", "AddToFav");
         return Observable.fromCallable(() -> localService.addToFavorite(realmInstance))
                 .onErrorReturn(throwable -> false)
                 .compose(schedulerProvider.applyIoSchedulers());
@@ -100,7 +97,6 @@ public class TranslateViewInteractor {
 
     private Observable<RealmTranslate> network(String text, String language) {
         return networkService.getNetworkCall().getTranslation(API_KEY, text, language)
-                .doOnComplete(() -> Log.d(TAG, "NETWORK DONE"))
                 .doOnNext(localService::writeToRealm)
                 .onErrorReturn(throwable -> {
                     Log.d("RETROFIT", throwable.toString());
@@ -122,7 +118,6 @@ public class TranslateViewInteractor {
     }
 
     private Observable<RealmTranslate> memory() {
-        if (memoryCache.getText() != null) Log.d("TransInteractor", memoryCache.getText());
         return Observable.just(memoryCache);
     }
 

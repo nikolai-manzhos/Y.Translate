@@ -1,8 +1,6 @@
 package com.defaultapps.translator.ui.history;
 
 
-import android.util.Log;
-
 import com.defaultapps.translator.data.interactor.HistoryViewInteractor;
 import com.defaultapps.translator.data.model.realm.RealmTranslate;
 import com.defaultapps.translator.di.scope.PerActivity;
@@ -46,7 +44,7 @@ public class HistoryViewPresenterImpl extends BasePresenter<HistoryView> impleme
                                 getView().receiveResult(realmTranslates);
                             }
                         },
-                        err -> Log.d("REALM", err.toString())
+                        err -> {}
                 )
         );
     }
@@ -61,7 +59,8 @@ public class HistoryViewPresenterImpl extends BasePresenter<HistoryView> impleme
                             rxBus.publish(Global.FAVORITES_UPDATE, true);
                             rxBus.publish(Global.FAVORITE_CHANGED, realmModel);
                         }
-                    }
+                    },
+                    err -> {}
                 )
         );
     }
@@ -76,7 +75,8 @@ public class HistoryViewPresenterImpl extends BasePresenter<HistoryView> impleme
                                 rxBus.publish(Global.FAVORITES_UPDATE, true);
                                 rxBus.publish(Global.FAVORITE_CHANGED, realmModel);
                             }
-                        }
+                        },
+                        err -> {}
                 )
         );
     }
@@ -90,7 +90,8 @@ public class HistoryViewPresenterImpl extends BasePresenter<HistoryView> impleme
                             if (success) {
                                 rxBus.publish(Global.HISTORY_UPDATE, true);
                             }
-                        }
+                        },
+                        err -> {}
                 )
         );
     }
@@ -110,7 +111,8 @@ public class HistoryViewPresenterImpl extends BasePresenter<HistoryView> impleme
                                 rxBus.publish(Global.TRANSLATE_UPDATE, true);
                                 rxBus.publish(Global.SELECT_TRANSLATE_FRAGMENT, true);
                             }
-                        }
+                        },
+                        err -> {}
                 )
         );
     }

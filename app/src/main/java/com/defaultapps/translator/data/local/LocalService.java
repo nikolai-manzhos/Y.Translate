@@ -40,7 +40,6 @@ public class LocalService {
 
     public void writeToRealm(TranslateResponse translateResponse) {
         Realm realm = Realm.getDefaultInstance();
-        Log.d("WriteToRealm", Thread.currentThread().getName());
         String currentText = sharedPreferencesManager.getCurrentText();
         String languagePair = sharedPreferencesManager.getSourceLanguage() + "-" + sharedPreferencesManager.getTargetLanguage();
         realm.executeTransaction(transactionRealm -> {
@@ -122,7 +121,6 @@ public class LocalService {
     }
 
     public RealmTranslate readFromRealm(String text, String languagePair) {
-        Log.d("ReadFromRealm", Thread.currentThread().getName());
         Realm realm = Realm.getDefaultInstance();
         RealmTranslate data = realm.where(RealmTranslate.class).equalTo("text", text).equalTo("languageSet", languagePair).findFirst();
         if (data != null) {
@@ -152,7 +150,6 @@ public class LocalService {
         Realm realm = Realm.getDefaultInstance();
         List<RealmTranslate> finalData;
         RealmResults<RealmTranslate> data = realm.where(RealmTranslate.class).equalTo("history", true).findAll();
-        Log.d("ProvideDatabase", Thread.currentThread().getName());
         finalData = realm.copyFromRealm(data);
         realm.close();
         return finalData;

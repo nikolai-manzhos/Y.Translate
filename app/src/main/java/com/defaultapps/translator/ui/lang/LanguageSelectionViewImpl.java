@@ -48,7 +48,6 @@ public class LanguageSelectionViewImpl extends BaseFragment implements LanguageS
     @BindView(R.id.languageList)
     ListView langList;
 
-
     public static Fragment newInstance(String sourceOrTarget) {
         Fragment instance = new LanguageSelectionViewImpl();
         Bundle bundle = new Bundle();
@@ -102,8 +101,6 @@ public class LanguageSelectionViewImpl extends BaseFragment implements LanguageS
     @OnItemClick(R.id.languageList)
     void onItemClick(int position) {
         String itemName = values.get(position);
-        Log.d("OnItemClick", String.valueOf(position));
-        Log.d("LangCode", findLangCode(values.get(position)));
         if (fragmentMode.equals("source")) {
             setSource(itemName, findLangCode(itemName));
             getActivity().finish();
@@ -117,12 +114,10 @@ public class LanguageSelectionViewImpl extends BaseFragment implements LanguageS
 
     @Override
     public void hideLoading() {
-
     }
 
     @Override
     public void showLoading() {
-
     }
 
     private void setSource(String sourceLangName, String sourceLang) {

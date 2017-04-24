@@ -36,7 +36,6 @@ public class HistoryViewInteractor {
           LocalService localService) {
         this.schedulerProvider = schedulerProvider;
         this.localService = localService;
-        Log.d("History", localService.toString());
     }
 
     public Observable<List<RealmTranslate>> provideHistoryData() {
@@ -66,7 +65,6 @@ public class HistoryViewInteractor {
     }
 
     public Observable<Boolean> addToFavorite(RealmTranslate realmTranslate) {
-        Log.d("History", "AddToFav");
         if (favDisposable == null || disposable.isDisposed()) {
             favReplayProcessor = ReplayProcessor.create();
 

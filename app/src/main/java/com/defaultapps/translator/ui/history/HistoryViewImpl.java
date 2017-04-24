@@ -1,22 +1,17 @@
 package com.defaultapps.translator.ui.history;
 
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -25,7 +20,6 @@ import com.defaultapps.translator.data.model.realm.RealmTranslate;
 import com.defaultapps.translator.di.scope.PerActivity;
 import com.defaultapps.translator.ui.base.BaseFragment;
 import com.defaultapps.translator.ui.main.MainActivity;
-import com.defaultapps.translator.ui.base.BaseActivity;
 import com.defaultapps.translator.utils.Global;
 import com.defaultapps.translator.utils.RxBus;
 import com.jakewharton.rxbinding2.widget.RxTextView;
@@ -70,20 +64,10 @@ public class HistoryViewImpl extends BaseFragment implements HistoryView {
     @Inject
     RxBus rxBus;
 
-    private MainActivity activity;
     private Unbinder unbinder;
     private Resources resources;
-    private LinearLayoutManager linearLayoutManager;
     private Disposable searchDisposable;
 
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof BaseActivity) {
-            activity = (MainActivity) context;
-        }
-    }
 
     @Nullable
     @Override
@@ -114,11 +98,7 @@ public class HistoryViewImpl extends BaseFragment implements HistoryView {
 
         searchDisposable = RxTextView.textChangeEvents(searchView)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        textChangeEvent -> {
-                            historyAdapter.getFilter().filter(textChangeEvent.text());
-                        }
-                );
+                .subscribe(textChangeEvent -> historyAdapter.getFilter().filter(textChangeEvent.text()));
     }
 
     @Override
@@ -128,12 +108,6 @@ public class HistoryViewImpl extends BaseFragment implements HistoryView {
         historyViewPresenter.onDetach();
         rxBus.unsubscribe(this);
         searchDisposable.dispose();
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        activity = null;
     }
 
     @OnClick(R.id.deleteHistory)
@@ -183,7 +157,7 @@ public class HistoryViewImpl extends BaseFragment implements HistoryView {
     }
 
     private void initRecyclerView() {
-        linearLayoutManager = new LinearLayoutManager(getContext().getApplicationContext());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext().getApplicationContext());
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
         historyRecycler.setLayoutManager(linearLayoutManager);

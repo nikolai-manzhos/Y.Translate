@@ -1,12 +1,10 @@
 package com.defaultapps.translator.ui.favorite;
 
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -21,7 +19,6 @@ import com.defaultapps.translator.R;
 import com.defaultapps.translator.data.model.realm.RealmTranslate;
 import com.defaultapps.translator.ui.base.BaseFragment;
 import com.defaultapps.translator.ui.main.MainActivity;
-import com.defaultapps.translator.ui.base.BaseActivity;
 import com.defaultapps.translator.utils.Global;
 import com.defaultapps.translator.utils.RxBus;
 import com.jakewharton.rxbinding2.widget.RxTextView;

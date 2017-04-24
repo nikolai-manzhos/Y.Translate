@@ -5,14 +5,12 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.BoolRes;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -25,17 +23,13 @@ import com.defaultapps.translator.data.model.realm.RealmTranslate;
 import com.defaultapps.translator.di.ApplicationContext;
 import com.defaultapps.translator.ui.lang.LanguageActivity;
 import com.defaultapps.translator.ui.main.MainActivity;
-import com.defaultapps.translator.ui.base.BaseActivity;
 import com.defaultapps.translator.ui.base.BaseFragment;
 import com.defaultapps.translator.utils.Global;
 import com.defaultapps.translator.utils.RxBus;
-import com.jakewharton.rxbinding2.widget.RxCompoundButton;
 import com.jakewharton.rxbinding2.widget.RxTextView;
-import com.jakewharton.rxbinding2.widget.TextViewTextChangeEvent;
 import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.fonts.MaterialIcons;
 
-import java.util.TooManyListenersException;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -44,18 +38,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 
 
 public class TranslateViewImpl extends BaseFragment implements TranslateView {
 
-    private final String TAG = "TranslateViewImpl";
 
-    private MainActivity activity;
     private Unbinder unbinder;
-    private Observable<TextViewTextChangeEvent> textChangeObservable;
     private Disposable disposable;
 
     @BindView(R.id.editText)
@@ -95,15 +85,6 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
     @ApplicationContext
     Context applicationContext;
 
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof BaseActivity) {
-            activity = (MainActivity) context;
-        }
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -124,12 +105,11 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
             translateViewPresenter.requestTranslation(false);
         }
 
-        textChangeObservable = RxTextView.textChangeEvents(editText)
+        disposable = RxTextView.textChangeEvents(editText)
                 .debounce(700, TimeUnit.MILLISECONDS)
                 .skip(1)
-                .observeOn(AndroidSchedulers.mainThread());
-
-        disposable = textChangeObservable.subscribe(text -> {
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(text -> {
             translateViewPresenter.setCurrentText(text.text().toString());
             if (text.text().length() != 0 && !text.text().toString().trim().isEmpty()) {
                 translateViewPresenter.requestTranslation(true);
@@ -182,12 +162,6 @@ public class TranslateViewImpl extends BaseFragment implements TranslateView {
         translateViewPresenter.onDetach();
         rxBus.unsubscribe(this);
         disposable.dispose();
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        activity = null;
     }
 
     @OnClick(R.id.errorButton)

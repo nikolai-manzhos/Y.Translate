@@ -27,7 +27,7 @@ public class LanguageViewInteractor {
         this.localService = localService;
     }
 
-    public Observable<Map<String, String>> requestSourceLang() {
+    public Observable<Map<String, String>> requestLangList() {
         replayProcessor = ReplayProcessor.create();
         Observable.concat(
                 memory(),

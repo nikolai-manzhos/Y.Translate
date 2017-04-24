@@ -1,6 +1,5 @@
 package com.defaultapps.translator.ui.translate;
 
-import android.util.Log;
 
 import com.defaultapps.translator.data.interactor.TranslateViewInteractor;
 import com.defaultapps.translator.data.model.realm.RealmTranslate;
@@ -50,7 +49,6 @@ public class TranslateViewPresenterImpl extends BasePresenter<TranslateView> imp
                 translateViewInteractor.requestTranslation(forceUpdate)
                 .subscribe(
                         translateResponse -> {
-                            Log.d("RESPONSE", translateResponse.getTranslatedText());
                             if (getView() != null) {
                                 getView().hideLoading();
                                 getView().hideError();
@@ -76,7 +74,6 @@ public class TranslateViewPresenterImpl extends BasePresenter<TranslateView> imp
                 translateViewInteractor.provideLangNames()
                 .subscribe(
                         langList -> {
-                            Log.d("TRANSLATE_PRESENTER", langList.toString());
                             if (getView() != null) {
                                 getView().setLangNames(langList.get(0), langList.get(1));
                             }
@@ -104,7 +101,8 @@ public class TranslateViewPresenterImpl extends BasePresenter<TranslateView> imp
                         result -> {
                             rxBus.publish(Global.HISTORY_UPDATE, result);
                             rxBus.publish(Global.FAVORITES_UPDATE, result);
-                        }
+                        },
+                        err -> {}
                 )
         );
     }
@@ -117,7 +115,8 @@ public class TranslateViewPresenterImpl extends BasePresenter<TranslateView> imp
                         result -> {
                             rxBus.publish(Global.HISTORY_UPDATE, result);
                             rxBus.publish(Global.FAVORITES_UPDATE, result);
-                        }
+                        },
+                        err -> {}
                 )
         );
     }

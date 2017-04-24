@@ -13,7 +13,10 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.processors.PublishProcessor;
 
-
+/**
+ * Event bus.
+ * Serves for passing objects or triggering events.
+ */
 @Singleton
 public class RxBus {
 

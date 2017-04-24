@@ -60,7 +60,8 @@ public class FavoritesViewPresenterImpl extends BasePresenter<FavoritesView> imp
                                 rxBus.publish(Global.HISTORY_UPDATE, true);
                                 rxBus.publish(Global.FAVORITE_CHANGED, true);
                             }
-                        }
+                        },
+                        err -> {}
                 )
         );
     }
@@ -75,7 +76,8 @@ public class FavoritesViewPresenterImpl extends BasePresenter<FavoritesView> imp
                                 rxBus.publish(Global.TRANSLATE_UPDATE, true);
                                 rxBus.publish(Global.SELECT_TRANSLATE_FRAGMENT, true);
                             }
-                        }
+                        },
+                        err -> {}
                 )
         );
     }
@@ -90,7 +92,8 @@ public class FavoritesViewPresenterImpl extends BasePresenter<FavoritesView> imp
                                 rxBus.publish(Global.HISTORY_UPDATE, true);
                                 rxBus.publish(Global.FAVORITE_CHANGED, realmInstance);
                             }
-                        }
+                        },
+                        err -> {}
                 )
         );
     }

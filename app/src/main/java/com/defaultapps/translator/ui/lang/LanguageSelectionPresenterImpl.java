@@ -1,7 +1,5 @@
 package com.defaultapps.translator.ui.lang;
 
-import android.util.Log;
-
 import com.defaultapps.translator.data.interactor.LanguageViewInteractor;
 import com.defaultapps.translator.di.scope.PerActivity;
 import com.defaultapps.translator.ui.base.BasePresenter;
@@ -25,13 +23,14 @@ public class LanguageSelectionPresenterImpl extends BasePresenter<LanguageSelect
     @Override
     public void requestLangList() {
         getCompositeDisposable().add(
-                languageViewInteractor.requestSourceLang()
+                languageViewInteractor.requestLangList()
                 .subscribe(result -> {
                     if (getView() != null) {
                         getView().updateLangList(result);
-                        Log.d("SourceList", result.toString());
                     }
-                })
+                },
+                        err -> {}
+                )
         );
     }
 
