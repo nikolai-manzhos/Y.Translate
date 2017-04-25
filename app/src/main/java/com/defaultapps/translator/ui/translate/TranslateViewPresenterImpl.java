@@ -47,24 +47,28 @@ public class TranslateViewPresenterImpl extends BasePresenter<TranslateView> imp
         }
         getCompositeDisposable().add(
                 translateViewInteractor.requestTranslation(forceUpdate)
-                .subscribe(
-                        translateResponse -> {
-                            if (getView() != null) {
-                                getView().hideLoading();
-                                getView().hideError();
-                                getView().showResult();
-                                getView().deliverData(translateResponse);
-                                rxBus.publish(Global.HISTORY_UPDATE, true);
-                            }
-                        },
-                        err -> {
-                            if (getView() != null) {
-                                getView().hideLoading();
-                                getView().hideResult();
-                                getView().showError();
-                            }
-                        }
-                )
+                        .subscribe(
+                                translateResponse -> {
+                                    if (translateResponse.getText() != null) {
+                                        if (getView() != null) {
+                                            getView().hideLoading();
+                                            getView().hideError();
+                                            getView().showResult();
+                                            getView().deliverData(translateResponse);
+                                            rxBus.publish(Global.HISTORY_UPDATE, true);
+                                        }
+                                    } else {
+                                        throw new Exception();
+                                    }
+                                },
+                                err -> {
+                                    if (getView() != null) {
+                                        getView().hideLoading();
+                                        getView().hideResult();
+                                        getView().showError();
+                                    }
+                                }
+                        )
         );
     }
 
@@ -72,14 +76,14 @@ public class TranslateViewPresenterImpl extends BasePresenter<TranslateView> imp
     public void requestLangNames() {
         getCompositeDisposable().add(
                 translateViewInteractor.provideLangNames()
-                .subscribe(
-                        langList -> {
-                            if (getView() != null) {
-                                getView().setLangNames(langList.get(0), langList.get(1));
-                            }
-                        },
-                        err -> {}
-                )
+                        .subscribe(
+                                langList -> {
+                                    if (getView() != null) {
+                                        getView().setLangNames(langList.get(0), langList.get(1));
+                                    }
+                                },
+                                err -> {}
+                        )
         );
     }
 
@@ -97,13 +101,13 @@ public class TranslateViewPresenterImpl extends BasePresenter<TranslateView> imp
     public void addToFavorites(RealmTranslate realmTranslate) {
         getCompositeDisposable().add(
                 translateViewInteractor.addToFavorites(realmTranslate)
-                .subscribe(
-                        result -> {
-                            rxBus.publish(Global.HISTORY_UPDATE, result);
-                            rxBus.publish(Global.FAVORITES_UPDATE, result);
-                        },
-                        err -> {}
-                )
+                        .subscribe(
+                                result -> {
+                                    rxBus.publish(Global.HISTORY_UPDATE, result);
+                                    rxBus.publish(Global.FAVORITES_UPDATE, result);
+                                },
+                                err -> {}
+                        )
         );
     }
 
@@ -111,13 +115,13 @@ public class TranslateViewPresenterImpl extends BasePresenter<TranslateView> imp
     public void deleteFromFavorites(RealmTranslate realmInstance) {
         getCompositeDisposable().add(
                 translateViewInteractor.removeFromFavorites(realmInstance)
-                .subscribe(
-                        result -> {
-                            rxBus.publish(Global.HISTORY_UPDATE, result);
-                            rxBus.publish(Global.FAVORITES_UPDATE, result);
-                        },
-                        err -> {}
-                )
+                        .subscribe(
+                                result -> {
+                                    rxBus.publish(Global.HISTORY_UPDATE, result);
+                                    rxBus.publish(Global.FAVORITES_UPDATE, result);
+                                },
+                                err -> {}
+                        )
         );
     }
 }
