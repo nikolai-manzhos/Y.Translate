@@ -12,7 +12,7 @@ import javax.inject.Singleton;
 
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.processors.ReplayProcessor;
+import io.reactivex.subjects.ReplaySubject;
 
 @Singleton
 public class FavoritesViewInteractor {
@@ -24,10 +24,10 @@ public class FavoritesViewInteractor {
     private Disposable wipeDisposable;
     private Disposable selectItemDisposable;
     private Disposable deleteItemDisposable;
-    private ReplayProcessor<Boolean> wipeReplayProcessor;
-    private ReplayProcessor<Boolean> selectItemReplayProcessor;
-    private ReplayProcessor<Boolean> deleteItemReplayProcessor;
-    private ReplayProcessor<List<RealmTranslate>> replayProcessor;
+    private ReplaySubject<Boolean> wipeReplayProcessor;
+    private ReplaySubject<Boolean> selectItemReplayProcessor;
+    private ReplaySubject<Boolean> deleteItemReplayProcessor;
+    private ReplaySubject<List<RealmTranslate>> replayProcessor;
 
     @Inject
     public FavoritesViewInteractor(SchedulerProvider schedulerProvider,
@@ -38,46 +38,46 @@ public class FavoritesViewInteractor {
 
     public Observable<List<RealmTranslate>> provideFavoritesData() {
         if (disposable == null || disposable.isDisposed()) {
-            replayProcessor = ReplayProcessor.create();
+            replayProcessor = ReplaySubject.create();
 
             disposable = Observable.fromCallable(localService::provideFavoritesDatabase)
                     .compose(schedulerProvider.applyIoSchedulers())
                     .subscribe(replayProcessor::onNext);
         }
-        return replayProcessor.toObservable();
+        return replayProcessor;
     }
 
     public Observable<Boolean> deleteFavoritesData() {
         if (wipeDisposable == null || wipeDisposable.isDisposed()) {
-            wipeReplayProcessor = ReplayProcessor.create();
+            wipeReplayProcessor = ReplaySubject.create();
 
             wipeDisposable = Observable.fromCallable(localService::wipeFavorites)
                     .compose(schedulerProvider.applyIoSchedulers())
                     .subscribe(wipeReplayProcessor::onNext);
         }
-        return wipeReplayProcessor.toObservable();
+        return wipeReplayProcessor;
     }
 
     public Observable<Boolean> setCurrentParams(RealmTranslate realmInstance) {
         if (selectItemDisposable == null || selectItemDisposable.isDisposed()) {
-            selectItemReplayProcessor = ReplayProcessor.create();
+            selectItemReplayProcessor = ReplaySubject.create();
 
             selectItemDisposable = Observable.just(localService.setCurrentParams(realmInstance))
                     .onErrorReturnItem(false)
                     .subscribe(selectItemReplayProcessor::onNext);
         }
-        return selectItemReplayProcessor.toObservable();
+        return selectItemReplayProcessor;
     }
 
     public Observable<Boolean> deleteFavoriteItem(RealmTranslate realmInstance) {
         if (deleteItemDisposable == null || deleteItemDisposable.isDisposed()) {
-            deleteItemReplayProcessor = ReplayProcessor.create();
+            deleteItemReplayProcessor = ReplaySubject.create();
 
             deleteItemDisposable = Observable.fromCallable(() -> localService.removeItemFromFavorites(realmInstance))
                     .compose(schedulerProvider.applyIoSchedulers())
                     .onErrorReturn(throwable -> false)
                     .subscribe(deleteItemReplayProcessor::onNext);
         }
-        return deleteItemReplayProcessor.toObservable();
+        return deleteItemReplayProcessor;
     }
 }

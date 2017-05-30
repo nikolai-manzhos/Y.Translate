@@ -7,18 +7,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import io.reactivex.Observable;
-import io.reactivex.processors.ReplayProcessor;
+import io.reactivex.subjects.ReplaySubject;
 
-
+@Singleton
 public class LanguageViewInteractor {
 
     private final SchedulerProvider schedulerProvider;
     private final LocalService localService;
 
     private Map<String, String> memoryCache = new HashMap<>();
-    private ReplayProcessor<Map<String, String>> replayProcessor;
+    private ReplaySubject<Map<String, String>> replaySubject;
 
     @Inject
     public LanguageViewInteractor(SchedulerProvider schedulerProvider,
@@ -28,13 +29,13 @@ public class LanguageViewInteractor {
     }
 
     public Observable<Map<String, String>> requestLangList() {
-        replayProcessor = ReplayProcessor.create();
+        replaySubject = ReplaySubject.create();
         Observable.concat(
                 memory(),
                 local())
                 .filter(response -> !response.isEmpty()).first(new HashMap<>())
-                .subscribe(replayProcessor::onNext);
-        return replayProcessor.toObservable();
+                .subscribe(replaySubject::onNext);
+        return replaySubject;
     }
 
     public void setSourceLang(String sourceLang) {

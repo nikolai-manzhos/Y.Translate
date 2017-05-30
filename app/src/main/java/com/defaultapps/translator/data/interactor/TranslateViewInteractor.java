@@ -16,7 +16,7 @@ import javax.inject.Singleton;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.processors.ReplayProcessor;
+import io.reactivex.subjects.ReplaySubject;
 
 @Singleton
 public class TranslateViewInteractor {
@@ -30,7 +30,7 @@ public class TranslateViewInteractor {
     private final LocalService localService;
 
     private RealmTranslate memoryCache = new RealmTranslate();
-    private ReplayProcessor<RealmTranslate> translateProcessor;
+    private ReplaySubject<RealmTranslate> translateReplaySubject;
     private Disposable disposable;
 
     @Inject
@@ -50,7 +50,7 @@ public class TranslateViewInteractor {
             memoryCache = new RealmTranslate();
         }
         if (disposable == null || disposable.isDisposed()) {
-            translateProcessor = ReplayProcessor.create();
+            translateReplaySubject = ReplaySubject.create();
 
             disposable = Observable.concat(
                     memory(),
@@ -58,9 +58,9 @@ public class TranslateViewInteractor {
                     network(localService.getCurrentText(), localService.getCurrentLanguagePair())
             )
                     .filter(response -> response.getText() != null).first(new RealmTranslate())
-                    .subscribe(translateProcessor::onNext);
+                    .subscribe(translateReplaySubject::onNext);
         }
-        return translateProcessor.toObservable();
+        return translateReplaySubject;
     }
 
     public String provideCurrentText() {

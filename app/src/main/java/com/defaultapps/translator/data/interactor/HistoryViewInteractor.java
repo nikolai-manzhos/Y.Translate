@@ -13,7 +13,7 @@ import javax.inject.Singleton;
 
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.processors.ReplayProcessor;
+import io.reactivex.subjects.ReplaySubject;
 
 @Singleton
 public class HistoryViewInteractor {
@@ -21,17 +21,17 @@ public class HistoryViewInteractor {
     private final SchedulerProvider schedulerProvider;
     private final LocalService localService;
 
-    private ReplayProcessor<List<RealmTranslate>> replayProcessor;
-    private ReplayProcessor<Boolean> favReplayProcessor;
-    private ReplayProcessor<Boolean> wipeReplayProcessor;
-    private ReplayProcessor<Boolean> selectItemReplayProcessor;
+    private ReplaySubject<List<RealmTranslate>> replayProcessor;
+    private ReplaySubject<Boolean> favReplayProcessor;
+    private ReplaySubject<Boolean> wipeReplayProcessor;
+    private ReplaySubject<Boolean> selectItemReplayProcessor;
     private Disposable disposable;
     private Disposable favDisposable;
     private Disposable wipeDisposable;
     private Disposable selectItemDisposable;
 
     @Inject
-    public HistoryViewInteractor(
+    HistoryViewInteractor(
           SchedulerProvider schedulerProvider,
           LocalService localService) {
         this.schedulerProvider = schedulerProvider;
@@ -40,18 +40,18 @@ public class HistoryViewInteractor {
 
     public Observable<List<RealmTranslate>> provideHistoryData() {
         if (disposable == null || disposable.isDisposed()) {
-            replayProcessor = ReplayProcessor.create();
+            replayProcessor = ReplaySubject.create();
 
             disposable = Observable.fromCallable(localService::provideHistoryDatabase)
                     .compose(schedulerProvider.applyIoSchedulers())
                     .subscribe(replayProcessor::onNext);
         }
-        return replayProcessor.toObservable();
+        return replayProcessor;
     }
 
     public Observable<Boolean> deleteHistoryData() {
         if (wipeDisposable == null || wipeDisposable.isDisposed()) {
-            wipeReplayProcessor = ReplayProcessor.create();
+            wipeReplayProcessor = ReplaySubject.create();
 
             wipeDisposable = Observable.fromCallable(localService::wipeHistory)
                     .compose(schedulerProvider.applyIoSchedulers())
@@ -61,40 +61,40 @@ public class HistoryViewInteractor {
                     })
                     .subscribe(wipeReplayProcessor::onNext);
         }
-        return wipeReplayProcessor.toObservable();
+        return wipeReplayProcessor;
     }
 
     public Observable<Boolean> addToFavorite(RealmTranslate realmTranslate) {
         if (favDisposable == null || disposable.isDisposed()) {
-            favReplayProcessor = ReplayProcessor.create();
+            favReplayProcessor = ReplaySubject.create();
 
             favDisposable = Observable.fromCallable(() -> localService.addToFavorite(realmTranslate))
                     .compose(schedulerProvider.applyIoSchedulers())
                     .subscribe(favReplayProcessor::onNext);
         }
-        return favReplayProcessor.toObservable();
+        return favReplayProcessor;
     }
 
     public Observable<Boolean> deleteFromFavorite(RealmTranslate realmTranslate) {
         if (favDisposable == null || disposable.isDisposed()) {
-            favReplayProcessor = ReplayProcessor.create();
+            favReplayProcessor = ReplaySubject.create();
 
             favDisposable = Observable.fromCallable(() -> localService.deleteFromFavorite(realmTranslate))
                     .compose(schedulerProvider.applyIoSchedulers())
                     .subscribe(favReplayProcessor::onNext);
         }
-        return favReplayProcessor.toObservable();
+        return favReplayProcessor;
     }
 
     public Observable<Boolean> setCurrentParams(RealmTranslate realmInstance) {
         if (selectItemDisposable == null || selectItemDisposable.isDisposed()) {
-            selectItemReplayProcessor = ReplayProcessor.create();
+            selectItemReplayProcessor = ReplaySubject.create();
 
             selectItemDisposable = Observable.just(localService.setCurrentParams(realmInstance))
                     .onErrorReturnItem(false)
                     .subscribe(selectItemReplayProcessor::onNext);
         }
-        return selectItemReplayProcessor.toObservable();
+        return selectItemReplayProcessor;
     }
 
     public void removeHistoryItem(RealmTranslate realmInstance) {
