@@ -49,16 +49,12 @@ public class TranslateViewPresenterImpl extends BasePresenter<TranslateView> imp
                 translateViewInteractor.requestTranslation(forceUpdate)
                         .subscribe(
                                 translateResponse -> {
-                                    if (translateResponse.getText() != null) {
-                                        if (getView() != null) {
-                                            getView().hideLoading();
-                                            getView().hideError();
-                                            getView().showResult();
-                                            getView().deliverData(translateResponse);
-                                            rxBus.publish(Global.HISTORY_UPDATE, true);
-                                        }
-                                    } else {
-                                        throw new Exception();
+                                    if (getView() != null) {
+                                        getView().hideLoading();
+                                        getView().hideError();
+                                        getView().showResult();
+                                        getView().deliverData(translateResponse);
+                                        rxBus.publish(Global.HISTORY_UPDATE, true);
                                     }
                                 },
                                 err -> {

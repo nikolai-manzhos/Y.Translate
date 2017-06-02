@@ -1,10 +1,8 @@
 package com.defaultapps.translator.data.interactor;
 
-import android.util.Log;
 
 import com.defaultapps.translator.data.SchedulerProvider;
 import com.defaultapps.translator.data.local.LocalService;
-import com.defaultapps.translator.data.model.TranslateResponse;
 import com.defaultapps.translator.data.model.realm.RealmTranslate;
 import com.defaultapps.translator.data.network.NetworkService;
 
@@ -23,13 +21,10 @@ public class TranslateViewInteractor {
 
     private final String API_KEY = "trnsl.1.1.20170318T100130Z.eb5aab89080c4223.b30022ef0612fabacc605b1e3989f20e3871f17a";
 
-    private final String TAG = "TranslateViewInteractor";
-
     private final SchedulerProvider schedulerProvider;
     private final NetworkService networkService;
     private final LocalService localService;
 
-    private RealmTranslate memoryCache = new RealmTranslate();
     private ReplaySubject<RealmTranslate> translateReplaySubject;
     private Disposable disposable;
 
@@ -47,18 +42,15 @@ public class TranslateViewInteractor {
     public Observable<RealmTranslate> requestTranslation(boolean forceUpdate) {
         if (disposable != null && forceUpdate) {
             disposable.dispose();
-            memoryCache = new RealmTranslate();
         }
         if (disposable == null || disposable.isDisposed()) {
             translateReplaySubject = ReplaySubject.create();
 
             disposable = Observable.concat(
-                    memory(),
                     database(localService.getCurrentText(), localService.getCurrentLanguagePair()),
-                    network(localService.getCurrentText(), localService.getCurrentLanguagePair())
-            )
-                    .filter(response -> response.getText() != null).first(new RealmTranslate())
-                    .subscribe(translateReplaySubject::onNext);
+                    network(localService.getCurrentText(), localService.getCurrentLanguagePair()))
+                    .filter(response -> response.getText() != null).firstOrError()
+                    .subscribe(translateReplaySubject::onNext, translateReplaySubject::onError);
         }
         return translateReplaySubject;
     }
@@ -98,11 +90,7 @@ public class TranslateViewInteractor {
     private Observable<RealmTranslate> network(String text, String language) {
         return networkService.getNetworkCall().getTranslation(API_KEY, text, language)
                 .doOnNext(localService::writeToRealm)
-                .onErrorReturn(throwable -> {
-                    Log.d("RETROFIT", throwable.toString());
-                    return new TranslateResponse();
-                })
-                .map(translateResponse -> memoryCache = localService.responseToRealm(translateResponse))
+                .map(localService::responseToRealm)
                 .compose(schedulerProvider.applyIoSchedulers());
     }
 
@@ -112,13 +100,8 @@ public class TranslateViewInteractor {
                 .doOnNext(realmTranslate -> {
                     if (realmTranslate.getText() != null) {
                         localService.rewriteRealmEntry(realmTranslate);
-                        memoryCache = realmTranslate;
                     }
                 });
-    }
-
-    private Observable<RealmTranslate> memory() {
-        return Observable.just(memoryCache);
     }
 
 }
